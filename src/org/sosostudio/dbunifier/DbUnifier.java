@@ -4,9 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -25,6 +27,8 @@ import java.util.Set;
 import org.sosostudio.dbunifier.feature.DbFeature;
 
 public class DbUnifier {
+
+	private static Boolean existsSequenceTable = false;
 
 	private DbConfig dbConfig;
 
@@ -82,7 +86,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				this.closeConnection(con);
+				closeConnection(con);
 			}
 		}
 	}
@@ -98,12 +102,11 @@ public class DbUnifier {
 			List<Table> tableList = new ArrayList<Table>();
 			ResultSet tableResultSet = null;
 			try {
-				DatabaseMetaData databaseMetaData = con.getMetaData();
-				DbFeature dbFeature = DbFeature.getInstance(databaseMetaData);
-				String schema = dbFeature.getDatabaseSchema(databaseMetaData);
+				DatabaseMetaData dmd = con.getMetaData();
+				DbFeature dbFeature = DbFeature.getInstance(dmd);
+				String schema = dbFeature.getDatabaseSchema(dmd);
 				String[] types = { "TABLE" };
-				tableResultSet = databaseMetaData.getTables(null, schema, "%",
-						types);
+				tableResultSet = dmd.getTables(null, schema, "%", types);
 				while (tableResultSet.next()) {
 					String tableName = tableResultSet.getString("TABLE_NAME");
 					tableName = tableName.toUpperCase();
@@ -113,8 +116,8 @@ public class DbUnifier {
 					Set<String> primaryKeySet = new HashSet<String>();
 					ResultSet primaryKeyResultSet = null;
 					try {
-						primaryKeyResultSet = databaseMetaData.getPrimaryKeys(
-								null, schema, tableName);
+						primaryKeyResultSet = dmd.getPrimaryKeys(null, schema,
+								tableName);
 						while (primaryKeyResultSet.next()) {
 							String columnName = primaryKeyResultSet
 									.getString("COLUMN_NAME");
@@ -122,13 +125,13 @@ public class DbUnifier {
 							primaryKeySet.add(columnName);
 						}
 					} finally {
-						this.closeResultSet(primaryKeyResultSet);
+						closeResultSet(primaryKeyResultSet);
 					}
 					List<Column> columnList = new ArrayList<Column>();
 					ResultSet columnResultSet = null;
 					try {
-						columnResultSet = databaseMetaData.getColumns(null,
-								schema, tableName, "%");
+						columnResultSet = dmd.getColumns(null, schema,
+								tableName, "%");
 						while (columnResultSet.next()) {
 							String columnName = columnResultSet
 									.getString("COLUMN_NAME");
@@ -139,7 +142,7 @@ public class DbUnifier {
 							int nullable = columnResultSet.getInt("NULLABLE");
 							Column column = new Column();
 							column.setName(columnName);
-							column.setType(this.getColumnType(dataType));
+							column.setType(getColumnType(dataType));
 							column.setSize(size);
 							column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
 							column.setIsPrimaryKey(primaryKeySet
@@ -147,7 +150,7 @@ public class DbUnifier {
 							columnList.add(column);
 						}
 					} finally {
-						this.closeResultSet(columnResultSet);
+						closeResultSet(columnResultSet);
 					}
 					Table table = new Table();
 					table.setName(tableName);
@@ -155,14 +158,14 @@ public class DbUnifier {
 					tableList.add(table);
 				}
 			} finally {
-				this.closeResultSet(tableResultSet);
+				closeResultSet(tableResultSet);
 			}
 			return tableList;
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				this.closeConnection(con);
+				closeConnection(con);
 			}
 		}
 	}
@@ -175,15 +178,15 @@ public class DbUnifier {
 			con = this.con;
 		}
 		try {
-			DatabaseMetaData databaseMetaData = con.getMetaData();
-			DbFeature dbFeature = DbFeature.getInstance(databaseMetaData);
-			String schema = dbFeature.getDatabaseSchema(databaseMetaData);
+			DatabaseMetaData dmd = con.getMetaData();
+			DbFeature dbFeature = DbFeature.getInstance(dmd);
+			String schema = dbFeature.getDatabaseSchema(dmd);
 			tableName = tableName.toUpperCase();
 			Set<String> primaryKeySet = new HashSet<String>();
 			ResultSet primaryKeyResultSet = null;
 			try {
-				primaryKeyResultSet = databaseMetaData.getPrimaryKeys(null,
-						schema, tableName);
+				primaryKeyResultSet = dmd.getPrimaryKeys(null, schema,
+						tableName);
 				while (primaryKeyResultSet.next()) {
 					String columnName = primaryKeyResultSet
 							.getString("COLUMN_NAME");
@@ -191,14 +194,15 @@ public class DbUnifier {
 					primaryKeySet.add(columnName);
 				}
 			} finally {
-				this.closeResultSet(primaryKeyResultSet);
+				closeResultSet(primaryKeyResultSet);
 			}
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnResultSet = null;
 			try {
-				columnResultSet = databaseMetaData.getColumns(null, schema,
-						tableName, "%");
+				columnResultSet = dmd.getColumns(null, schema, tableName, "%");
+				boolean hasColumns = false;
 				while (columnResultSet.next()) {
+					hasColumns = true;
 					String columnName = columnResultSet
 							.getString("COLUMN_NAME");
 					columnName = columnName.toUpperCase();
@@ -207,14 +211,17 @@ public class DbUnifier {
 					int nullable = columnResultSet.getInt("NULLABLE");
 					Column column = new Column();
 					column.setName(columnName);
-					column.setType(this.getColumnType(dataType));
+					column.setType(getColumnType(dataType));
 					column.setSize(size);
 					column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
 					column.setIsPrimaryKey(primaryKeySet.contains(columnName));
 					columnList.add(column);
 				}
+				if (!hasColumns) {
+					return null;
+				}
 			} finally {
-				this.closeResultSet(columnResultSet);
+				closeResultSet(columnResultSet);
 			}
 			Table table = new Table();
 			table.setName(tableName);
@@ -224,7 +231,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				this.closeConnection(con);
+				closeConnection(con);
 			}
 		}
 	}
@@ -240,20 +247,19 @@ public class DbUnifier {
 			List<Table> viewList = new ArrayList<Table>();
 			ResultSet viewResultSet = null;
 			try {
-				DatabaseMetaData databaseMetaData = con.getMetaData();
-				DbFeature dbFeature = DbFeature.getInstance(databaseMetaData);
-				String schema = dbFeature.getDatabaseSchema(databaseMetaData);
+				DatabaseMetaData dmd = con.getMetaData();
+				DbFeature dbFeature = DbFeature.getInstance(dmd);
+				String schema = dbFeature.getDatabaseSchema(dmd);
 				String[] types = { "VIEW" };
-				viewResultSet = databaseMetaData.getTables(null, schema, "%",
-						types);
+				viewResultSet = dmd.getTables(null, schema, "%", types);
 				while (viewResultSet.next()) {
 					String viewName = viewResultSet.getString("TABLE_NAME");
 					viewName = viewName.toUpperCase();
 					List<Column> columnList = new ArrayList<Column>();
 					ResultSet columnResultSet = null;
 					try {
-						columnResultSet = databaseMetaData.getColumns(null,
-								schema, viewName, "%");
+						columnResultSet = dmd.getColumns(null, schema,
+								viewName, "%");
 						while (columnResultSet.next()) {
 							String columnName = columnResultSet
 									.getString("COLUMN_NAME");
@@ -263,14 +269,14 @@ public class DbUnifier {
 							int size = columnResultSet.getInt("COLUMN_SIZE");
 							Column column = new Column();
 							column.setName(columnName);
-							column.setType(this.getColumnType(dataType));
+							column.setType(getColumnType(dataType));
 							column.setSize(size);
 							column.setNullable(true);
 							column.setIsPrimaryKey(false);
 							columnList.add(column);
 						}
 					} finally {
-						this.closeResultSet(columnResultSet);
+						closeResultSet(columnResultSet);
 					}
 					Table view = new Table();
 					view.setName(viewName);
@@ -278,14 +284,14 @@ public class DbUnifier {
 					viewList.add(view);
 				}
 			} finally {
-				this.closeResultSet(viewResultSet);
+				closeResultSet(viewResultSet);
 			}
 			return viewList;
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				this.closeConnection(con);
+				closeConnection(con);
 			}
 		}
 	}
@@ -298,15 +304,14 @@ public class DbUnifier {
 			con = this.con;
 		}
 		try {
-			DatabaseMetaData databaseMetaData = con.getMetaData();
-			DbFeature dbFeature = DbFeature.getInstance(databaseMetaData);
-			String schema = dbFeature.getDatabaseSchema(databaseMetaData);
+			DatabaseMetaData dmd = con.getMetaData();
+			DbFeature dbFeature = DbFeature.getInstance(dmd);
+			String schema = dbFeature.getDatabaseSchema(dmd);
 			viewName = viewName.toUpperCase();
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnResultSet = null;
 			try {
-				columnResultSet = databaseMetaData.getColumns(null, schema,
-						viewName, "%");
+				columnResultSet = dmd.getColumns(null, schema, viewName, "%");
 				while (columnResultSet.next()) {
 					String columnName = columnResultSet
 							.getString("COLUMN_NAME");
@@ -315,14 +320,14 @@ public class DbUnifier {
 					int size = columnResultSet.getInt("COLUMN_SIZE");
 					Column column = new Column();
 					column.setName(columnName);
-					column.setType(this.getColumnType(dataType));
+					column.setType(getColumnType(dataType));
 					column.setSize(size);
 					column.setNullable(true);
 					column.setIsPrimaryKey(false);
 					columnList.add(column);
 				}
 			} finally {
-				this.closeResultSet(columnResultSet);
+				closeResultSet(columnResultSet);
 			}
 			Table view = new Table();
 			view.setName(viewName);
@@ -332,13 +337,12 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				this.closeConnection(con);
+				closeConnection(con);
 			}
 		}
 	}
 
-	public RowSet executeSelectSql(String sql, Values values,
-			boolean containsLob, int pageSize, int pageNumber) {
+	public void createTable(Table table) {
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -346,206 +350,418 @@ public class DbUnifier {
 			con = this.con;
 		}
 		try {
-			DatabaseMetaData databaseMetaData = con.getMetaData();
-			DbFeature dbFeature = DbFeature.getInstance(databaseMetaData);
-			PreparedStatement ps = null;
-			ResultSet rs = null;
-			try {
-				// split sql into two part
-				String mainSubSql = sql;
-				String orderBySubSql = "";
-				String upperCaseSql = sql.toUpperCase();
-				int orderByPos = upperCaseSql.indexOf("ORDER BY");
-				while (orderByPos >= 0) {
-					String orderByStr = upperCaseSql.substring(orderByPos);
-					int count = 0;
-					for (int i = 0; i < orderByStr.length(); i++) {
-						if (orderByStr.charAt(i) == '\'') {
-							count++;
-						}
+			DatabaseMetaData dmd = con.getMetaData();
+			DbFeature dbFeature = DbFeature.getInstance(dmd);
+			StringBuilder sb = new StringBuilder();
+			StringBuilder sbPk = new StringBuilder();
+			sb.append("create table (").append(table.getName());
+			List<Column> columnList = table.getColumnList();
+			for (int i = 0; i < columnList.size(); i++) {
+				Column column = (Column) columnList.get(i);
+				if (column.getIsPrimaryKey()) {
+					if (sbPk.length() > 0) {
+						sbPk.append(", ");
 					}
-					if (count % 2 == 1) {
-						mainSubSql = sql.substring(0, orderByPos);
-						orderBySubSql = sql.substring(orderByPos);
-						break;
-					} else {
-						orderByPos = upperCaseSql.indexOf("ORDER BY",
-								orderByPos + 1);
-					}
+					sbPk.append(column.getName());
 				}
-				// pagination compute
-				int totalRowCount;
-				String countSql = "select count(*) from (" + mainSubSql + ") t";
-				PreparedStatement ps2 = null;
-				ResultSet rs2 = null;
-				try {
-					ps2 = con.prepareStatement(countSql);
-					this.setColumnValue(ps2, 1, values);
-					rs2 = ps2.executeQuery();
-					if (rs2.next()) {
-						totalRowCount = rs2.getBigDecimal(1).intValue();
-					} else {
-						throw new DbUnifierException("no resultset");
-					}
-				} catch (SQLException e) {
-					throw new DbUnifierException(e);
-				} finally {
-					this.closeResultSet(rs2);
-					this.closeStatement(ps2);
+				if (i != 0) {
+					sb.append(", ");
 				}
-				int totalPageCount = (totalRowCount + pageSize - 1) / pageSize;
-				pageNumber = Math.max(1, Math.min(totalPageCount, pageNumber));
-				// construct pagination sql
-				int startPos = pageSize * (pageNumber - 1);
-				int endPos = startPos + pageSize;
-				String paginationSql = dbFeature.getPaginationSql(mainSubSql,
-						orderBySubSql, startPos, endPos);
-				// query
-				RowSet rowSet = new RowSet();
-				rowSet.setPageNumber(pageNumber);
-				rowSet.setPageSize(pageSize);
-				rowSet.setTotalRowCount(totalRowCount);
-				rowSet.setTotalPageCount(totalPageCount);
-				if (paginationSql == null) {
-					ps = con.prepareStatement(sql,
-							ResultSet.TYPE_SCROLL_INSENSITIVE,
-							ResultSet.CONCUR_READ_ONLY);
-				} else {
-					ps = con.prepareStatement(paginationSql);
+				sb.append(column.getName()).append(" ");
+				String type = column.getType();
+				if (Column.TYPE_STRING.equals(type)) {
+					sb.append(dbFeature.getStringDbType(column.getSize()));
+				} else if (Column.TYPE_NUMBER.equals(type)) {
+					sb.append(dbFeature.getNumberDbType());
+				} else if (Column.TYPE_DATETIME.equals(type)) {
+					sb.append(dbFeature.getDatetimeDbType());
+				} else if (Column.TYPE_CLOB.equals(type)) {
+					sb.append(dbFeature.getClobDbType());
+				} else if (Column.TYPE_BLOB.equals(type)) {
+					sb.append(dbFeature.getBlobDbType());
 				}
-				setColumnValue(ps, 1, values);
-				rs = ps.executeQuery();
-				ResultSetMetaData rsmd = rs.getMetaData();
-				int columnCount = rsmd.getColumnCount();
-				for (int i = 0; i < columnCount; i++) {
-					String columnName = rsmd.getColumnLabel(i + 1);
-					columnName = columnName.toUpperCase();
-					rowSet.addColumnName(columnName);
+				if (!column.getNullable()) {
+					sb.append(" not null");
 				}
-				if (paginationSql == null) {
-					if (!rs.absolute(pageSize * (pageNumber - 1) + 1)) {
-						throw new DbUnifierException(
-								"abnormal resultset location");
-					} else {
-						rs.previous();
-					}
-				}
-				while (rs.next()) {
-					if (paginationSql == null) {
-						if (rs.getRow() > pageSize * pageNumber) {
-							break;
-						}
-					}
-					Row row = new Row(rowSet);
-					for (int i = 0; i < columnCount; i++) {
-						String columnName = rsmd.getColumnLabel(i + 1);
-						columnName = columnName.toUpperCase();
-						int dataType = rsmd.getColumnType(i + 1);
-						String type = this.getColumnType(dataType);
-						Object value = null;
-						if (Column.TYPE_STRING.equals(type)) {
-							value = rs.getString(i + 1);
-						} else if (Column.TYPE_NUMBER.equals(type)) {
-							value = rs.getBigDecimal(i + 1);
-						} else if (Column.TYPE_DATETIME.equals(type)) {
-							value = rs.getTimestamp(i + 1);
-						} else if (Column.TYPE_CLOB.equals(type)) {
-							if (containsLob) {
-								Reader reader = rs.getCharacterStream(i + 1);
-								if (reader != null) {
-									StringWriter sw = new StringWriter();
-									char[] buffer = new char[2048];
-									int charsRead;
-									try {
-										while ((charsRead = reader.read(buffer,
-												0, 1024)) != -1) {
-											sw.write(buffer, 0, charsRead);
-										}
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
-									} finally {
-										try {
-											reader.close();
-										} catch (IOException e) {
-											throw new DbUnifierException(e);
-										}
-									}
-									value = sw.getBuffer().toString();
-								}
-							}
-						} else if (Column.TYPE_BLOB.equals(type)) {
-							if (containsLob) {
-								InputStream is = rs.getBinaryStream(i + 1);
-								if (is != null) {
-									ByteArrayOutputStream baos = new ByteArrayOutputStream();
-									byte[] buffer = new byte[2048];
-									int bytesRead;
-									try {
-										while ((bytesRead = is.read(buffer, 0,
-												1024)) != -1) {
-											baos.write(buffer, 0, bytesRead);
-										}
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
-									} finally {
-										try {
-											is.close();
-										} catch (IOException e) {
-											throw new DbUnifierException(e);
-										}
-									}
-								}
-							}
-						} else {
-							throw new DbUnifierException(
-									"not support data type");
-						}
-						row.addValue(columnName, value);
-					}
-					rowSet.addRow(row);
-				}
-				return rowSet;
-			} catch (SQLException e) {
-				throw new DbUnifierException(e);
-			} finally {
-				this.closeResultSet(rs);
-				this.closeStatement(ps);
 			}
+			sb.append(" primary key (").append(sbPk).append("))");
+			executeOtherSql(sb.toString(), null);
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				this.closeConnection(con);
+				closeConnection(con);
+			}
+		}
+
+	}
+
+	public RowSet executeSelectSql(String sql, Values values,
+			boolean containsLob, int pageSize, int pageNumber) {
+		if (values == null) {
+			values = new Values();
+		}
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			DatabaseMetaData dmd = con.getMetaData();
+			DbFeature dbFeature = DbFeature.getInstance(dmd);
+			// split sql into two part
+			String mainSubSql = sql;
+			String orderBySubSql = "";
+			String upperCaseSql = sql.toUpperCase();
+			int orderByPos = upperCaseSql.indexOf("ORDER BY");
+			while (orderByPos >= 0) {
+				String orderByStr = upperCaseSql.substring(orderByPos);
+				int count = 0;
+				for (int i = 0; i < orderByStr.length(); i++) {
+					if (orderByStr.charAt(i) == '\'') {
+						count++;
+					}
+				}
+				if (count % 2 == 1) {
+					mainSubSql = sql.substring(0, orderByPos);
+					orderBySubSql = sql.substring(orderByPos);
+					break;
+				} else {
+					orderByPos = upperCaseSql.indexOf("ORDER BY",
+							orderByPos + 1);
+				}
+			}
+			// pagination compute
+			int totalRowCount;
+			String countSql = "select count(*) from (" + mainSubSql + ") t";
+			PreparedStatement ps2 = null;
+			ResultSet rs2 = null;
+			try {
+				ps2 = con.prepareStatement(countSql);
+				setColumnValue(ps2, 1, values);
+				rs2 = ps2.executeQuery();
+				if (rs2.next()) {
+					totalRowCount = rs2.getBigDecimal(1).intValue();
+				} else {
+					throw new DbUnifierException("no resultset");
+				}
+			} catch (SQLException e) {
+				throw new DbUnifierException(e);
+			} finally {
+				closeResultSet(rs2);
+				closeStatement(ps2);
+			}
+			int totalPageCount = (totalRowCount + pageSize - 1) / pageSize;
+			pageNumber = Math.max(1, Math.min(totalPageCount, pageNumber));
+			// construct pagination sql
+			int startPos = pageSize * (pageNumber - 1);
+			int endPos = startPos + pageSize;
+			String paginationSql = dbFeature.getPaginationSql(mainSubSql,
+					orderBySubSql, startPos, endPos);
+			// query
+			RowSet rowSet = new RowSet();
+			rowSet.setPageNumber(pageNumber);
+			rowSet.setPageSize(pageSize);
+			rowSet.setTotalRowCount(totalRowCount);
+			rowSet.setTotalPageCount(totalPageCount);
+			if (paginationSql == null) {
+				ps = con.prepareStatement(sql,
+						ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_READ_ONLY);
+			} else {
+				ps = con.prepareStatement(paginationSql);
+			}
+			setColumnValue(ps, 1, values);
+			rs = ps.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int i = 0; i < columnCount; i++) {
+				String columnName = rsmd.getColumnLabel(i + 1);
+				columnName = columnName.toUpperCase();
+				rowSet.addColumnName(columnName);
+			}
+			if (paginationSql == null) {
+				if (!rs.absolute(pageSize * (pageNumber - 1) + 1)) {
+					throw new DbUnifierException("abnormal resultset location");
+				} else {
+					rs.previous();
+				}
+			}
+			while (rs.next()) {
+				if (paginationSql == null) {
+					if (rs.getRow() > pageSize * pageNumber) {
+						break;
+					}
+				}
+				Row row = new Row(rowSet);
+				for (int i = 0; i < columnCount; i++) {
+					String columnName = rsmd.getColumnLabel(i + 1);
+					columnName = columnName.toUpperCase();
+					int dataType = rsmd.getColumnType(i + 1);
+					String type = getColumnType(dataType);
+					Object value = null;
+					if (Column.TYPE_STRING.equals(type)) {
+						value = rs.getString(i + 1);
+					} else if (Column.TYPE_NUMBER.equals(type)) {
+						value = rs.getBigDecimal(i + 1);
+					} else if (Column.TYPE_DATETIME.equals(type)) {
+						value = rs.getTimestamp(i + 1);
+					} else if (Column.TYPE_CLOB.equals(type)) {
+						if (containsLob) {
+							Reader reader = rs.getCharacterStream(i + 1);
+							if (reader != null) {
+								StringWriter sw = new StringWriter();
+								char[] buffer = new char[2048];
+								int charsRead;
+								try {
+									while ((charsRead = reader.read(buffer, 0,
+											1024)) != -1) {
+										sw.write(buffer, 0, charsRead);
+									}
+								} catch (IOException e) {
+									throw new DbUnifierException(e);
+								} finally {
+									try {
+										reader.close();
+									} catch (IOException e) {
+										throw new DbUnifierException(e);
+									}
+								}
+								value = sw.getBuffer().toString();
+							}
+						}
+					} else if (Column.TYPE_BLOB.equals(type)) {
+						if (containsLob) {
+							InputStream is = rs.getBinaryStream(i + 1);
+							if (is != null) {
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								byte[] buffer = new byte[2048];
+								int bytesRead;
+								try {
+									while ((bytesRead = is
+											.read(buffer, 0, 1024)) != -1) {
+										baos.write(buffer, 0, bytesRead);
+									}
+								} catch (IOException e) {
+									throw new DbUnifierException(e);
+								} finally {
+									try {
+										is.close();
+									} catch (IOException e) {
+										throw new DbUnifierException(e);
+									}
+								}
+								value = baos.toByteArray();
+							}
+						}
+					} else {
+						throw new DbUnifierException("not support data type");
+					}
+					row.addValue(columnName, value);
+				}
+				rowSet.addRow(row);
+			}
+			return rowSet;
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeResultSet(rs);
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
 			}
 		}
 	}
 
 	public RowSet executeSelectSql(String sql, Values values, int pageSize,
 			int pageNumber) {
-		return this.executeSelectSql(sql, values, false, pageSize, pageNumber);
+		return executeSelectSql(sql, values, false, pageSize, pageNumber);
 	}
 
 	public RowSet executeSelectSql(String sql, int pageSize, int pageNumber) {
 		Values values = new Values();
-		return this.executeSelectSql(sql, values, false, pageSize, pageNumber);
+		return executeSelectSql(sql, values, false, pageSize, pageNumber);
 	}
 
 	public RowSet executeSelectSql(String sql, Values values,
 			boolean containsLob) {
-		return null;
+		if (values == null) {
+			values = new Values();
+		}
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			// query
+			RowSet rowSet = new RowSet();
+			ps = con.prepareStatement(sql);
+			setColumnValue(ps, 1, values);
+			rs = ps.executeQuery();
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int i = 0; i < columnCount; i++) {
+				String columnName = rsmd.getColumnLabel(i + 1);
+				columnName = columnName.toUpperCase();
+				rowSet.addColumnName(columnName);
+			}
+			while (rs.next()) {
+				Row row = new Row(rowSet);
+				for (int i = 0; i < columnCount; i++) {
+					String columnName = rsmd.getColumnLabel(i + 1);
+					columnName = columnName.toUpperCase();
+					int dataType = rsmd.getColumnType(i + 1);
+					String type = getColumnType(dataType);
+					Object value = null;
+					if (Column.TYPE_STRING.equals(type)) {
+						value = rs.getString(i + 1);
+					} else if (Column.TYPE_NUMBER.equals(type)) {
+						value = rs.getBigDecimal(i + 1);
+					} else if (Column.TYPE_DATETIME.equals(type)) {
+						value = rs.getTimestamp(i + 1);
+					} else if (Column.TYPE_CLOB.equals(type)) {
+						if (containsLob) {
+							Reader reader = rs.getCharacterStream(i + 1);
+							if (reader != null) {
+								StringWriter sw = new StringWriter();
+								char[] buffer = new char[2048];
+								int charsRead;
+								try {
+									while ((charsRead = reader.read(buffer, 0,
+											1024)) != -1) {
+										sw.write(buffer, 0, charsRead);
+									}
+								} catch (IOException e) {
+									throw new DbUnifierException(e);
+								} finally {
+									try {
+										reader.close();
+									} catch (IOException e) {
+										throw new DbUnifierException(e);
+									}
+								}
+								value = sw.getBuffer().toString();
+							}
+						}
+					} else if (Column.TYPE_BLOB.equals(type)) {
+						if (containsLob) {
+							InputStream is = rs.getBinaryStream(i + 1);
+							if (is != null) {
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								byte[] buffer = new byte[2048];
+								int bytesRead;
+								try {
+									while ((bytesRead = is
+											.read(buffer, 0, 1024)) != -1) {
+										baos.write(buffer, 0, bytesRead);
+									}
+								} catch (IOException e) {
+									throw new DbUnifierException(e);
+								} finally {
+									try {
+										is.close();
+									} catch (IOException e) {
+										throw new DbUnifierException(e);
+									}
+								}
+								value = baos.toByteArray();
+							}
+						}
+					} else {
+						throw new DbUnifierException("not support data type");
+					}
+					row.addValue(columnName, value);
+				}
+				rowSet.addRow(row);
+			}
+			rowSet.setTotalRowCount(rowSet.getRowList().size());
+			return rowSet;
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeResultSet(rs);
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
+			}
+		}
 	}
 
 	public RowSet executeSelectSql(String sql, Values values) {
-		return this.executeSelectSql(sql, values, false);
+		return executeSelectSql(sql, values, false);
 	}
 
 	public RowSet executeSelectSql(String sql) {
 		Values values = new Values();
-		return this.executeSelectSql(sql, values, false);
+		return executeSelectSql(sql, values, false);
 	}
 
 	public int executeOtherSql(String sql, Values values) {
-		return 0;
+		if (values == null) {
+			values = new Values();
+		}
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(sql);
+			setColumnValue(ps, 1, values);
+			return ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
+			}
+		}
+	}
+
+	public void getSingleClob(String sql, Values values, Writer writer) {
+
+	}
+
+	public void setSingleClob(String sql, Values values, Reader reader, int size) {
+
+	}
+
+	public void getSingleBlob(String sql, Values values, OutputStream os) {
+
+	}
+
+	public void setSingleBlob(String sql, Values values, InputStream is,
+			int size) {
+
+	}
+
+	public long getSequenceNextValue(String sequenceName) {
+		synchronized (existsSequenceTable) {
+			if (!existsSequenceTable) {
+				Table table = getTable("SYS_SEQ");
+				if (table == null) {
+					table = new Table("SYS_SEQ")
+							.addColumn(new Column("ST_SEQ_NAME",
+									Column.TYPE_NUMBER, -1, false, true));
+					createTable(table);
+					existsSequenceTable = true;
+				}
+			}
+		}
+		Values values = new Values().addStringValue(sequenceName);
+		RowSet rs = executeSelectSql(
+				"select * from SYS_SEQ where ST_SEQ_NAME = ?", values);
+
 	}
 
 	private String getColumnType(int dataType) {
@@ -621,14 +837,38 @@ public class DbUnifier {
 			} else if (value instanceof Timestamp) {
 				ps.setTimestamp(pos, (Timestamp) value);
 			} else if (value instanceof char[]) {
-				char[] ch = (char[]) value;
-				Reader reader = new StringReader(new String(ch));
-				ps.setCharacterStream(pos, reader, ch.length);
+				char[] chars = (char[]) value;
+				Reader reader = new StringReader(new String(chars));
+				ps.setCharacterStream(pos, reader, chars.length);
 			} else if (value instanceof byte[]) {
-				byte[] by = (byte[]) value;
-				InputStream is = new ByteArrayInputStream(by);
-				ps.setBinaryStream(pos, is, by.length);
+				byte[] bytes = (byte[]) value;
+				InputStream is = new ByteArrayInputStream(bytes);
+				ps.setBinaryStream(pos, is, bytes.length);
 			}
+		}
+	}
+
+	private void printSql(String sql, Values values) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n").append(sql).append("\n");
+		List<Object> valueList = values.getValueList();
+		for (int i = 0; i < valueList.size(); i++) {
+			Object value = valueList.get(i);
+			sb.append(i + 1).append(".[");
+			if (value instanceof NullValue) {
+				sb.append("<NULL>");
+			} else if (value instanceof String) {
+				sb.append(value);
+			} else if (value instanceof BigDecimal) {
+				sb.append(value);
+			} else if (value instanceof Timestamp) {
+				sb.append(value);
+			} else if (value instanceof char[]) {
+				sb.append("<CLOB>");
+			} else if (value instanceof byte[]) {
+				sb.append("<BLOB>");
+			}
+			sb.append("]\n");
 		}
 	}
 

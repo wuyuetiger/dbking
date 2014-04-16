@@ -6,9 +6,8 @@ import java.sql.SQLException;
 public class OracleFeature extends DbFeature {
 
 	@Override
-	public String getDatabaseSchema(DatabaseMetaData databaseMetaData)
-			throws SQLException {
-		return databaseMetaData.getUserName();
+	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
+		return dmd.getUserName();
 	}
 
 	@Override
@@ -20,6 +19,32 @@ public class OracleFeature extends DbFeature {
 				.append(" ) row_ where rownum <= ").append(endPos)
 				.append(") where rownum_ > ").append(startPos);
 		return sb.toString();
+	}
+
+	@Override
+	public String getStringDbType(int size) {
+		size = Math.max(0, Math.min(size, 2000));
+		return "varchar2(" + size + ")";
+	}
+
+	@Override
+	public String getNumberDbType() {
+		return "number";
+	}
+
+	@Override
+	public String getDatetimeDbType() {
+		return "timestamp";
+	}
+
+	@Override
+	public String getClobDbType() {
+		return "clob";
+	}
+
+	@Override
+	public String getBlobDbType() {
+		return "blob";
 	}
 
 }

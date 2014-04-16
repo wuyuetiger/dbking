@@ -36,8 +36,7 @@ public abstract class DbFeature {
 		}
 	}
 
-	public String getDatabaseSchema(DatabaseMetaData databaseMetaData)
-			throws SQLException {
+	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
 		return null;
 	}
 
@@ -45,5 +44,18 @@ public abstract class DbFeature {
 			int startPos, int endPos) {
 		return null;
 	}
+
+	public String getStringDbType(int size) {
+		size = Math.max(0, Math.min(size, 2000));
+		return "varchar(" + size + ")";
+	}
+
+	public abstract String getNumberDbType();
+
+	public abstract String getDatetimeDbType();
+
+	public abstract String getClobDbType();
+
+	public abstract String getBlobDbType();
 
 }

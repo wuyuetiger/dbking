@@ -11,4 +11,24 @@ public class PostgreSqlFeature extends DbFeature {
 		return sb.toString();
 	}
 
+	@Override
+	public String getNumberDbType() {
+		return "decimal";
+	}
+
+	@Override
+	public String getDatetimeDbType() {
+		return "timestamp";
+	}
+
+	@Override
+	public String getClobDbType() {
+		return "text";
+	}
+
+	@Override
+	public String getBlobDbType() {
+		return "bytea";
+	}
+
 }

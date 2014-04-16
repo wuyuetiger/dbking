@@ -9,24 +9,34 @@ public class Table {
 
 	private List<Column> columnList = new ArrayList<Column>();
 
+	public Table() {
+	}
+
+	public Table(String name) {
+		this.name = name;
+	}
+
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Table setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public List<Column> getColumnList() {
 		return this.columnList;
 	}
 
-	public void addColumn(Column column) {
+	public Table addColumn(Column column) {
 		this.columnList.add(column);
+		return this;
 	}
 
-	public void addColumnList(List<Column> columnList) {
+	public Table addColumnList(List<Column> columnList) {
 		this.columnList.addAll(columnList);
+		return this;
 	}
 
 	@Override

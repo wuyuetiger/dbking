@@ -22,44 +22,61 @@ public class Column {
 
 	private boolean isPrimaryKey;
 
+	public Column() {
+	}
+
+	public Column(String name, String type, int size, boolean nullable,
+			boolean isPrimaryKey) {
+		this.name = name;
+		this.type = type;
+		this.size = size;
+		this.nullable = nullable;
+		this.isPrimaryKey = isPrimaryKey;
+	}
+
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public Column setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public String getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public Column setType(String type) {
 		this.type = type;
+		return this;
 	}
 
 	public int getSize() {
 		return size;
 	}
 
-	public void setSize(int size) {
+	public Column setSize(int size) {
 		this.size = size;
+		return this;
 	}
 
 	public boolean getNullable() {
 		return nullable;
 	}
 
-	public void setNullable(boolean nullable) {
+	public Column setNullable(boolean nullable) {
 		this.nullable = nullable;
+		return this;
 	}
 
 	public boolean getIsPrimaryKey() {
 		return isPrimaryKey;
 	}
 
-	public void setIsPrimaryKey(boolean isPrimaryKey) {
+	public Column setIsPrimaryKey(boolean isPrimaryKey) {
 		this.isPrimaryKey = isPrimaryKey;
+		return this;
 	}
 
 	@Override

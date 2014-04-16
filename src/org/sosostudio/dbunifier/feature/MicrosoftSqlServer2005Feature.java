@@ -1,6 +1,7 @@
 package org.sosostudio.dbunifier.feature;
 
-public class MicrosoftSqlServer2005Feature extends DbFeature {
+public class MicrosoftSqlServer2005Feature extends
+		MicrosoftSqlServer2000Feature {
 
 	@Override
 	public String getPaginationSql(String mainSubSql, String orderBySubSql,

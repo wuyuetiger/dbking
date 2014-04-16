@@ -9,13 +9,13 @@ public class RowSet {
 
 	private List<Row> rowList = new ArrayList<Row>();
 
-	private int pageSize;
+	private int pageSize = Integer.MAX_VALUE / 2;
 
-	private int pageNumber;
+	private int pageNumber = 1;
 
-	private int totalRowCount;
+	private int totalRowCount = -1;
 
-	private int totalPageCount;
+	private int totalPageCount = 1;
 
 	public List<String> getColumnNameList() {
 		return this.columnNameList;

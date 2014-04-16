@@ -10,5 +10,25 @@ public class MySqlFeature extends DbFeature {
 				.append(endPos - startPos).append(" offset ").append(startPos);
 		return sb.toString();
 	}
+	
+	@Override
+	public String getNumberDbType() {
+		return "decimal";
+	}
+
+	@Override
+	public String getDatetimeDbType() {
+		return "datetime";
+	}
+
+	@Override
+	public String getClobDbType() {
+		return "longclob";
+	}
+
+	@Override
+	public String getBlobDbType() {
+		return "longblob";
+	}
 
 }

@@ -25,14 +25,14 @@ public class Row {
 	}
 
 	public Object get(int i) {
-		List<String> columnNameList = this.rowSet.getColumnNameList();
+		List<String> columnNameList = rowSet.getColumnNameList();
 		String columnName = columnNameList.get(i - 1);
-		return this.valueMap.get(columnName);
+		return valueMap.get(columnName);
 	}
 
 	public Object get(String columnName) {
 		columnName = columnName.toUpperCase();
-		return this.valueMap.get(columnName);
+		return valueMap.get(columnName);
 	}
 
 	public String getString(int i) {
@@ -59,12 +59,12 @@ public class Row {
 		return (Timestamp) this.get(columnName);
 	}
 
-	public char[] getClob(int i) {
-		return (char[]) this.get(i);
+	public String getClob(int i) {
+		return (String) this.get(i);
 	}
 
-	public char[] getClob(String columnName) {
-		return (char[]) this.get(columnName);
+	public String getClob(String columnName) {
+		return (String) this.get(columnName);
 	}
 
 	public byte[] getBlob(int i) {
