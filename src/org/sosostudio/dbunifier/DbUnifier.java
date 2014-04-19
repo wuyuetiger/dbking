@@ -395,7 +395,9 @@ public class DbUnifier {
 				}
 			}
 			sb.append(" primary key (").append(sbPk).append("))");
-			executeOtherSql(sb.toString(), null);
+			String sql = sb.toString();
+			printSql(sql, null);
+			executeOtherSql(sql, null);
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
@@ -447,6 +449,7 @@ public class DbUnifier {
 			// pagination compute
 			int totalRowCount;
 			String countSql = "select count(*) from (" + mainSubSql + ") t";
+			printSql(countSql, values);
 			PreparedStatement ps2 = null;
 			ResultSet rs2 = null;
 			try {
@@ -478,10 +481,12 @@ public class DbUnifier {
 			rowSet.setTotalRowCount(totalRowCount);
 			rowSet.setTotalPageCount(totalPageCount);
 			if (paginationSql == null) {
+				printSql(sql, values);
 				ps = con.prepareStatement(sql,
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_READ_ONLY);
 			} else {
+				printSql(paginationSql, values);
 				ps = con.prepareStatement(paginationSql);
 			}
 			setColumnValue(ps, 1, values);
@@ -601,6 +606,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
+		printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -741,6 +747,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
+		printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -810,20 +817,162 @@ public class DbUnifier {
 	}
 
 	public void getSingleClob(String sql, Values values, Writer writer) {
-
+		if (values == null) {
+			values = new Values();
+		}
+		printSql(sql, values);
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(sql);
+			setColumnValue(ps, 1, values);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				Reader reader = rs.getCharacterStream(1);
+				if (reader != null) {
+					char[] buffer = new char[2048];
+					int charsRead;
+					try {
+						while ((charsRead = reader.read(buffer, 0, 1024)) != -1) {
+							writer.write(buffer, 0, charsRead);
+						}
+					} catch (IOException e) {
+						throw new DbUnifierException(e);
+					} finally {
+						try {
+							reader.close();
+						} catch (IOException e) {
+							throw new DbUnifierException(e);
+						}
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeResultSet(rs);
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
+			}
+		}
 	}
 
 	public void setSingleClob(String sql, Values values, Reader reader, int size) {
-
+		if (values == null) {
+			values = new Values();
+		}
+		printSql(sql, values);
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(sql);
+			if (reader == null) {
+				ps.setCharacterStream(1, null, 0);
+			} else {
+				ps.setCharacterStream(1, reader, size);
+			}
+			setColumnValue(ps, 2, values);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
+			}
+		}
 	}
 
 	public void getSingleBlob(String sql, Values values, OutputStream os) {
-
+		if (values == null) {
+			values = new Values();
+		}
+		printSql(sql, values);
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(sql);
+			setColumnValue(ps, 1, values);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				InputStream is = rs.getBinaryStream(1);
+				if (is != null) {
+					byte[] buffer = new byte[2048];
+					int bytesRead;
+					try {
+						while ((bytesRead = is.read(buffer, 0, 1024)) != -1) {
+							os.write(buffer, 0, bytesRead);
+						}
+					} catch (IOException e) {
+						throw new DbUnifierException(e);
+					} finally {
+						try {
+							is.close();
+						} catch (IOException e) {
+							throw new DbUnifierException(e);
+						}
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeResultSet(rs);
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
+			}
+		}
 	}
 
 	public void setSingleBlob(String sql, Values values, InputStream is,
 			int size) {
-
+		if (values == null) {
+			values = new Values();
+		}
+		printSql(sql, values);
+		Connection con;
+		if (this.con == null) {
+			con = dbConfig.getConnection();
+		} else {
+			con = this.con;
+		}
+		PreparedStatement ps = null;
+		try {
+			ps = con.prepareStatement(sql);
+			if (is == null) {
+				ps.setBinaryStream(1, null, 0);
+			} else {
+				ps.setBinaryStream(1, is, size);
+			}
+			setColumnValue(ps, 2, values);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			closeStatement(ps);
+			if (this.con == null) {
+				closeConnection(con);
+			}
+		}
 	}
 
 	public long getSequenceNextValue(String sequenceName) {
