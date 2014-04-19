@@ -18,19 +18,23 @@ public class RowSet {
 	private int totalPageCount = 1;
 
 	public List<String> getColumnNameList() {
-		return this.columnNameList;
+		return columnNameList;
 	}
 
 	public void addColumnName(String columnName) {
-		this.columnNameList.add(columnName);
-	}
-
-	public List<Row> getRowList() {
-		return this.rowList;
+		columnNameList.add(columnName);
 	}
 
 	public void addRow(Row row) {
-		this.rowList.add(row);
+		rowList.add(row);
+	}
+
+	public int getSize() {
+		return rowList.size();
+	}
+
+	public Row getRow(int i) {
+		return rowList.get(i);
 	}
 
 	public int getPageSize() {

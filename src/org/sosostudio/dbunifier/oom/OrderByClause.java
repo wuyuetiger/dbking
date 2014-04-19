@@ -17,4 +17,8 @@ public class OrderByClause {
 		return this;
 	}
 
+	public String getClause() {
+		return sb.toString();
+	}
+
 }

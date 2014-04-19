@@ -25,6 +25,16 @@ import java.util.List;
 import java.util.Set;
 
 import org.sosostudio.dbunifier.feature.DbFeature;
+import org.sosostudio.dbunifier.oom.ConditionClause;
+import org.sosostudio.dbunifier.oom.DeleteSql;
+import org.sosostudio.dbunifier.oom.InsertKeyValueClause;
+import org.sosostudio.dbunifier.oom.InsertSql;
+import org.sosostudio.dbunifier.oom.LogicalOp;
+import org.sosostudio.dbunifier.oom.OrderByClause;
+import org.sosostudio.dbunifier.oom.RelationOp;
+import org.sosostudio.dbunifier.oom.SelectSql;
+import org.sosostudio.dbunifier.oom.UpdateKeyValueClause;
+import org.sosostudio.dbunifier.oom.UpdateSql;
 
 public class DbUnifier {
 
@@ -681,7 +691,7 @@ public class DbUnifier {
 				}
 				rowSet.addRow(row);
 			}
-			rowSet.setTotalRowCount(rowSet.getRowList().size());
+			rowSet.setTotalRowCount(rowSet.getSize());
 			return rowSet;
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
@@ -701,6 +711,30 @@ public class DbUnifier {
 	public RowSet executeSelectSql(String sql) {
 		Values values = new Values();
 		return executeSelectSql(sql, values, false);
+	}
+
+	public RowSet executeSelectSql(SelectSql selectSql) {
+		StringBuilder sb = new StringBuilder();
+		Values values = new Values();
+		sb.append("select ").append(selectSql.getColumns()).append(" from ")
+				.append(selectSql.getTableName());
+		ConditionClause cc = selectSql.getConditionClause();
+		if (cc != null) {
+			String clause = cc.getClause();
+			if (clause.length() > 0) {
+				sb.append(" where ").append(clause);
+				values.addValues(cc.getValues());
+			}
+		}
+		OrderByClause obc = selectSql.getOrderByClause();
+		if (obc != null) {
+			String clause = obc.getClause();
+			if (clause.length() > 0) {
+				sb.append(" order by ").append(clause);
+			}
+		}
+		String sql = sb.toString();
+		return executeSelectSql(sql, values);
 	}
 
 	public int executeOtherSql(String sql, Values values) {
@@ -728,6 +762,53 @@ public class DbUnifier {
 		}
 	}
 
+	public int executeInsertSql(InsertSql insertSql) {
+		StringBuilder sb = new StringBuilder();
+		Values values = new Values();
+		InsertKeyValueClause ikvc = insertSql.getInsertKeyValueClause();
+		values.addValues(ikvc.getValues());
+		sb.append("insert into ").append(insertSql.getTableName()).append("(")
+				.append(ikvc.getKeysClause()).append(") values(")
+				.append(ikvc.getValuesClause()).append(")");
+		String sql = sb.toString();
+		return executeOtherSql(sql, values);
+	}
+
+	public int executeUpdateSql(UpdateSql updateSql) {
+		StringBuilder sb = new StringBuilder();
+		Values values = new Values();
+		UpdateKeyValueClause ukvc = updateSql.getUpdateKeyValueClause();
+		values.addValues(ukvc.getValues());
+		sb.append("update ").append(updateSql.getTableName()).append(" set ")
+				.append(ukvc.getClause());
+		ConditionClause cc = updateSql.getConditionClause();
+		if (cc != null) {
+			String clause = cc.getClause();
+			if (clause.length() > 0) {
+				sb.append(" where ").append(clause);
+				values.addValues(cc.getValues());
+			}
+		}
+		String sql = sb.toString();
+		return executeOtherSql(sql, values);
+	}
+
+	public int executeDeleteSql(DeleteSql deleteSql) {
+		StringBuilder sb = new StringBuilder();
+		Values values = new Values();
+		sb.append("delete from ").append(deleteSql.getTableName());
+		ConditionClause cc = deleteSql.getConditionClause();
+		if (cc != null) {
+			String clause = cc.getClause();
+			if (clause.length() > 0) {
+				sb.append(" where ").append(clause);
+				values.addValues(cc.getValues());
+			}
+		}
+		String sql = sb.toString();
+		return executeOtherSql(sql, values);
+	}
+
 	public void getSingleClob(String sql, Values values, Writer writer) {
 
 	}
@@ -750,18 +831,56 @@ public class DbUnifier {
 			if (!existsSequenceTable) {
 				Table table = getTable("SYS_SEQ");
 				if (table == null) {
-					table = new Table("SYS_SEQ")
-							.addColumn(new Column("ST_SEQ_NAME",
-									Column.TYPE_NUMBER, -1, false, true));
+					table = new Table("SYS_SEQ").addColumn(
+							new Column("ST_SEQ_NAME", Column.TYPE_NUMBER, -1,
+									false, true)).addColumn(
+							new Column("NM_SEQ_VALUE", Column.TYPE_NUMBER, -1,
+									false, false));
 					createTable(table);
 					existsSequenceTable = true;
 				}
 			}
 		}
-		Values values = new Values().addStringValue(sequenceName);
-		RowSet rs = executeSelectSql(
-				"select * from SYS_SEQ where ST_SEQ_NAME = ?", values);
-
+		RowSet rs = executeSelectSql(new SelectSql()
+				.setTableName("SYS_SEQ")
+				.setColumns("NM_SEQ_VALUE")
+				.setConditionClause(
+						new ConditionClause(LogicalOp.AND).addStringClause(
+								"ST_SEQ_NAME", RelationOp.EQUAL, sequenceName)));
+		if (rs.getSize() == 0) {
+			executeInsertSql(new InsertSql().setTableName("SYS_SEQ")
+					.setInsertKeyValueClause(
+							new InsertKeyValueClause().addStringClause(
+									"ST_SEQ_NAME", sequenceName)
+									.addNumberClause("NM_SEQ_VALUE",
+											BigDecimal.ONE)));
+			return 1;
+		} else {
+			Row row = rs.getRow(0);
+			BigDecimal seqValue = row.getNumber("NM_SEQ_VALUE");
+			BigDecimal nextSeqValue = new BigDecimal(seqValue.longValue() + 1
+					+ "");
+			int count = 0;
+			while (count == 0) {
+				count = executeUpdateSql(new UpdateSql()
+						.setTableName("SYS_SEQ")
+						.setUpdateKeyValueClause(
+								new UpdateKeyValueClause().addNumberClause(
+										"NM_SEQ_VALUE", nextSeqValue))
+						.setConditionClause(
+								new ConditionClause(LogicalOp.AND)
+										.addStringClause("ST_SEQ_NAME",
+												RelationOp.EQUAL, sequenceName)
+										.addNumberClause("NM_SEQ_VALUE",
+												RelationOp.EQUAL, seqValue)));
+				if (count == 1) {
+					break;
+				}
+				seqValue = nextSeqValue;
+				nextSeqValue = new BigDecimal(seqValue.longValue() + 1 + "");
+			}
+			return nextSeqValue.longValue();
+		}
 	}
 
 	private String getColumnType(int dataType) {
