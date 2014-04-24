@@ -1067,6 +1067,8 @@ public class DbUnifier {
 			return Column.TYPE_BLOB;
 		} else if (dataType == Types.BINARY) {
 			return Column.TYPE_BLOB;
+		} else if (dataType == Types.VARBINARY) {
+			return Column.TYPE_BLOB;
 		} else if (dataType == Types.LONGVARBINARY) {
 			return Column.TYPE_BLOB;
 		} else if (dataType == Types.CLOB) {
@@ -1074,7 +1076,7 @@ public class DbUnifier {
 		} else if (dataType == Types.OTHER) {
 			return Column.TYPE_STRING;
 		} else {
-			throw new DbUnifierException("unknown data type");
+			throw new DbUnifierException("unknown data type:" + dataType);
 		}
 	}
 
@@ -1138,6 +1140,7 @@ public class DbUnifier {
 			}
 			sb.append("]\n");
 		}
+		System.out.println(sb.toString());
 	}
 
 }

@@ -82,11 +82,11 @@ public class Column {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\t[name = " + name + "]\n");
-		sb.append("\t[type = " + type + "]\n");
-		sb.append("\t[size = " + size + "]\n");
-		sb.append("\t[nullable = " + nullable + "]\n");
-		sb.append("\t[isPrimaryKey = " + isPrimaryKey + "]\n");
+		sb.append("\t[name = " + name + "]");
+		sb.append("[type = " + type + "]");
+		sb.append("[size = " + size + "]");
+		sb.append("[nullable = " + nullable + "]");
+		sb.append("[isPrimaryKey = " + isPrimaryKey + "]\n");
 		return sb.toString();
 	}
 
