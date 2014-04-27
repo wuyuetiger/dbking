@@ -29,11 +29,11 @@ public class OracleFeature extends DbFeature {
 
 	@Override
 	public String getNumberDbType() {
-		return "number";
+		return "number(10,2)";
 	}
 
 	@Override
-	public String getDatetimeDbType() {
+	public String getTimestampDbType() {
 		return "timestamp";
 	}
 

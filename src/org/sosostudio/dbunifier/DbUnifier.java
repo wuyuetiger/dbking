@@ -383,8 +383,8 @@ public class DbUnifier {
 					sb.append(dbFeature.getStringDbType(column.getSize()));
 				} else if (Column.TYPE_NUMBER.equals(type)) {
 					sb.append(dbFeature.getNumberDbType());
-				} else if (Column.TYPE_DATETIME.equals(type)) {
-					sb.append(dbFeature.getDatetimeDbType());
+				} else if (Column.TYPE_TIMESTAMP.equals(type)) {
+					sb.append(dbFeature.getTimestampDbType());
 				} else if (Column.TYPE_CLOB.equals(type)) {
 					sb.append(dbFeature.getClobDbType());
 				} else if (Column.TYPE_BLOB.equals(type)) {
@@ -522,7 +522,7 @@ public class DbUnifier {
 						value = rs.getString(i + 1);
 					} else if (Column.TYPE_NUMBER.equals(type)) {
 						value = rs.getBigDecimal(i + 1);
-					} else if (Column.TYPE_DATETIME.equals(type)) {
+					} else if (Column.TYPE_TIMESTAMP.equals(type)) {
 						value = rs.getTimestamp(i + 1);
 					} else if (Column.TYPE_CLOB.equals(type)) {
 						if (containsLob) {
@@ -640,7 +640,7 @@ public class DbUnifier {
 						value = rs.getString(i + 1);
 					} else if (Column.TYPE_NUMBER.equals(type)) {
 						value = rs.getBigDecimal(i + 1);
-					} else if (Column.TYPE_DATETIME.equals(type)) {
+					} else if (Column.TYPE_TIMESTAMP.equals(type)) {
 						value = rs.getTimestamp(i + 1);
 					} else if (Column.TYPE_CLOB.equals(type)) {
 						if (containsLob) {
@@ -719,7 +719,8 @@ public class DbUnifier {
 		return executeSelectSql(sql, values, false);
 	}
 
-	public RowSet executeSelectSql(SelectSql selectSql) {
+	public RowSet executeSelectSql(SelectSql selectSql, boolean containsLob,
+			int pageSize, int pageNumber) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		sb.append("select ").append(selectSql.getColumns()).append(" from ")
@@ -740,7 +741,40 @@ public class DbUnifier {
 			}
 		}
 		String sql = sb.toString();
-		return executeSelectSql(sql, values);
+		return executeSelectSql(sql, values, containsLob, pageSize, pageNumber);
+	}
+
+	public RowSet executeSelectSql(SelectSql selectSql, int pageSize,
+			int pageNumber) {
+		return executeSelectSql(selectSql, false, pageSize, pageNumber);
+	}
+
+	public RowSet executeSelectSql(SelectSql selectSql, boolean containsLob) {
+		StringBuilder sb = new StringBuilder();
+		Values values = new Values();
+		sb.append("select ").append(selectSql.getColumns()).append(" from ")
+				.append(selectSql.getTableName());
+		ConditionClause cc = selectSql.getConditionClause();
+		if (cc != null) {
+			String clause = cc.getClause();
+			if (clause.length() > 0) {
+				sb.append(" where ").append(clause);
+				values.addValues(cc.getValues());
+			}
+		}
+		OrderByClause obc = selectSql.getOrderByClause();
+		if (obc != null) {
+			String clause = obc.getClause();
+			if (clause.length() > 0) {
+				sb.append(" order by ").append(clause);
+			}
+		}
+		String sql = sb.toString();
+		return executeSelectSql(sql, values, containsLob);
+	}
+
+	public RowSet executeSelectSql(SelectSql selectSql) {
+		return executeSelectSql(selectSql, false);
 	}
 
 	public int executeOtherSql(String sql, Values values) {
@@ -1058,11 +1092,11 @@ public class DbUnifier {
 		} else if (dataType == Types.NUMERIC) {
 			return Column.TYPE_NUMBER;
 		} else if (dataType == Types.TIMESTAMP) {
-			return Column.TYPE_DATETIME;
+			return Column.TYPE_TIMESTAMP;
 		} else if (dataType == Types.DATE) {
-			return Column.TYPE_DATETIME;
+			return Column.TYPE_TIMESTAMP;
 		} else if (dataType == Types.TIME) {
-			return Column.TYPE_DATETIME;
+			return Column.TYPE_TIMESTAMP;
 		} else if (dataType == Types.BLOB) {
 			return Column.TYPE_BLOB;
 		} else if (dataType == Types.BINARY) {
@@ -1073,10 +1107,8 @@ public class DbUnifier {
 			return Column.TYPE_BLOB;
 		} else if (dataType == Types.CLOB) {
 			return Column.TYPE_CLOB;
-		} else if (dataType == Types.OTHER) {
-			return Column.TYPE_STRING;
 		} else {
-			throw new DbUnifierException("unknown data type:" + dataType);
+			return Column.TYPE_UNKNOWN;
 		}
 	}
 
@@ -1093,7 +1125,7 @@ public class DbUnifier {
 					ps.setString(pos, null);
 				} else if (Column.TYPE_NUMBER.equals(type)) {
 					ps.setBigDecimal(pos, null);
-				} else if (Column.TYPE_DATETIME.equals(type)) {
+				} else if (Column.TYPE_TIMESTAMP.equals(type)) {
 					ps.setTimestamp(pos, null);
 				} else if (Column.TYPE_CLOB.equals(type)) {
 					ps.setCharacterStream(pos, null, 0);

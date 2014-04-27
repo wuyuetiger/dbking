@@ -145,9 +145,9 @@ public class ConditionClause {
 		return addClause(columnName, relationOp, numberValue);
 	}
 
-	public ConditionClause addDatetimeClause(String columnName,
-			RelationOp relationOp, Timestamp datetimeValue) {
-		return addClause(columnName, relationOp, datetimeValue);
+	public ConditionClause addTimestampClause(String columnName,
+			RelationOp relationOp, Timestamp timestampValue) {
+		return addClause(columnName, relationOp, timestampValue);
 	}
 
 	public ConditionClause addStringClause(String columnName, SetOp setOp,
@@ -160,9 +160,9 @@ public class ConditionClause {
 		return addClause(columnName, setOp, numberCollection);
 	}
 
-	public ConditionClause addDatetimeClause(String columnName, SetOp setOp,
-			Collection<Timestamp> datetimeCollection) {
-		return addClause(columnName, setOp, datetimeCollection);
+	public ConditionClause addTimestampClause(String columnName, SetOp setOp,
+			Collection<Timestamp> timestampCollection) {
+		return addClause(columnName, setOp, timestampCollection);
 	}
 
 	public String getClause() {

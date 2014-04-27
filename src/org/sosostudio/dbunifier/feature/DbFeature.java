@@ -52,7 +52,7 @@ public abstract class DbFeature {
 
 	public abstract String getNumberDbType();
 
-	public abstract String getDatetimeDbType();
+	public abstract String getTimestampDbType();
 
 	public abstract String getClobDbType();
 

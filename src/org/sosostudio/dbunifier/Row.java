@@ -51,11 +51,11 @@ public class Row {
 		return (BigDecimal) this.get(columnName);
 	}
 
-	public Timestamp getDatetime(int i) {
+	public Timestamp getTimestamp(int i) {
 		return (Timestamp) this.get(i);
 	}
 
-	public Timestamp getDatetime(String columnName) {
+	public Timestamp getTimestamp(String columnName) {
 		return (Timestamp) this.get(columnName);
 	}
 

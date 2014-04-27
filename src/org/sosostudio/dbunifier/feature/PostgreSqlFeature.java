@@ -17,7 +17,7 @@ public class PostgreSqlFeature extends DbFeature {
 	}
 
 	@Override
-	public String getDatetimeDbType() {
+	public String getTimestampDbType() {
 		return "timestamp";
 	}
 

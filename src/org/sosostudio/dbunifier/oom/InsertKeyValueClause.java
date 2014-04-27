@@ -45,18 +45,18 @@ public class InsertKeyValueClause {
 		return this;
 	}
 
-	public InsertKeyValueClause addDatetimeClause(String columnName,
-			Timestamp datetimeValue) {
+	public InsertKeyValueClause addTimestampClause(String columnName,
+			Timestamp timestampValue) {
 		if (keysSb.length() > 0) {
 			keysSb.append(", ");
 			valuesSb.append(", ");
 		}
 		keysSb.append(columnName);
-		if (datetimeValue == null) {
+		if (timestampValue == null) {
 			valuesSb.append("null");
 		} else {
 			valuesSb.append("?");
-			values.addDatetimeValue(datetimeValue);
+			values.addTimestampValue(timestampValue);
 		}
 		return this;
 	}

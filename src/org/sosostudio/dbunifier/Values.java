@@ -37,11 +37,11 @@ public class Values {
 		}
 	}
 
-	public Values addDatetimeValue(Timestamp datetimeValue) {
-		if (datetimeValue == null) {
-			return addNullValue(Column.TYPE_DATETIME);
+	public Values addTimestampValue(Timestamp timestampValue) {
+		if (timestampValue == null) {
+			return addNullValue(Column.TYPE_TIMESTAMP);
 		} else {
-			valueList.add(datetimeValue);
+			valueList.add(timestampValue);
 			return this;
 		}
 	}

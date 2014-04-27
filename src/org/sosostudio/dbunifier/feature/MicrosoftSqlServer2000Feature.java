@@ -8,8 +8,8 @@ public class MicrosoftSqlServer2000Feature extends DbFeature {
 	}
 
 	@Override
-	public String getDatetimeDbType() {
-		return "datetime";
+	public String getTimestampDbType() {
+		return "timestamp";
 	}
 
 	@Override

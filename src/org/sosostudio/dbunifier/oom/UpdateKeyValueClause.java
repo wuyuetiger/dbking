@@ -41,17 +41,17 @@ public class UpdateKeyValueClause {
 		return this;
 	}
 
-	public UpdateKeyValueClause addDatetimeClause(String columnName,
-			Timestamp datetimeValue) {
+	public UpdateKeyValueClause addTimestampClause(String columnName,
+			Timestamp timestampValue) {
 		if (sb.length() > 0) {
 			sb.append(", ");
 		}
 		sb.append(columnName).append(" = ");
-		if (datetimeValue == null) {
+		if (timestampValue == null) {
 			sb.append("null");
 		} else {
 			sb.append("?");
-			values.addDatetimeValue(datetimeValue);
+			values.addTimestampValue(timestampValue);
 		}
 		return this;
 	}

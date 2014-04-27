@@ -6,11 +6,13 @@ public class Column {
 
 	public final static String TYPE_NUMBER = "number";
 
-	public final static String TYPE_DATETIME = "datetime";
+	public final static String TYPE_TIMESTAMP = "timestamp";
 
 	public final static String TYPE_CLOB = "clob";
 
 	public final static String TYPE_BLOB = "blob";
+	
+	public final static String TYPE_UNKNOWN = "unknown";
 
 	private String name;
 
