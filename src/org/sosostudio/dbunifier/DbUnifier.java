@@ -364,7 +364,7 @@ public class DbUnifier {
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			StringBuilder sb = new StringBuilder();
 			StringBuilder sbPk = new StringBuilder();
-			sb.append("create table (").append(table.getName());
+			sb.append("create table ").append(table.getName()).append("(");
 			List<Column> columnList = table.getColumnList();
 			for (int i = 0; i < columnList.size(); i++) {
 				Column column = (Column) columnList.get(i);
@@ -394,9 +394,12 @@ public class DbUnifier {
 					sb.append(" not null");
 				}
 			}
-			sb.append(" primary key (").append(sbPk).append("))");
+			if (sbPk.length() > 0) {
+				sb.append(", constraint ").append("PK_" + table.getName())
+						.append(" primary key (").append(sbPk).append(")");
+			}
+			sb.append(")");
 			String sql = sb.toString();
-			printSql(sql, null);
 			executeOtherSql(sql, null);
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
@@ -437,7 +440,7 @@ public class DbUnifier {
 						count++;
 					}
 				}
-				if (count % 2 == 1) {
+				if (count % 2 == 0) {
 					mainSubSql = sql.substring(0, orderByPos);
 					orderBySubSql = sql.substring(orderByPos);
 					break;
@@ -697,7 +700,7 @@ public class DbUnifier {
 				}
 				rowSet.addRow(row);
 			}
-			rowSet.setTotalRowCount(rowSet.getSize());
+			rowSet.setTotalRowCount(rowSet.size());
 			return rowSet;
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
@@ -1015,7 +1018,7 @@ public class DbUnifier {
 				Table table = getTable("SYS_SEQ");
 				if (table == null) {
 					table = new Table("SYS_SEQ").addColumn(
-							new Column("ST_SEQ_NAME", Column.TYPE_NUMBER, -1,
+							new Column("ST_SEQ_NAME", Column.TYPE_STRING, 50,
 									false, true)).addColumn(
 							new Column("NM_SEQ_VALUE", Column.TYPE_NUMBER, -1,
 									false, false));
@@ -1030,7 +1033,7 @@ public class DbUnifier {
 				.setConditionClause(
 						new ConditionClause(LogicalOp.AND).addStringClause(
 								"ST_SEQ_NAME", RelationOp.EQUAL, sequenceName)));
-		if (rs.getSize() == 0) {
+		if (rs.size() == 0) {
 			executeInsertSql(new InsertSql().setTableName("SYS_SEQ")
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addStringClause(

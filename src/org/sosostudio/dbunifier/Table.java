@@ -42,7 +42,7 @@ public class Table {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("\n[name = " + name + "]\n");
+		sb.append("\n[name = ").append(name).append("]\n");
 		for (Column column : columnList) {
 			sb.append(column);
 		}

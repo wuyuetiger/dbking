@@ -11,7 +11,7 @@ public class Column {
 	public final static String TYPE_CLOB = "clob";
 
 	public final static String TYPE_BLOB = "blob";
-	
+
 	public final static String TYPE_UNKNOWN = "unknown";
 
 	private String name;
@@ -83,13 +83,11 @@ public class Column {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("\t[name = " + name + "]");
-		sb.append("[type = " + type + "]");
-		sb.append("[size = " + size + "]");
-		sb.append("[nullable = " + nullable + "]");
-		sb.append("[isPrimaryKey = " + isPrimaryKey + "]\n");
-		return sb.toString();
+		return new StringBuilder().append("\t[name = ").append(name)
+				.append("]").append("[type = ").append(type).append("]")
+				.append("[size = ").append(size).append("]")
+				.append("[nullable = ").append(nullable).append("]")
+				.append("[isPrimaryKey = ").append(isPrimaryKey).append("]\n")
+				.toString();
 	}
-
 }

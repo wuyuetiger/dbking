@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.sosostudio.dbunifier.DbConfig;
 import org.sosostudio.dbunifier.DbUnifier;
 
-public class OracleTester extends BaseTester {
+public class Oracle11gTester extends BaseTester {
 
 	@Before
 	public void setUp() {

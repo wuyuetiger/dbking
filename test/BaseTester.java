@@ -10,15 +10,18 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.sosostudio.dbunifier.Column;
 import org.sosostudio.dbunifier.DbUnifier;
 import org.sosostudio.dbunifier.DbUnifierException;
 import org.sosostudio.dbunifier.Row;
 import org.sosostudio.dbunifier.RowSet;
 import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.oom.ConditionClause;
+import org.sosostudio.dbunifier.oom.Direction;
 import org.sosostudio.dbunifier.oom.InsertKeyValueClause;
 import org.sosostudio.dbunifier.oom.InsertSql;
 import org.sosostudio.dbunifier.oom.LogicalOp;
+import org.sosostudio.dbunifier.oom.OrderByClause;
 import org.sosostudio.dbunifier.oom.RelationOp;
 import org.sosostudio.dbunifier.oom.SelectSql;
 import org.sosostudio.dbunifier.oom.UpdateKeyValueClause;
@@ -29,6 +32,8 @@ public abstract class BaseTester {
 	protected String tableName = "SYS_TEST";
 
 	protected String columnName = "TEST_VALUE";
+
+	protected String sequenceName = "SEQ_NAME";
 
 	protected DbUnifier unifier;
 
@@ -137,7 +142,7 @@ public abstract class BaseTester {
 	public void testDecimal(String typeName) {
 		testNumber(typeName, new BigDecimal("1234567.89"));
 	}
-	
+
 	public void testSmallDecimal(String typeName) {
 		testNumber(typeName, new BigDecimal("1.23"));
 	}
@@ -273,6 +278,70 @@ public abstract class BaseTester {
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
+	}
+
+	@Test
+	public void testPageSelect() {
+		unifier.createTable(new Table().setName(tableName).addColumn(
+				new Column(columnName, Column.TYPE_STRING, 50, true, true)));
+		try {
+			for (int i = 0; i < 10; i++) {
+				unifier.executeInsertSql(new InsertSql()
+						.setTableName(tableName).setInsertKeyValueClause(
+								new InsertKeyValueClause().addStringClause(
+										columnName, i + "")));
+			}
+			SelectSql selectSql = new SelectSql()
+					.setTableName(tableName)
+					.setColumns("*")
+					.setOrderByClause(
+							new OrderByClause().addOrder(columnName,
+									Direction.ASC));
+			{
+				RowSet rowSet = unifier.executeSelectSql(selectSql, 3, 2);
+				Assert.assertEquals(rowSet.size(), 3);
+				Assert.assertEquals(rowSet.getPageSize(), 3);
+				Assert.assertEquals(rowSet.getPageNumber(), 2);
+				Assert.assertEquals(rowSet.getTotalRowCount(), 10);
+				Assert.assertEquals(rowSet.getTotalPageCount(), 4);
+				Row row = rowSet.getRow(0);
+				String value = row.getString(1);
+				Assert.assertEquals(value, "3");
+			}
+			{
+				RowSet rowSet = unifier.executeSelectSql(selectSql, 3, 4);
+				Assert.assertEquals(rowSet.size(), 1);
+				Assert.assertEquals(rowSet.getPageSize(), 3);
+				Assert.assertEquals(rowSet.getPageNumber(), 4);
+				Assert.assertEquals(rowSet.getTotalRowCount(), 10);
+				Assert.assertEquals(rowSet.getTotalPageCount(), 4);
+				Row row = rowSet.getRow(0);
+				String value = row.getString(1);
+				Assert.assertEquals(value, "9");
+			}
+			{
+				RowSet rowSet = unifier.executeSelectSql(selectSql, 5, 2);
+				Assert.assertEquals(rowSet.size(), 5);
+				Assert.assertEquals(rowSet.getPageSize(), 5);
+				Assert.assertEquals(rowSet.getPageNumber(), 2);
+				Assert.assertEquals(rowSet.getTotalRowCount(), 10);
+				Assert.assertEquals(rowSet.getTotalPageCount(), 2);
+				Row row = rowSet.getRow(0);
+				String value = row.getString(1);
+				Assert.assertEquals(value, "5");
+				System.out.println(rowSet);
+			}
+		} finally {
+			unifier.executeOtherSql("drop table " + tableName, null);
+		}
+	}
+
+	@Test
+	public void testGetSequenceNextValue() {
+		long value = unifier.getSequenceNextValue(sequenceName);
+		value++;
+		long value2 = unifier.getSequenceNextValue(sequenceName);
+		Assert.assertEquals(value, value2);
 	}
 
 }

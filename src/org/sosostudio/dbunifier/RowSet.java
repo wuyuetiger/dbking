@@ -29,7 +29,7 @@ public class RowSet {
 		rowList.add(row);
 	}
 
-	public int getSize() {
+	public int size() {
 		return rowList.size();
 	}
 
@@ -67,6 +67,20 @@ public class RowSet {
 
 	public void setTotalPageCount(int totalPageCount) {
 		this.totalPageCount = totalPageCount;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("\n[pageSize = ").append(pageSize).append("][pageNumber = ")
+				.append(pageNumber).append("][totalRowCount = ")
+				.append(totalRowCount).append("][totalPageCount = ")
+				.append(totalPageCount).append("][rowCount = ")
+				.append(rowList.size()).append("]\n");
+		for (Row row : rowList) {
+			sb.append(row);
+		}
+		return sb.toString();
 	}
 
 }

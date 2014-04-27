@@ -75,4 +75,29 @@ public class Row {
 		return (byte[]) this.get(columnName);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (String columnName : valueMap.keySet()) {
+			sb.append("[").append(columnName).append(" = ");
+			Object value = valueMap.get(columnName);
+			if (value instanceof NullValue) {
+				sb.append("<NULL>");
+			} else if (value instanceof String) {
+				sb.append(value);
+			} else if (value instanceof BigDecimal) {
+				sb.append(value);
+			} else if (value instanceof Timestamp) {
+				sb.append(value);
+			} else if (value instanceof char[]) {
+				sb.append("<CLOB>");
+			} else if (value instanceof byte[]) {
+				sb.append("<BLOB>");
+			}
+			sb.append("]");
+		}
+		sb.append("\n");
+		return sb.toString();
+	}
+
 }

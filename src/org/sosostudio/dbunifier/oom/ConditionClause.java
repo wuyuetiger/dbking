@@ -23,9 +23,9 @@ public class ConditionClause {
 			Object value) {
 		if (sb.length() > 0) {
 			if (logicalOp == LogicalOp.AND) {
-				sb.append(" and");
+				sb.append(" and ");
 			} else if (logicalOp == LogicalOp.OR) {
-				sb.append(" or");
+				sb.append(" or ");
 			}
 		}
 		sb.append(columnName).append(" ");
@@ -33,62 +33,62 @@ public class ConditionClause {
 			if (value == null) {
 				sb.append("is null");
 			} else {
-				sb.append(" = ?");
+				sb.append("= ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.UNEQUAL) {
 			if (value == null) {
 				sb.append("is not null");
 			} else {
-				sb.append(" = ?");
+				sb.append("= ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.GREATER) {
 			if (value != null) {
-				sb.append(" > ?");
+				sb.append("> ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.GREATER_EQUAL) {
 			if (value != null) {
-				sb.append(" >= ?");
+				sb.append(">= ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.LESS) {
 			if (value != null) {
-				sb.append(" < ?");
+				sb.append("< ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.LESS_EQUAL) {
 			if (value != null) {
-				sb.append(" <= ?");
+				sb.append("<= ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.LIKE) {
 			if (value == null) {
 				sb.append("is null");
 			} else {
-				sb.append(" like ?");
+				sb.append("like ?");
 				values.getValueList().add("%" + value + "%");
 			}
 		} else if (relationOp == RelationOp.NOT_LIKE) {
 			if (value == null) {
 				sb.append("is not null");
 			} else {
-				sb.append(" not like ?");
+				sb.append("not like ?");
 				values.getValueList().add("%" + value + "%");
 			}
 		} else if (relationOp == RelationOp.ORIGINAL_LIKE) {
 			if (value == null) {
 				sb.append("is null");
 			} else {
-				sb.append(" like ?");
+				sb.append("like ?");
 				values.getValueList().add(value);
 			}
 		} else if (relationOp == RelationOp.NOT_ORIGINAL_LIKE) {
 			if (value == null) {
 				sb.append("is not null");
 			} else {
-				sb.append(" not like ?");
+				sb.append("not like ?");
 				values.getValueList().add(value);
 			}
 		}
