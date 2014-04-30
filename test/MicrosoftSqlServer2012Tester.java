@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.sosostudio.dbunifier.DbConfig;
 import org.sosostudio.dbunifier.DbUnifier;
 
-public class Oracle11gTester extends BaseTester {
+public class MicrosoftSqlServer2012Tester extends BaseTester {
 
 	@Before
 	public void setUp() {
@@ -15,15 +15,35 @@ public class Oracle11gTester extends BaseTester {
 	}
 
 	public void init() {
-		DbConfig config = new DbConfig("oracle.jdbc.driver.OracleDriver",
-				"jdbc:oracle:thin:@localhost:1521:orcl", "system", "55780029");
+		DbConfig config = new DbConfig(
+				"com.microsoft.sqlserver.jdbc.SQLServerDriver",
+				"jdbc:sqlserver://localhost:1433;DatabaseName=master", "sa",
+				"55780029");
 		unifier = new DbUnifier(config);
 	}
 
 	@Test
-	public void testBlob() {
-		String typeName = "blob";
+	public void testBigInt() {
+		String typeName = "bigint";
+		testInteger(typeName);
+	}
+
+	@Test
+	public void testBinaryVarying() {
+		String typeName = "binary varying(4000)";
 		testBlob(typeName);
+	}
+
+	@Test
+	public void testBinary() {
+		String typeName = "binary(2000)";
+		testSmallBlob(typeName);
+	}
+
+	@Test
+	public void testBit() {
+		String typeName = "bit";
+		testSmallInteger(typeName);
 	}
 
 	@Test
@@ -51,14 +71,20 @@ public class Oracle11gTester extends BaseTester {
 	}
 
 	@Test
-	public void testClob() {
-		String typeName = "clob";
-		testClob(typeName);
+	public void testDate() {
+		String typeName = "date";
+		testDate(typeName);
 	}
 
 	@Test
-	public void testDate() {
-		String typeName = "date";
+	public void testDatetime() {
+		String typeName = "datetime";
+		testTimestamp(typeName);
+	}
+
+	@Test
+	public void testDatetime2() {
+		String typeName = "datetime2";
 		testTimestamp(typeName);
 	}
 
@@ -87,6 +113,12 @@ public class Oracle11gTester extends BaseTester {
 	}
 
 	@Test
+	public void testImage() {
+		String typeName = "image";
+		testBlob(typeName);
+	}
+
+	@Test
 	public void testInt() {
 		String typeName = "int";
 		testInteger(typeName);
@@ -99,38 +131,14 @@ public class Oracle11gTester extends BaseTester {
 	}
 
 	@Test
-	public void testLong() {
-		String typeName = "long";
-		testClob(typeName);
-	}
-
-	@Test
-	public void testLongRaw() {
-		String typeName = "long raw";
-		testBlob(typeName);
-	}
-
-	@Test
-	public void testLongVarchar() {
-		String typeName = "long varchar";
-		testClob(typeName);
-	}
-
-	@Test
-	public void testNationalChar() {
-		String typeName = "national char(10)";
-		testString(typeName);
+	public void testMoney() {
+		String typeName = "money";
+		testMoney(typeName);
 	}
 
 	@Test
 	public void testNationalCharVarying() {
 		String typeName = "national char varying(50)";
-		testString(typeName);
-	}
-
-	@Test
-	public void testNationalCharacter() {
-		String typeName = "national character(10)";
 		testString(typeName);
 	}
 
@@ -141,27 +149,9 @@ public class Oracle11gTester extends BaseTester {
 	}
 
 	@Test
-	public void testNchar() {
-		String typeName = "nchar(10)";
-		testString(typeName);
-	}
-
-	@Test
 	public void testNcharVarying() {
 		String typeName = "nchar varying(50)";
 		testString(typeName);
-	}
-
-	@Test
-	public void testNclob() {
-		String typeName = "nclob";
-		testClob(typeName);
-	}
-
-	@Test
-	public void testNumber() {
-		String typeName = "number(10,2)";
-		testDecimal(typeName);
 	}
 
 	@Test
@@ -171,44 +161,56 @@ public class Oracle11gTester extends BaseTester {
 	}
 
 	@Test
-	public void testNvarchar2() {
-		String typeName = "nvarchar2(50)";
+	public void testNvarchar() {
+		String typeName = "nvarchar(50)";
 		testString(typeName);
 	}
 
 	@Test
-	public void testRaw() {
-		String typeName = "raw(2000)";
-		testSmallBlob(typeName);
-	}
-
-	@Test
-	public void testReal() {
-		String typeName = "real";
-		testDecimal(typeName);
+	public void testSmallDatetime() {
+		String typeName = "smalldatetime";
+		testDate(typeName);
 	}
 
 	@Test
 	public void testSmallInt() {
 		String typeName = "smallint";
-		testInteger(typeName);
+		testSmallInteger(typeName);
 	}
 
 	@Test
-	public void testTimestamp() {
-		String typeName = "timestamp";
-		testTimestamp(typeName);
+	public void testSmallMoney() {
+		String typeName = "smallmoney";
+		testMoney(typeName);
+	}
+
+	@Test
+	public void testText() {
+		String typeName = "text";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testTime() {
+		String typeName = "time";
+		testTime(typeName);
+	}
+
+	@Test
+	public void testTinyInt() {
+		String typeName = "tinyint";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testVarbinary() {
+		String typeName = "varbinary(2000)";
+		testSmallBlob(typeName);
 	}
 
 	@Test
 	public void testVarchar() {
 		String typeName = "varchar(50)";
-		testString(typeName);
-	}
-
-	@Test
-	public void testVarchar2() {
-		String typeName = "varchar2(50)";
 		testString(typeName);
 	}
 

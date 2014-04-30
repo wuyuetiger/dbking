@@ -4,7 +4,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
@@ -139,6 +138,10 @@ public abstract class BaseTester {
 		testNumber(typeName, new BigDecimal("123456789"));
 	}
 
+	public void testSmallInteger(String typeName) {
+		testNumber(typeName, new BigDecimal("1"));
+	}
+
 	public void testDecimal(String typeName) {
 		testNumber(typeName, new BigDecimal("1234567.89"));
 	}
@@ -147,12 +150,16 @@ public abstract class BaseTester {
 		testNumber(typeName, new BigDecimal("1.23"));
 	}
 
-	public void testTimestamp(String typeName) {
+	public void testMoney(String typeName) {
+		testNumber(typeName, new BigDecimal("12.3456"));
+	}
+
+	private void testTimestamp(String typeName, String format) {
 		unifier.executeOtherSql("create table " + tableName + " (" + columnName
 				+ " " + typeName + ")", null);
 		try {
-			Timestamp value = Timestamp.valueOf(new SimpleDateFormat(
-					"yyyy-MM-dd HH:mm:ss").format(new Date()));
+			SimpleDateFormat sdf = new SimpleDateFormat(format);
+			Timestamp value = new Timestamp(System.currentTimeMillis());
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addTimestampClause(
@@ -164,16 +171,11 @@ public abstract class BaseTester {
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
 			Row row = rowSet.getRow(0);
 			Timestamp value2 = row.getTimestamp(columnName);
-			Assert.assertEquals(value, value2);
-			UpdateSql updateSql = new UpdateSql()
-					.setTableName(tableName)
+			Assert.assertEquals(sdf.format(value), sdf.format(value2));
+			UpdateSql updateSql = new UpdateSql().setTableName(tableName)
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addTimestampClause(
-									columnName, null))
-					.setConditionClause(
-							new ConditionClause(LogicalOp.AND)
-									.addTimestampClause(columnName,
-											RelationOp.EQUAL, value));
+									columnName, null));
 			count = unifier.executeUpdateSql(updateSql);
 			Assert.assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
@@ -183,6 +185,18 @@ public abstract class BaseTester {
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
+	}
+
+	public void testTimestamp(String typeName) {
+		testTimestamp(typeName, "yyyy-MM-dd HH:mm:ss");
+	}
+
+	public void testDate(String typeName) {
+		testTimestamp(typeName, "yyyy-MM-dd");
+	}
+
+	public void testTime(String typeName) {
+		testTimestamp(typeName, "HH:mm:ss");
 	}
 
 	public void testClob(String typeName) {
@@ -251,7 +265,7 @@ public abstract class BaseTester {
 		}
 	}
 
-	public void testStandardBlob(String typeName) {
+	public void testBlob(String typeName) {
 		testBlob(typeName, getFile("test.bin"));
 	}
 
