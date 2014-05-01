@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.sosostudio.dbunifier.DbConfig;
 import org.sosostudio.dbunifier.DbUnifier;
 
-public class MicrosoftSqlServer2012Tester extends BaseTester {
+public class MySql5Tester extends BaseTester {
 
 	@Before
 	public void setUp() {
@@ -15,10 +15,8 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	public void init() {
-		DbConfig config = new DbConfig(
-				"com.microsoft.sqlserver.jdbc.SQLServerDriver",
-				"jdbc:sqlserver://localhost:1433;DatabaseName=master", "sa",
-				"55780029");
+		DbConfig config = new DbConfig("com.mysql.jdbc.Driver",
+				"jdbc:mysql://localhost:3306/test", "root", "55780029");
 		unifier = new DbUnifier(config);
 	}
 
@@ -26,12 +24,6 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	public void testBigInt() {
 		String typeName = "bigint";
 		testInteger(typeName);
-	}
-
-	@Test
-	public void testBinaryVarying() {
-		String typeName = "binary varying(4000)";
-		testBlob(typeName);
 	}
 
 	@Test
@@ -47,6 +39,24 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
+	public void testBlob() {
+		String typeName = "blob";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testBool() {
+		String typeName = "bool";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testBoolean() {
+		String typeName = "boolean";
+		testSmallInteger(typeName);
+	}
+
+	@Test
 	public void testChar() {
 		String typeName = "char(10)";
 		testString(typeName);
@@ -54,7 +64,7 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 
 	@Test
 	public void testCharVarying() {
-		String typeName = "char varying(50)";
+		String typeName = "char(50) binary";
 		testString(typeName);
 	}
 
@@ -83,12 +93,6 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
-	public void testDatetime2() {
-		String typeName = "datetime2";
-		testTimestamp(typeName);
-	}
-
-	@Test
 	public void testDec() {
 		String typeName = "dec(10,2)";
 		testDecimal(typeName);
@@ -101,21 +105,27 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
+	public void testDouble() {
+		String typeName = "double";
+		testDecimal(typeName);
+	}
+
+	@Test
 	public void testDoublePrecision() {
 		String typeName = "double precision";
 		testDecimal(typeName);
 	}
 
 	@Test
-	public void testFloat() {
-		String typeName = "float";
-		testSmallDecimal(typeName);
+	public void testEnum() {
+		String typeName = "enum('abcdefghij')";
+		testString(typeName);
 	}
 
 	@Test
-	public void testImage() {
-		String typeName = "image";
-		testBlob(typeName);
+	public void testFixed() {
+		String typeName = "fixed(10,2)";
+		testDecimal(typeName);
 	}
 
 	@Test
@@ -131,9 +141,45 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
-	public void testMoney() {
-		String typeName = "money";
-		testMoney(typeName);
+	public void testLongBlob() {
+		String typeName = "longblob";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testLongText() {
+		String typeName = "longtext";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testLongVarchar() {
+		String typeName = "long varchar";
+		testString(typeName);
+	}
+
+	@Test
+	public void testMediumBlob() {
+		String typeName = "mediumblob";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testMediumInt() {
+		String typeName = "mediumint";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testMediumText() {
+		String typeName = "mediumtext";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testNationalChar() {
+		String typeName = "national char(10)";
+		testString(typeName);
 	}
 
 	@Test
@@ -143,8 +189,20 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
+	public void testNationalCharacter() {
+		String typeName = "national character(10)";
+		testString(typeName);
+	}
+
+	@Test
 	public void testNationalCharacterVarying() {
 		String typeName = "national character varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNchar() {
+		String typeName = "nchar(10)";
 		testString(typeName);
 	}
 
@@ -161,27 +219,21 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
-	public void testNvarchar() {
-		String typeName = "nvarchar(50)";
-		testString(typeName);
+	public void testReal() {
+		String typeName = "real";
+		testDecimal(typeName);
 	}
 
 	@Test
-	public void testSmallDatetime() {
-		String typeName = "smalldatetime";
-		testDate(typeName);
+	public void testSet() {
+		String typeName = "set('abcdefghij')";
+		testString(typeName);
 	}
 
 	@Test
 	public void testSmallInt() {
 		String typeName = "smallint";
 		testSmallInteger(typeName);
-	}
-
-	@Test
-	public void testSmallMoney() {
-		String typeName = "smallmoney";
-		testMoney(typeName);
 	}
 
 	@Test
@@ -197,21 +249,39 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	@Test
+	public void testTimestamp() {
+		String typeName = "timestamp null";
+		testTimestamp(typeName);
+	}
+
+	@Test
+	public void testTinyBlob() {
+		String typeName = "tinyblob";
+		testSmallBlob(typeName);
+	}
+
+	@Test
 	public void testTinyInt() {
 		String typeName = "tinyint";
 		testSmallInteger(typeName);
 	}
 
 	@Test
-	public void testVarbinary() {
-		String typeName = "varbinary(200)";
-		testSmallBlob(typeName);
+	public void testTinyText() {
+		String typeName = "tinytext";
+		testSmallClob(typeName);
 	}
 
 	@Test
 	public void testVarchar() {
 		String typeName = "varchar(50)";
 		testString(typeName);
+	}
+
+	@Test
+	public void testVarbinary() {
+		String typeName = "varbinary(2000)";
+		testSmallBlob(typeName);
 	}
 
 }

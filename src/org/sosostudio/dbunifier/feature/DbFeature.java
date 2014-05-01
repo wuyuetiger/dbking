@@ -1,9 +1,14 @@
 package org.sosostudio.dbunifier.feature;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.DbUnifierException;
+import org.sosostudio.dbunifier.DbUtil;
+import org.sosostudio.dbunifier.Values;
 
 public abstract class DbFeature {
 
@@ -57,5 +62,27 @@ public abstract class DbFeature {
 	public abstract String getClobDbType();
 
 	public abstract String getBlobDbType();
+
+	public int getTotalRowCount(Connection con, String mainSubSql, Values values) {
+		String countSql = "select count(*) from (" + mainSubSql + ") t";
+		DbUtil.printSql(countSql, values);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = con.prepareStatement(countSql);
+			DbUtil.setColumnValue(ps, 1, values);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getBigDecimal(1).intValue();
+			} else {
+				throw new DbUnifierException("no resultset");
+			}
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			DbUtil.closeResultSet(rs);
+			DbUtil.closeStatement(ps);
+		}
+	}
 
 }

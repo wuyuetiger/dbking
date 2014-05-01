@@ -178,7 +178,7 @@ public class Oracle11gTester extends BaseTester {
 
 	@Test
 	public void testRaw() {
-		String typeName = "raw(2000)";
+		String typeName = "raw(200)";
 		testSmallBlob(typeName);
 	}
 

@@ -1,12 +1,10 @@
 package org.sosostudio.dbunifier;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigDecimal;
@@ -16,9 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -52,36 +47,6 @@ public class DbUnifier {
 		this.con = con;
 	}
 
-	public void closeConnection(Connection con) {
-		try {
-			if (con != null) {
-				con.close();
-			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
-		}
-	}
-
-	public void closeStatement(Statement statement) {
-		try {
-			if (statement != null) {
-				statement.close();
-			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
-		}
-	}
-
-	public void closeResultSet(ResultSet resultSet) {
-		try {
-			if (resultSet != null) {
-				resultSet.close();
-			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
-		}
-	}
-
 	public String getDatabaseName() {
 		Connection con;
 		if (this.con == null) {
@@ -96,7 +61,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -135,7 +100,7 @@ public class DbUnifier {
 							primaryKeySet.add(columnName);
 						}
 					} finally {
-						closeResultSet(primaryKeyResultSet);
+						DbUtil.closeResultSet(primaryKeyResultSet);
 					}
 					List<Column> columnList = new ArrayList<Column>();
 					ResultSet columnResultSet = null;
@@ -152,7 +117,7 @@ public class DbUnifier {
 							int nullable = columnResultSet.getInt("NULLABLE");
 							Column column = new Column();
 							column.setName(columnName);
-							column.setType(getColumnType(dataType));
+							column.setType(DbUtil.getColumnType(dataType));
 							column.setSize(size);
 							column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
 							column.setIsPrimaryKey(primaryKeySet
@@ -160,7 +125,7 @@ public class DbUnifier {
 							columnList.add(column);
 						}
 					} finally {
-						closeResultSet(columnResultSet);
+						DbUtil.closeResultSet(columnResultSet);
 					}
 					Table table = new Table();
 					table.setName(tableName);
@@ -168,14 +133,14 @@ public class DbUnifier {
 					tableList.add(table);
 				}
 			} finally {
-				closeResultSet(tableResultSet);
+				DbUtil.closeResultSet(tableResultSet);
 			}
 			return tableList;
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -203,8 +168,9 @@ public class DbUnifier {
 					columnName = columnName.toUpperCase();
 					primaryKeySet.add(columnName);
 				}
+			} catch (Exception e) {
 			} finally {
-				closeResultSet(primaryKeyResultSet);
+				DbUtil.closeResultSet(primaryKeyResultSet);
 			}
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnResultSet = null;
@@ -221,7 +187,7 @@ public class DbUnifier {
 					int nullable = columnResultSet.getInt("NULLABLE");
 					Column column = new Column();
 					column.setName(columnName);
-					column.setType(getColumnType(dataType));
+					column.setType(DbUtil.getColumnType(dataType));
 					column.setSize(size);
 					column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
 					column.setIsPrimaryKey(primaryKeySet.contains(columnName));
@@ -231,7 +197,7 @@ public class DbUnifier {
 					return null;
 				}
 			} finally {
-				closeResultSet(columnResultSet);
+				DbUtil.closeResultSet(columnResultSet);
 			}
 			Table table = new Table();
 			table.setName(tableName);
@@ -241,7 +207,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -279,14 +245,14 @@ public class DbUnifier {
 							int size = columnResultSet.getInt("COLUMN_SIZE");
 							Column column = new Column();
 							column.setName(columnName);
-							column.setType(getColumnType(dataType));
+							column.setType(DbUtil.getColumnType(dataType));
 							column.setSize(size);
 							column.setNullable(true);
 							column.setIsPrimaryKey(false);
 							columnList.add(column);
 						}
 					} finally {
-						closeResultSet(columnResultSet);
+						DbUtil.closeResultSet(columnResultSet);
 					}
 					Table view = new Table();
 					view.setName(viewName);
@@ -294,14 +260,14 @@ public class DbUnifier {
 					viewList.add(view);
 				}
 			} finally {
-				closeResultSet(viewResultSet);
+				DbUtil.closeResultSet(viewResultSet);
 			}
 			return viewList;
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -330,14 +296,14 @@ public class DbUnifier {
 					int size = columnResultSet.getInt("COLUMN_SIZE");
 					Column column = new Column();
 					column.setName(columnName);
-					column.setType(getColumnType(dataType));
+					column.setType(DbUtil.getColumnType(dataType));
 					column.setSize(size);
 					column.setNullable(true);
 					column.setIsPrimaryKey(false);
 					columnList.add(column);
 				}
 			} finally {
-				closeResultSet(columnResultSet);
+				DbUtil.closeResultSet(columnResultSet);
 			}
 			Table view = new Table();
 			view.setName(viewName);
@@ -347,7 +313,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -405,7 +371,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 
@@ -450,26 +416,8 @@ public class DbUnifier {
 				}
 			}
 			// pagination compute
-			int totalRowCount;
-			String countSql = "select count(*) from (" + mainSubSql + ") t";
-			printSql(countSql, values);
-			PreparedStatement ps2 = null;
-			ResultSet rs2 = null;
-			try {
-				ps2 = con.prepareStatement(countSql);
-				setColumnValue(ps2, 1, values);
-				rs2 = ps2.executeQuery();
-				if (rs2.next()) {
-					totalRowCount = rs2.getBigDecimal(1).intValue();
-				} else {
-					throw new DbUnifierException("no resultset");
-				}
-			} catch (SQLException e) {
-				throw new DbUnifierException(e);
-			} finally {
-				closeResultSet(rs2);
-				closeStatement(ps2);
-			}
+			int totalRowCount = dbFeature.getTotalRowCount(con, mainSubSql,
+					values);
 			int totalPageCount = (totalRowCount + pageSize - 1) / pageSize;
 			pageNumber = Math.max(1, Math.min(totalPageCount, pageNumber));
 			// construct pagination sql
@@ -484,15 +432,15 @@ public class DbUnifier {
 			rowSet.setTotalRowCount(totalRowCount);
 			rowSet.setTotalPageCount(totalPageCount);
 			if (paginationSql == null) {
-				printSql(sql, values);
+				DbUtil.printSql(sql, values);
 				ps = con.prepareStatement(sql,
 						ResultSet.TYPE_SCROLL_INSENSITIVE,
 						ResultSet.CONCUR_READ_ONLY);
 			} else {
-				printSql(paginationSql, values);
+				DbUtil.printSql(paginationSql, values);
 				ps = con.prepareStatement(paginationSql);
 			}
-			setColumnValue(ps, 1, values);
+			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -519,7 +467,7 @@ public class DbUnifier {
 					String columnName = rsmd.getColumnLabel(i + 1);
 					columnName = columnName.toUpperCase();
 					int dataType = rsmd.getColumnType(i + 1);
-					String type = getColumnType(dataType);
+					String type = DbUtil.getColumnType(dataType);
 					Object value = null;
 					if (Column.TYPE_STRING.equals(type)) {
 						value = rs.getString(i + 1);
@@ -586,10 +534,10 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeResultSet(rs);
-			closeStatement(ps);
+			DbUtil.closeResultSet(rs);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -609,7 +557,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		printSql(sql, values);
+		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -622,7 +570,7 @@ public class DbUnifier {
 			// query
 			RowSet rowSet = new RowSet();
 			ps = con.prepareStatement(sql);
-			setColumnValue(ps, 1, values);
+			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
@@ -637,7 +585,7 @@ public class DbUnifier {
 					String columnName = rsmd.getColumnLabel(i + 1);
 					columnName = columnName.toUpperCase();
 					int dataType = rsmd.getColumnType(i + 1);
-					String type = getColumnType(dataType);
+					String type = DbUtil.getColumnType(dataType);
 					Object value = null;
 					if (Column.TYPE_STRING.equals(type)) {
 						value = rs.getString(i + 1);
@@ -705,10 +653,10 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeResultSet(rs);
-			closeStatement(ps);
+			DbUtil.closeResultSet(rs);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -784,7 +732,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		printSql(sql, values);
+		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -794,14 +742,14 @@ public class DbUnifier {
 		PreparedStatement ps = null;
 		try {
 			ps = con.prepareStatement(sql);
-			setColumnValue(ps, 1, values);
+			DbUtil.setColumnValue(ps, 1, values);
 			return ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeStatement(ps);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -857,7 +805,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		printSql(sql, values);
+		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -868,7 +816,7 @@ public class DbUnifier {
 		ResultSet rs = null;
 		try {
 			ps = con.prepareStatement(sql);
-			setColumnValue(ps, 1, values);
+			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				Reader reader = rs.getCharacterStream(1);
@@ -893,10 +841,10 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeResultSet(rs);
-			closeStatement(ps);
+			DbUtil.closeResultSet(rs);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -905,7 +853,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		printSql(sql, values);
+		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -920,14 +868,14 @@ public class DbUnifier {
 			} else {
 				ps.setCharacterStream(1, reader, size);
 			}
-			setColumnValue(ps, 2, values);
+			DbUtil.setColumnValue(ps, 2, values);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeStatement(ps);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -936,7 +884,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		printSql(sql, values);
+		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -947,7 +895,7 @@ public class DbUnifier {
 		ResultSet rs = null;
 		try {
 			ps = con.prepareStatement(sql);
-			setColumnValue(ps, 1, values);
+			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				InputStream is = rs.getBinaryStream(1);
@@ -972,10 +920,10 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeResultSet(rs);
-			closeStatement(ps);
+			DbUtil.closeResultSet(rs);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -985,7 +933,7 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		printSql(sql, values);
+		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
 			con = dbConfig.getConnection();
@@ -1000,14 +948,14 @@ public class DbUnifier {
 			} else {
 				ps.setBinaryStream(1, is, size);
 			}
-			setColumnValue(ps, 2, values);
+			DbUtil.setColumnValue(ps, 2, values);
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			closeStatement(ps);
+			DbUtil.closeStatement(ps);
 			if (this.con == null) {
-				closeConnection(con);
+				DbUtil.closeConnection(con);
 			}
 		}
 	}
@@ -1067,117 +1015,6 @@ public class DbUnifier {
 			}
 			return nextSeqValue.longValue();
 		}
-	}
-
-	private String getColumnType(int dataType) {
-		if (dataType == Types.VARCHAR) {
-			return Column.TYPE_STRING;
-		} else if (dataType == Types.LONGVARCHAR) {
-			return Column.TYPE_STRING;
-		} else if (dataType == Types.NVARCHAR) {
-			return Column.TYPE_STRING;
-		} else if (dataType == Types.CHAR) {
-			return Column.TYPE_STRING;
-		} else if (dataType == Types.BIT) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.INTEGER) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.BIGINT) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.SMALLINT) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.TINYINT) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.FLOAT) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.DOUBLE) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.DECIMAL) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.NUMERIC) {
-			return Column.TYPE_NUMBER;
-		} else if (dataType == Types.TIMESTAMP) {
-			return Column.TYPE_TIMESTAMP;
-		} else if (dataType == Types.DATE) {
-			return Column.TYPE_TIMESTAMP;
-		} else if (dataType == Types.TIME) {
-			return Column.TYPE_TIMESTAMP;
-		} else if (dataType == Types.BLOB) {
-			return Column.TYPE_BLOB;
-		} else if (dataType == Types.BINARY) {
-			return Column.TYPE_BLOB;
-		} else if (dataType == Types.VARBINARY) {
-			return Column.TYPE_BLOB;
-		} else if (dataType == Types.LONGVARBINARY) {
-			return Column.TYPE_BLOB;
-		} else if (dataType == Types.CLOB) {
-			return Column.TYPE_CLOB;
-		} else {
-			return Column.TYPE_UNKNOWN;
-		}
-	}
-
-	private void setColumnValue(PreparedStatement ps, int startPos,
-			Values values) throws SQLException {
-		List<Object> valueList = values.getValueList();
-		for (int i = 0; i < valueList.size(); i++) {
-			int pos = startPos + i;
-			Object value = valueList.get(i);
-			if (value instanceof NullValue) {
-				NullValue nullValue = (NullValue) value;
-				String type = nullValue.getType();
-				if (Column.TYPE_STRING.equals(type)) {
-					ps.setString(pos, null);
-				} else if (Column.TYPE_NUMBER.equals(type)) {
-					ps.setBigDecimal(pos, null);
-				} else if (Column.TYPE_TIMESTAMP.equals(type)) {
-					ps.setTimestamp(pos, null);
-				} else if (Column.TYPE_CLOB.equals(type)) {
-					ps.setCharacterStream(pos, null, 0);
-				} else if (Column.TYPE_BLOB.equals(type)) {
-					ps.setBinaryStream(pos, null, 0);
-				}
-			} else if (value instanceof String) {
-				ps.setString(pos, (String) value);
-			} else if (value instanceof BigDecimal) {
-				ps.setBigDecimal(pos, (BigDecimal) value);
-			} else if (value instanceof Timestamp) {
-				ps.setTimestamp(pos, (Timestamp) value);
-			} else if (value instanceof char[]) {
-				char[] chars = (char[]) value;
-				Reader reader = new StringReader(new String(chars));
-				ps.setCharacterStream(pos, reader, chars.length);
-			} else if (value instanceof byte[]) {
-				byte[] bytes = (byte[]) value;
-				InputStream is = new ByteArrayInputStream(bytes);
-				ps.setBinaryStream(pos, is, bytes.length);
-			}
-		}
-	}
-
-	private void printSql(String sql, Values values) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("\n").append(sql).append("\n");
-		List<Object> valueList = values.getValueList();
-		for (int i = 0; i < valueList.size(); i++) {
-			Object value = valueList.get(i);
-			sb.append(i + 1).append(".[");
-			if (value instanceof NullValue) {
-				sb.append("<NULL>");
-			} else if (value instanceof String) {
-				sb.append(value);
-			} else if (value instanceof BigDecimal) {
-				sb.append(value);
-			} else if (value instanceof Timestamp) {
-				sb.append(value);
-			} else if (value instanceof char[]) {
-				sb.append("<CLOB>");
-			} else if (value instanceof byte[]) {
-				sb.append("<BLOB>");
-			}
-			sb.append("]\n");
-		}
-		System.out.println(sb.toString());
 	}
 
 }

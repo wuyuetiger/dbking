@@ -199,11 +199,10 @@ public abstract class BaseTester {
 		testTimestamp(typeName, "HH:mm:ss");
 	}
 
-	public void testClob(String typeName) {
+	private void testClob(String typeName, String value) {
 		unifier.executeOtherSql("create table " + tableName + " (" + columnName
 				+ " " + typeName + ")", null);
 		try {
-			String value = new String(getFile("test.txt"));
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addClobClause(
@@ -229,6 +228,14 @@ public abstract class BaseTester {
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
+	}
+
+	public void testClob(String typeName) {
+		testClob(typeName, new String(getFile("test.txt")));
+	}
+
+	public void testSmallClob(String typeName) {
+		testClob(typeName, "abcdefghijklmnopqrstuvwxyz1234567890");
 	}
 
 	private void testBlob(String typeName, byte[] value) {
@@ -270,7 +277,7 @@ public abstract class BaseTester {
 	}
 
 	public void testSmallBlob(String typeName) {
-		testBlob(typeName, new byte[2000]);
+		testBlob(typeName, new byte[200]);
 	}
 
 	@Test
