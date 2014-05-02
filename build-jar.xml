@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="db-unifier" default="pack">
+	<!-- properies -->
+	<property name="src.dir" value="src" />
+	<property name="classes.dir" value="bin" />
+	<property name="lib.dir" value="lib" />
+	<property name="dist.dir" value="dist" />
+	<!-- classpath -->
+	<path id="master-classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.*" />
+		</fileset>
+		<pathelement path="${classes.dir}" />
+	</path>
+	<!-- compile -->
+	<target name="compile" description="compile the source files">
+		<mkdir dir="${classes.dir}" />
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" target="1.5">
+			<classpath refid="master-classpath" />
+		</javac>
+	</target>
+	<!-- pack -->
+	<target name="pack" depends="compile" description="make .jar file">
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/db-unifier-v0.1.jar" basedir="${classes.dir}">
+			<include name="org/sosostudio/dbunifier/**/*.*" />
+		</jar>
+	</target>
+</project>
