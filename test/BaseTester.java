@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import junit.framework.Assert;
+import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.sosostudio.dbunifier.Column;
@@ -26,7 +26,7 @@ import org.sosostudio.dbunifier.oom.SelectSql;
 import org.sosostudio.dbunifier.oom.UpdateKeyValueClause;
 import org.sosostudio.dbunifier.oom.UpdateSql;
 
-public abstract class BaseTester {
+public abstract class BaseTester extends TestCase {
 
 	protected String tableName = "SYS_TEST";
 
@@ -64,22 +64,22 @@ public abstract class BaseTester {
 	}
 
 	public void testString(String typeName) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
-				+ " " + typeName + ")", null);
 		try {
+			unifier.executeOtherSql("create table " + tableName + " ("
+					+ columnName + " " + typeName + ")", null);
 			String value = new String("abcdefghij");
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addStringClause(
 									columnName, value));
 			int count = unifier.executeInsertSql(insertSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
 			Row row = rowSet.getRow(0);
 			String value2 = row.getString(columnName);
-			Assert.assertEquals(value, value2);
+			assertEquals(value, value2);
 			UpdateSql updateSql = new UpdateSql()
 					.setTableName(tableName)
 					.setUpdateKeyValueClause(
@@ -89,32 +89,32 @@ public abstract class BaseTester {
 							new ConditionClause(LogicalOp.AND).addStringClause(
 									columnName, RelationOp.EQUAL, value));
 			count = unifier.executeUpdateSql(updateSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
 			row = rowSet.getRow(0);
 			String value3 = row.getString(columnName);
-			Assert.assertNull(value3);
+			assertNull(value3);
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
 	}
 
 	private void testNumber(String typeName, BigDecimal value) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
-				+ " " + typeName + ")", null);
 		try {
+			unifier.executeOtherSql("create table " + tableName + " ("
+					+ columnName + " " + typeName + ")", null);
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addNumberClause(
 									columnName, value));
 			int count = unifier.executeInsertSql(insertSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
 			Row row = rowSet.getRow(0);
 			BigDecimal value2 = row.getNumber(columnName);
-			Assert.assertEquals(value, value2);
+			assertEquals(value, value2);
 			UpdateSql updateSql = new UpdateSql()
 					.setTableName(tableName)
 					.setUpdateKeyValueClause(
@@ -124,11 +124,11 @@ public abstract class BaseTester {
 							new ConditionClause(LogicalOp.AND).addNumberClause(
 									columnName, RelationOp.EQUAL, value));
 			count = unifier.executeUpdateSql(updateSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
 			row = rowSet.getRow(0);
 			BigDecimal value3 = row.getNumber(columnName);
-			Assert.assertNull(value3);
+			assertNull(value3);
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -155,9 +155,9 @@ public abstract class BaseTester {
 	}
 
 	private void testTimestamp(String typeName, String format) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
-				+ " " + typeName + ")", null);
 		try {
+			unifier.executeOtherSql("create table " + tableName + " ("
+					+ columnName + " " + typeName + ")", null);
 			SimpleDateFormat sdf = new SimpleDateFormat(format);
 			Timestamp value = new Timestamp(System.currentTimeMillis());
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
@@ -165,23 +165,23 @@ public abstract class BaseTester {
 							new InsertKeyValueClause().addTimestampClause(
 									columnName, value));
 			int count = unifier.executeInsertSql(insertSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
 			Row row = rowSet.getRow(0);
 			Timestamp value2 = row.getTimestamp(columnName);
-			Assert.assertEquals(sdf.format(value), sdf.format(value2));
+			assertEquals(sdf.format(value), sdf.format(value2));
 			UpdateSql updateSql = new UpdateSql().setTableName(tableName)
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addTimestampClause(
 									columnName, null));
 			count = unifier.executeUpdateSql(updateSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
 			row = rowSet.getRow(0);
 			Timestamp value3 = row.getTimestamp(columnName);
-			Assert.assertNull(value3);
+			assertNull(value3);
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -200,31 +200,31 @@ public abstract class BaseTester {
 	}
 
 	private void testClob(String typeName, String value) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
-				+ " " + typeName + ")", null);
 		try {
+			unifier.executeOtherSql("create table " + tableName + " ("
+					+ columnName + " " + typeName + ")", null);
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addClobClause(
 									columnName, value));
 			int count = unifier.executeInsertSql(insertSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql, true);
 			Row row = rowSet.getRow(0);
 			String value2 = row.getClob(columnName);
-			Assert.assertEquals(value, value2);
+			assertEquals(value, value2);
 			UpdateSql updateSql = new UpdateSql().setTableName(tableName)
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addClobClause(
 									columnName, null));
 			count = unifier.executeUpdateSql(updateSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql, true);
 			row = rowSet.getRow(0);
 			String value3 = row.getClob(columnName);
-			Assert.assertNull(value3);
+			assertNull(value3);
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -239,34 +239,34 @@ public abstract class BaseTester {
 	}
 
 	private void testBlob(String typeName, byte[] value) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
-				+ " " + typeName + ")", null);
 		try {
+			unifier.executeOtherSql("create table " + tableName + " ("
+					+ columnName + " " + typeName + ")", null);
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addBlobClause(
 									columnName, value));
 			int count = unifier.executeInsertSql(insertSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql, true);
 			Row row = rowSet.getRow(0);
 			byte[] value2 = row.getBlob(columnName);
 			for (int i = 0; i < value.length; i++) {
-				Assert.assertEquals(value[i], value2[i]);
+				assertEquals(value[i], value2[i]);
 			}
-			Assert.assertEquals(value.length, value2.length);
+			assertEquals(value.length, value2.length);
 			UpdateSql updateSql = new UpdateSql().setTableName(tableName)
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addBlobClause(
 									columnName, null));
 			count = unifier.executeUpdateSql(updateSql);
-			Assert.assertEquals(count, 1);
+			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql, true);
 			row = rowSet.getRow(0);
 			byte[] value3 = row.getBlob(columnName);
-			Assert.assertNull(value3);
+			assertNull(value3);
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -282,9 +282,9 @@ public abstract class BaseTester {
 
 	@Test
 	public void testGetTableInfo() {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
-				+ " varchar(50))", null);
 		try {
+			unifier.executeOtherSql("create table " + tableName + " ("
+					+ columnName + " varchar(50))", null);
 			boolean success = false;
 			List<Table> tableList = unifier.getTableList();
 			for (Table table : tableList) {
@@ -292,10 +292,10 @@ public abstract class BaseTester {
 					success = true;
 				}
 			}
-			Assert.assertTrue(success);
+			assertTrue(success);
 			Table table = unifier.getTable(tableName);
-			Assert.assertEquals(tableName, table.getName());
-			System.out.println(table);
+			System.out.println(tableName);
+			assertEquals(tableName, table.getName());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -303,9 +303,9 @@ public abstract class BaseTester {
 
 	@Test
 	public void testPageSelect() {
-		unifier.createTable(new Table().setName(tableName).addColumn(
-				new Column(columnName, Column.TYPE_STRING, 50, true, true)));
 		try {
+			unifier.createTable(new Table().setName(tableName).addColumn(
+					new Column(columnName, Column.TYPE_STRING, true, true)));
 			for (int i = 0; i < 10; i++) {
 				unifier.executeInsertSql(new InsertSql()
 						.setTableName(tableName).setInsertKeyValueClause(
@@ -320,36 +320,36 @@ public abstract class BaseTester {
 									Direction.ASC));
 			{
 				RowSet rowSet = unifier.executeSelectSql(selectSql, 3, 2);
-				Assert.assertEquals(rowSet.size(), 3);
-				Assert.assertEquals(rowSet.getPageSize(), 3);
-				Assert.assertEquals(rowSet.getPageNumber(), 2);
-				Assert.assertEquals(rowSet.getTotalRowCount(), 10);
-				Assert.assertEquals(rowSet.getTotalPageCount(), 4);
+				assertEquals(rowSet.size(), 3);
+				assertEquals(rowSet.getPageSize(), 3);
+				assertEquals(rowSet.getPageNumber(), 2);
+				assertEquals(rowSet.getTotalRowCount(), 10);
+				assertEquals(rowSet.getTotalPageCount(), 4);
 				Row row = rowSet.getRow(0);
 				String value = row.getString(1);
-				Assert.assertEquals(value, "3");
+				assertEquals(value, "3");
 			}
 			{
 				RowSet rowSet = unifier.executeSelectSql(selectSql, 3, 4);
-				Assert.assertEquals(rowSet.size(), 1);
-				Assert.assertEquals(rowSet.getPageSize(), 3);
-				Assert.assertEquals(rowSet.getPageNumber(), 4);
-				Assert.assertEquals(rowSet.getTotalRowCount(), 10);
-				Assert.assertEquals(rowSet.getTotalPageCount(), 4);
+				assertEquals(rowSet.size(), 1);
+				assertEquals(rowSet.getPageSize(), 3);
+				assertEquals(rowSet.getPageNumber(), 4);
+				assertEquals(rowSet.getTotalRowCount(), 10);
+				assertEquals(rowSet.getTotalPageCount(), 4);
 				Row row = rowSet.getRow(0);
 				String value = row.getString(1);
-				Assert.assertEquals(value, "9");
+				assertEquals(value, "9");
 			}
 			{
 				RowSet rowSet = unifier.executeSelectSql(selectSql, 5, 2);
-				Assert.assertEquals(rowSet.size(), 5);
-				Assert.assertEquals(rowSet.getPageSize(), 5);
-				Assert.assertEquals(rowSet.getPageNumber(), 2);
-				Assert.assertEquals(rowSet.getTotalRowCount(), 10);
-				Assert.assertEquals(rowSet.getTotalPageCount(), 2);
+				assertEquals(rowSet.size(), 5);
+				assertEquals(rowSet.getPageSize(), 5);
+				assertEquals(rowSet.getPageNumber(), 2);
+				assertEquals(rowSet.getTotalRowCount(), 10);
+				assertEquals(rowSet.getTotalPageCount(), 2);
 				Row row = rowSet.getRow(0);
 				String value = row.getString(1);
-				Assert.assertEquals(value, "5");
+				assertEquals(value, "5");
 				System.out.println(rowSet);
 			}
 		} finally {
@@ -362,7 +362,7 @@ public abstract class BaseTester {
 		long value = unifier.getSequenceNextValue(sequenceName);
 		value++;
 		long value2 = unifier.getSequenceNextValue(sequenceName);
-		Assert.assertEquals(value, value2);
+		assertEquals(value, value2);
 	}
 
 }

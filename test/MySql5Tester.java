@@ -63,7 +63,7 @@ public class MySql5Tester extends BaseTester {
 	}
 
 	@Test
-	public void testCharVarying() {
+	public void testCharBinary() {
 		String typeName = "char(50) binary";
 		testString(typeName);
 	}

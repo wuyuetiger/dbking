@@ -22,17 +22,6 @@ public class OracleFeature extends DbFeature {
 	}
 
 	@Override
-	public String getStringDbType(int size) {
-		size = Math.max(0, Math.min(size, 2000));
-		return "varchar2(" + size + ")";
-	}
-
-	@Override
-	public String getNumberDbType() {
-		return "number(10,2)";
-	}
-
-	@Override
 	public String getTimestampDbType() {
 		return "timestamp";
 	}

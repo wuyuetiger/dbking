@@ -3,13 +3,8 @@ package org.sosostudio.dbunifier.feature;
 public class MicrosoftSqlServer2000Feature extends DbFeature {
 
 	@Override
-	public String getNumberDbType() {
-		return "numeric";
-	}
-
-	@Override
 	public String getTimestampDbType() {
-		return "timestamp";
+		return "datetime";
 	}
 
 	@Override
@@ -21,5 +16,5 @@ public class MicrosoftSqlServer2000Feature extends DbFeature {
 	public String getBlobDbType() {
 		return "image";
 	}
-	
+
 }

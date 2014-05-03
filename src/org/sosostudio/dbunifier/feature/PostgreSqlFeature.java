@@ -1,6 +1,14 @@
 package org.sosostudio.dbunifier.feature;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+
 public class PostgreSqlFeature extends DbFeature {
+
+	@Override
+	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
+		return "public";
+	}
 
 	@Override
 	public String getPaginationSql(String mainSubSql, String orderBySubSql,
@@ -9,11 +17,6 @@ public class PostgreSqlFeature extends DbFeature {
 		sb.append(mainSubSql).append(orderBySubSql).append(" limit ")
 				.append(endPos - startPos).append(" offset ").append(startPos);
 		return sb.toString();
-	}
-
-	@Override
-	public String getNumberDbType() {
-		return "decimal";
 	}
 
 	@Override

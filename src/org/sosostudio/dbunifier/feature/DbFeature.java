@@ -55,7 +55,9 @@ public abstract class DbFeature {
 		return "varchar(" + size + ")";
 	}
 
-	public abstract String getNumberDbType();
+	public String getNumberDbType(int precision, int scale) {
+		return "numeric(" + precision + "," + scale + ")";
+	}
 
 	public abstract String getTimestampDbType();
 

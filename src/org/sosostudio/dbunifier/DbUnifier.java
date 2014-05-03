@@ -55,8 +55,8 @@ public class DbUnifier {
 			con = this.con;
 		}
 		try {
-			DatabaseMetaData databaseMetaData = con.getMetaData();
-			return databaseMetaData.getDatabaseProductName();
+			DatabaseMetaData dmd = con.getMetaData();
+			return dmd.getDatabaseProductName();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
@@ -64,6 +64,27 @@ public class DbUnifier {
 				DbUtil.closeConnection(con);
 			}
 		}
+	}
+
+	private Column genColumn(ResultSet columnRs, Set<String> pkSet)
+			throws SQLException {
+		String columnName = columnRs.getString("COLUMN_NAME");
+		columnName = columnName.toUpperCase();
+		short dataType = columnRs.getShort("DATA_TYPE");
+		int size = columnRs.getInt("COLUMN_SIZE");
+		int scale = columnRs.getInt("DECIMAL_DIGITS");
+		int nullable = columnRs.getInt("NULLABLE");
+		Column column = new Column();
+		column.setName(columnName);
+		column.setType(DbUtil.getColumnType(dataType));
+		column.setSize(size);
+		column.setPrecision(size);
+		column.setScale(scale);
+		column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
+		if (pkSet != null) {
+			column.setIsPrimaryKey(pkSet.contains(columnName));
+		}
+		return column;
 	}
 
 	public List<Table> getTableList() {
@@ -75,57 +96,41 @@ public class DbUnifier {
 		}
 		try {
 			List<Table> tableList = new ArrayList<Table>();
-			ResultSet tableResultSet = null;
+			ResultSet tableRs = null;
 			try {
 				DatabaseMetaData dmd = con.getMetaData();
 				DbFeature dbFeature = DbFeature.getInstance(dmd);
 				String schema = dbFeature.getDatabaseSchema(dmd);
 				String[] types = { "TABLE" };
-				tableResultSet = dmd.getTables(null, schema, "%", types);
-				while (tableResultSet.next()) {
-					String tableName = tableResultSet.getString("TABLE_NAME");
+				tableRs = dmd.getTables(null, schema, "%", types);
+				while (tableRs.next()) {
+					String tableName = tableRs.getString("TABLE_NAME");
 					tableName = tableName.toUpperCase();
 					if (tableName.startsWith("BIN$")) {
 						continue;
 					}
-					Set<String> primaryKeySet = new HashSet<String>();
-					ResultSet primaryKeyResultSet = null;
+					Set<String> pkSet = new HashSet<String>();
+					ResultSet pkRs = null;
 					try {
-						primaryKeyResultSet = dmd.getPrimaryKeys(null, schema,
-								tableName);
-						while (primaryKeyResultSet.next()) {
-							String columnName = primaryKeyResultSet
-									.getString("COLUMN_NAME");
+						pkRs = dmd.getPrimaryKeys(null, schema, tableName);
+						while (pkRs.next()) {
+							String columnName = pkRs.getString("COLUMN_NAME");
 							columnName = columnName.toUpperCase();
-							primaryKeySet.add(columnName);
+							pkSet.add(columnName);
 						}
 					} finally {
-						DbUtil.closeResultSet(primaryKeyResultSet);
+						DbUtil.closeResultSet(pkRs);
 					}
 					List<Column> columnList = new ArrayList<Column>();
-					ResultSet columnResultSet = null;
+					ResultSet columnRs = null;
 					try {
-						columnResultSet = dmd.getColumns(null, schema,
-								tableName, "%");
-						while (columnResultSet.next()) {
-							String columnName = columnResultSet
-									.getString("COLUMN_NAME");
-							columnName = columnName.toUpperCase();
-							short dataType = columnResultSet
-									.getShort("DATA_TYPE");
-							int size = columnResultSet.getInt("COLUMN_SIZE");
-							int nullable = columnResultSet.getInt("NULLABLE");
-							Column column = new Column();
-							column.setName(columnName);
-							column.setType(DbUtil.getColumnType(dataType));
-							column.setSize(size);
-							column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
-							column.setIsPrimaryKey(primaryKeySet
-									.contains(columnName));
+						columnRs = dmd.getColumns(null, schema, tableName, "%");
+						while (columnRs.next()) {
+							Column column = genColumn(columnRs, pkSet);
 							columnList.add(column);
 						}
 					} finally {
-						DbUtil.closeResultSet(columnResultSet);
+						DbUtil.closeResultSet(columnRs);
 					}
 					Table table = new Table();
 					table.setName(tableName);
@@ -133,7 +138,7 @@ public class DbUnifier {
 					tableList.add(table);
 				}
 			} finally {
-				DbUtil.closeResultSet(tableResultSet);
+				DbUtil.closeResultSet(tableRs);
 			}
 			return tableList;
 		} catch (SQLException e) {
@@ -157,47 +162,38 @@ public class DbUnifier {
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
 			tableName = tableName.toUpperCase();
-			Set<String> primaryKeySet = new HashSet<String>();
-			ResultSet primaryKeyResultSet = null;
+			Set<String> pkSet = new HashSet<String>();
+			ResultSet pkRs = null;
 			try {
-				primaryKeyResultSet = dmd.getPrimaryKeys(null, schema,
-						tableName);
-				while (primaryKeyResultSet.next()) {
-					String columnName = primaryKeyResultSet
-							.getString("COLUMN_NAME");
+				pkRs = dmd.getPrimaryKeys(null, schema, tableName);
+				while (pkRs.next()) {
+					String columnName = pkRs.getString("COLUMN_NAME");
 					columnName = columnName.toUpperCase();
-					primaryKeySet.add(columnName);
+					pkSet.add(columnName);
 				}
 			} catch (Exception e) {
 			} finally {
-				DbUtil.closeResultSet(primaryKeyResultSet);
+				DbUtil.closeResultSet(pkRs);
 			}
 			List<Column> columnList = new ArrayList<Column>();
-			ResultSet columnResultSet = null;
+			ResultSet columnRs = null;
 			try {
-				columnResultSet = dmd.getColumns(null, schema, tableName, "%");
-				boolean hasColumns = false;
-				while (columnResultSet.next()) {
-					hasColumns = true;
-					String columnName = columnResultSet
-							.getString("COLUMN_NAME");
-					columnName = columnName.toUpperCase();
-					short dataType = columnResultSet.getShort("DATA_TYPE");
-					int size = columnResultSet.getInt("COLUMN_SIZE");
-					int nullable = columnResultSet.getInt("NULLABLE");
-					Column column = new Column();
-					column.setName(columnName);
-					column.setType(DbUtil.getColumnType(dataType));
-					column.setSize(size);
-					column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
-					column.setIsPrimaryKey(primaryKeySet.contains(columnName));
+				columnRs = dmd.getColumns(null, schema, tableName, "%");
+				if (!columnRs.next()) {
+					columnRs.close();
+					columnRs = dmd.getColumns(null, schema,
+							tableName.toLowerCase(), "%");
+					if (!columnRs.next()) {
+						columnRs.close();
+						return null;
+					}
+				}
+				do {
+					Column column = genColumn(columnRs, pkSet);
 					columnList.add(column);
-				}
-				if (!hasColumns) {
-					return null;
-				}
+				} while (columnRs.next());
 			} finally {
-				DbUtil.closeResultSet(columnResultSet);
+				DbUtil.closeResultSet(columnRs);
 			}
 			Table table = new Table();
 			table.setName(tableName);
@@ -221,38 +217,26 @@ public class DbUnifier {
 		}
 		try {
 			List<Table> viewList = new ArrayList<Table>();
-			ResultSet viewResultSet = null;
+			ResultSet viewRs = null;
 			try {
 				DatabaseMetaData dmd = con.getMetaData();
 				DbFeature dbFeature = DbFeature.getInstance(dmd);
 				String schema = dbFeature.getDatabaseSchema(dmd);
 				String[] types = { "VIEW" };
-				viewResultSet = dmd.getTables(null, schema, "%", types);
-				while (viewResultSet.next()) {
-					String viewName = viewResultSet.getString("TABLE_NAME");
+				viewRs = dmd.getTables(null, schema, "%", types);
+				while (viewRs.next()) {
+					String viewName = viewRs.getString("TABLE_NAME");
 					viewName = viewName.toUpperCase();
 					List<Column> columnList = new ArrayList<Column>();
-					ResultSet columnResultSet = null;
+					ResultSet columnRs = null;
 					try {
-						columnResultSet = dmd.getColumns(null, schema,
-								viewName, "%");
-						while (columnResultSet.next()) {
-							String columnName = columnResultSet
-									.getString("COLUMN_NAME");
-							columnName = columnName.toUpperCase();
-							short dataType = columnResultSet
-									.getShort("DATA_TYPE");
-							int size = columnResultSet.getInt("COLUMN_SIZE");
-							Column column = new Column();
-							column.setName(columnName);
-							column.setType(DbUtil.getColumnType(dataType));
-							column.setSize(size);
-							column.setNullable(true);
-							column.setIsPrimaryKey(false);
+						columnRs = dmd.getColumns(null, schema, viewName, "%");
+						while (columnRs.next()) {
+							Column column = genColumn(columnRs, null);
 							columnList.add(column);
 						}
 					} finally {
-						DbUtil.closeResultSet(columnResultSet);
+						DbUtil.closeResultSet(columnRs);
 					}
 					Table view = new Table();
 					view.setName(viewName);
@@ -260,7 +244,7 @@ public class DbUnifier {
 					viewList.add(view);
 				}
 			} finally {
-				DbUtil.closeResultSet(viewResultSet);
+				DbUtil.closeResultSet(viewRs);
 			}
 			return viewList;
 		} catch (SQLException e) {
@@ -285,25 +269,24 @@ public class DbUnifier {
 			String schema = dbFeature.getDatabaseSchema(dmd);
 			viewName = viewName.toUpperCase();
 			List<Column> columnList = new ArrayList<Column>();
-			ResultSet columnResultSet = null;
+			ResultSet columnRs = null;
 			try {
-				columnResultSet = dmd.getColumns(null, schema, viewName, "%");
-				while (columnResultSet.next()) {
-					String columnName = columnResultSet
-							.getString("COLUMN_NAME");
-					columnName = columnName.toUpperCase();
-					short dataType = columnResultSet.getShort("DATA_TYPE");
-					int size = columnResultSet.getInt("COLUMN_SIZE");
-					Column column = new Column();
-					column.setName(columnName);
-					column.setType(DbUtil.getColumnType(dataType));
-					column.setSize(size);
-					column.setNullable(true);
-					column.setIsPrimaryKey(false);
-					columnList.add(column);
+				columnRs = dmd.getColumns(null, schema, viewName, "%");
+				if (!columnRs.next()) {
+					columnRs.close();
+					columnRs = dmd.getColumns(null, schema,
+							viewName.toLowerCase(), "%");
+					if (!columnRs.next()) {
+						columnRs.close();
+						return null;
+					}
 				}
+				do {
+					Column column = genColumn(columnRs, null);
+					columnList.add(column);
+				} while (columnRs.next());
 			} finally {
-				DbUtil.closeResultSet(columnResultSet);
+				DbUtil.closeResultSet(columnRs);
 			}
 			Table view = new Table();
 			view.setName(viewName);
@@ -348,7 +331,8 @@ public class DbUnifier {
 				if (Column.TYPE_STRING.equals(type)) {
 					sb.append(dbFeature.getStringDbType(column.getSize()));
 				} else if (Column.TYPE_NUMBER.equals(type)) {
-					sb.append(dbFeature.getNumberDbType());
+					sb.append(dbFeature.getNumberDbType(column.getPrecision(),
+							column.getScale()));
 				} else if (Column.TYPE_TIMESTAMP.equals(type)) {
 					sb.append(dbFeature.getTimestampDbType());
 				} else if (Column.TYPE_CLOB.equals(type)) {
@@ -966,9 +950,9 @@ public class DbUnifier {
 				Table table = getTable("SYS_SEQ");
 				if (table == null) {
 					table = new Table("SYS_SEQ").addColumn(
-							new Column("ST_SEQ_NAME", Column.TYPE_STRING, 50,
+							new Column("ST_SEQ_NAME", Column.TYPE_STRING,
 									false, true)).addColumn(
-							new Column("NM_SEQ_VALUE", Column.TYPE_NUMBER, -1,
+							new Column("NM_SEQ_VALUE", Column.TYPE_NUMBER,
 									false, false));
 					createTable(table);
 					existsSequenceTable = true;

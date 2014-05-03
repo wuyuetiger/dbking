@@ -23,11 +23,6 @@ public class MySqlFeature extends DbFeature {
 	}
 
 	@Override
-	public String getNumberDbType() {
-		return "decimal";
-	}
-
-	@Override
 	public String getTimestampDbType() {
 		return "datetime";
 	}
