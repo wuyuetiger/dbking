@@ -55,8 +55,6 @@ public class DbUtil {
 			return Column.TYPE_STRING;
 		} else if (dataType == Types.CHAR) {
 			return Column.TYPE_STRING;
-		} else if (dataType == Types.BIT) {
-			return Column.TYPE_NUMBER;
 		} else if (dataType == Types.INTEGER) {
 			return Column.TYPE_NUMBER;
 		} else if (dataType == Types.BIGINT) {
@@ -71,7 +69,13 @@ public class DbUtil {
 			return Column.TYPE_NUMBER;
 		} else if (dataType == Types.DECIMAL) {
 			return Column.TYPE_NUMBER;
+		} else if (dataType == Types.REAL) {
+			return Column.TYPE_NUMBER;
 		} else if (dataType == Types.NUMERIC) {
+			return Column.TYPE_NUMBER;
+		} else if (dataType == Types.BIT) {
+			return Column.TYPE_NUMBER;
+		} else if (dataType == Types.BOOLEAN) {
 			return Column.TYPE_NUMBER;
 		} else if (dataType == Types.TIMESTAMP) {
 			return Column.TYPE_TIMESTAMP;
