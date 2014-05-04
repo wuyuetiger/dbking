@@ -294,7 +294,6 @@ public abstract class BaseTester extends TestCase {
 			}
 			assertTrue(success);
 			Table table = unifier.getTable(tableName);
-			System.out.println(tableName);
 			assertEquals(tableName, table.getName());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
@@ -350,7 +349,6 @@ public abstract class BaseTester extends TestCase {
 				Row row = rowSet.getRow(0);
 				String value = row.getString(1);
 				assertEquals(value, "5");
-				System.out.println(rowSet);
 			}
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);

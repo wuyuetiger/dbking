@@ -39,6 +39,10 @@ public class DbUnifier {
 
 	private Connection con;
 
+	public DbUnifier() {
+		this.dbConfig = DbXmlConfig.dbConfig;
+	}
+
 	public DbUnifier(DbConfig dbConfig) {
 		this.dbConfig = dbConfig;
 	}

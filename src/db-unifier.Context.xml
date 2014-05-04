@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd"
+	default-lazy-init="true">
+
+	<bean id="dbConfig1" class="org.sosostudio.dbunifier.DbConfig">
+		<constructor-arg value="com.mysql.jdbc.Driver" />
+		<constructor-arg value="jdbc:mysql://localhost:3306/test" />
+		<constructor-arg value="root" />
+		<constructor-arg value="55780029" />
+	</bean>
+
+	<bean id="dbConfig2" class="org.sosostudio.dbunifier.DbConfig">
+		<constructor-arg value="com.mysql.jdbc.Driver" />
+		<constructor-arg value="jdbc:mysql://localhost:3306/test" />
+	</bean>
+
+	<bean id="dbConfig4" class="org.sosostudio.dbunifier.DbConfig">
+		<constructor-arg value="java:test" />
+	</bean>
+
+	<bean id="dbConfig6" class="org.sosostudio.dbunifier.DbConfig">
+		<constructor-arg value="java:test" />
+		<constructor-arg value="root" />
+		<constructor-arg value="55780029" />
+	</bean>
+
+	<bean id="dbUnifier" class="org.sosostudio.dbunifier.DbUnifier">
+		<constructor-arg ref="dbConfig1" />
+	</bean>
+
+</beans>

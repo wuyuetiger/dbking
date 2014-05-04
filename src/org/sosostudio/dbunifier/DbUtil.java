@@ -94,7 +94,6 @@ public class DbUtil {
 		} else if (dataType == Types.CLOB) {
 			return Column.TYPE_CLOB;
 		} else {
-			System.out.println(dataType);
 			return Column.TYPE_UNKNOWN;
 		}
 	}
@@ -159,7 +158,9 @@ public class DbUtil {
 			}
 			sb.append("]\n");
 		}
-		System.out.println(sb.toString());
+		if (DbXmlConfig.showSql) {
+			System.out.println(sb.toString());
+		}
 	}
 
 }
