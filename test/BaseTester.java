@@ -10,6 +10,7 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 import org.sosostudio.dbunifier.Column;
+import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.DbUnifier;
 import org.sosostudio.dbunifier.DbUnifierException;
 import org.sosostudio.dbunifier.Row;
@@ -304,7 +305,7 @@ public abstract class BaseTester extends TestCase {
 	public void testPageSelect() {
 		try {
 			unifier.createTable(new Table().setName(tableName).addColumn(
-					new Column(columnName, Column.TYPE_STRING, true, true)));
+					new Column(columnName, ColumnType.TYPE_STRING, true, true)));
 			for (int i = 0; i < 10; i++) {
 				unifier.executeInsertSql(new InsertSql()
 						.setTableName(tableName).setInsertKeyValueClause(

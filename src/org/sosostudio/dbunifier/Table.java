@@ -20,6 +20,14 @@ public class Table {
 		return name;
 	}
 
+	public String getDefinationName() {
+		return DbUtil.getDefinationName(name);
+	}
+
+	public String getVariableName() {
+		return DbUtil.getVariableName(name);
+	}
+
 	public Table setName(String name) {
 		this.name = name;
 		return this;

@@ -2,21 +2,9 @@ package org.sosostudio.dbunifier;
 
 public class Column {
 
-	public final static String TYPE_STRING = "string";
-
-	public final static String TYPE_NUMBER = "number";
-
-	public final static String TYPE_TIMESTAMP = "timestamp";
-
-	public final static String TYPE_CLOB = "clob";
-
-	public final static String TYPE_BLOB = "blob";
-
-	public final static String TYPE_UNKNOWN = "unknown";
-
 	private String name;
 
-	private String type;
+	private ColumnType type;
 
 	private int size = 50;
 
@@ -31,7 +19,7 @@ public class Column {
 	public Column() {
 	}
 
-	public Column(String name, String type, boolean nullable,
+	public Column(String name, ColumnType type, boolean nullable,
 			boolean isPrimaryKey) {
 		this.name = name;
 		this.type = type;
@@ -43,16 +31,24 @@ public class Column {
 		return name;
 	}
 
+	public String getDefinationName() {
+		return DbUtil.getDefinationName(name);
+	}
+
+	public String getVariableName() {
+		return DbUtil.getVariableName(name);
+	}
+
 	public Column setName(String name) {
 		this.name = name;
 		return this;
 	}
 
-	public String getType() {
+	public ColumnType getType() {
 		return type;
 	}
 
-	public Column setType(String type) {
+	public Column setType(ColumnType type) {
 		this.type = type;
 		return this;
 	}

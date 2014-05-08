@@ -2,14 +2,14 @@ package org.sosostudio.dbunifier;
 
 public class NullValue {
 
-	private String type;
+	private ColumnType type;
 
-	public NullValue(String type) {
+	public NullValue(ColumnType type) {
 		this.type = type;
 	}
 
-	public String getType() {
-		return this.type;
+	public ColumnType getType() {
+		return type;
 	}
 
 }

@@ -22,6 +22,7 @@ import java.util.Set;
 import org.sosostudio.dbunifier.feature.DbFeature;
 import org.sosostudio.dbunifier.oom.ConditionClause;
 import org.sosostudio.dbunifier.oom.DeleteSql;
+import org.sosostudio.dbunifier.oom.ExtraClause;
 import org.sosostudio.dbunifier.oom.InsertKeyValueClause;
 import org.sosostudio.dbunifier.oom.InsertSql;
 import org.sosostudio.dbunifier.oom.LogicalOp;
@@ -331,17 +332,17 @@ public class DbUnifier {
 					sb.append(", ");
 				}
 				sb.append(column.getName()).append(" ");
-				String type = column.getType();
-				if (Column.TYPE_STRING.equals(type)) {
+				ColumnType type = column.getType();
+				if (type == ColumnType.TYPE_STRING) {
 					sb.append(dbFeature.getStringDbType(column.getSize()));
-				} else if (Column.TYPE_NUMBER.equals(type)) {
+				} else if (type == ColumnType.TYPE_NUMBER) {
 					sb.append(dbFeature.getNumberDbType(column.getPrecision(),
 							column.getScale()));
-				} else if (Column.TYPE_TIMESTAMP.equals(type)) {
+				} else if (type == ColumnType.TYPE_TIMESTAMP) {
 					sb.append(dbFeature.getTimestampDbType());
-				} else if (Column.TYPE_CLOB.equals(type)) {
+				} else if (type == ColumnType.TYPE_CLOB) {
 					sb.append(dbFeature.getClobDbType());
-				} else if (Column.TYPE_BLOB.equals(type)) {
+				} else if (type == ColumnType.TYPE_BLOB) {
 					sb.append(dbFeature.getBlobDbType());
 				}
 				if (!column.getNullable()) {
@@ -455,15 +456,15 @@ public class DbUnifier {
 					String columnName = rsmd.getColumnLabel(i + 1);
 					columnName = columnName.toUpperCase();
 					int dataType = rsmd.getColumnType(i + 1);
-					String type = DbUtil.getColumnType(dataType);
+					ColumnType type = DbUtil.getColumnType(dataType);
 					Object value = null;
-					if (Column.TYPE_STRING.equals(type)) {
+					if (type == ColumnType.TYPE_STRING) {
 						value = rs.getString(i + 1);
-					} else if (Column.TYPE_NUMBER.equals(type)) {
+					} else if (type == ColumnType.TYPE_NUMBER) {
 						value = rs.getBigDecimal(i + 1);
-					} else if (Column.TYPE_TIMESTAMP.equals(type)) {
+					} else if (type == ColumnType.TYPE_TIMESTAMP) {
 						value = rs.getTimestamp(i + 1);
-					} else if (Column.TYPE_CLOB.equals(type)) {
+					} else if (type == ColumnType.TYPE_CLOB) {
 						if (containsLob) {
 							Reader reader = rs.getCharacterStream(i + 1);
 							if (reader != null) {
@@ -487,7 +488,7 @@ public class DbUnifier {
 								value = sw.getBuffer().toString();
 							}
 						}
-					} else if (Column.TYPE_BLOB.equals(type)) {
+					} else if (type == ColumnType.TYPE_BLOB) {
 						if (containsLob) {
 							InputStream is = rs.getBinaryStream(i + 1);
 							if (is != null) {
@@ -573,15 +574,15 @@ public class DbUnifier {
 					String columnName = rsmd.getColumnLabel(i + 1);
 					columnName = columnName.toUpperCase();
 					int dataType = rsmd.getColumnType(i + 1);
-					String type = DbUtil.getColumnType(dataType);
+					ColumnType type = DbUtil.getColumnType(dataType);
 					Object value = null;
-					if (Column.TYPE_STRING.equals(type)) {
+					if (type == ColumnType.TYPE_STRING) {
 						value = rs.getString(i + 1);
-					} else if (Column.TYPE_NUMBER.equals(type)) {
+					} else if (type == ColumnType.TYPE_NUMBER) {
 						value = rs.getBigDecimal(i + 1);
-					} else if (Column.TYPE_TIMESTAMP.equals(type)) {
+					} else if (type == ColumnType.TYPE_TIMESTAMP) {
 						value = rs.getTimestamp(i + 1);
-					} else if (Column.TYPE_CLOB.equals(type)) {
+					} else if (type == ColumnType.TYPE_CLOB) {
 						if (containsLob) {
 							Reader reader = rs.getCharacterStream(i + 1);
 							if (reader != null) {
@@ -605,7 +606,7 @@ public class DbUnifier {
 								value = sw.getBuffer().toString();
 							}
 						}
-					} else if (Column.TYPE_BLOB.equals(type)) {
+					} else if (type == ColumnType.TYPE_BLOB) {
 						if (containsLob) {
 							InputStream is = rs.getBinaryStream(i + 1);
 							if (is != null) {
@@ -672,6 +673,11 @@ public class DbUnifier {
 				values.addValues(cc.getValues());
 			}
 		}
+		ExtraClause ec = selectSql.getExtraClause();
+		if (ec != null) {
+			sb.append(" ").append(ec.getClause());
+			values.addValues(ec.getValues());
+		}
 		OrderByClause obc = selectSql.getOrderByClause();
 		if (obc != null) {
 			String clause = obc.getClause();
@@ -700,6 +706,11 @@ public class DbUnifier {
 				sb.append(" where ").append(clause);
 				values.addValues(cc.getValues());
 			}
+		}
+		ExtraClause ec = selectSql.getExtraClause();
+		if (ec != null) {
+			sb.append(" ").append(ec.getClause());
+			values.addValues(ec.getValues());
 		}
 		OrderByClause obc = selectSql.getOrderByClause();
 		if (obc != null) {
@@ -954,9 +965,9 @@ public class DbUnifier {
 				Table table = getTable("SYS_SEQ");
 				if (table == null) {
 					table = new Table("SYS_SEQ").addColumn(
-							new Column("ST_SEQ_NAME", Column.TYPE_STRING,
+							new Column("ST_SEQ_NAME", ColumnType.TYPE_STRING,
 									false, true)).addColumn(
-							new Column("NM_SEQ_VALUE", Column.TYPE_NUMBER,
+							new Column("NM_SEQ_VALUE", ColumnType.TYPE_NUMBER,
 									false, false));
 					createTable(table);
 					existsSequenceTable = true;

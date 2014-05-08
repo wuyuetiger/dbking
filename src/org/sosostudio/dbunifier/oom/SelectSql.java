@@ -8,6 +8,8 @@ public class SelectSql {
 
 	private ConditionClause conditionClause;
 
+	private ExtraClause extraClause;
+
 	private OrderByClause orderByClause;
 
 	public String getTableName() {
@@ -34,6 +36,15 @@ public class SelectSql {
 
 	public SelectSql setConditionClause(ConditionClause conditionClause) {
 		this.conditionClause = conditionClause;
+		return this;
+	}
+
+	public ExtraClause getExtraClause() {
+		return extraClause;
+	}
+
+	public SelectSql setExtraClause(ExtraClause extraClause) {
+		this.extraClause = extraClause;
 		return this;
 	}
 

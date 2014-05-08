@@ -13,7 +13,7 @@ public class Values {
 		return valueList;
 	}
 
-	private Values addNullValue(String type) {
+	private Values addNullValue(ColumnType type) {
 		NullValue nullValue = new NullValue(type);
 		valueList.add(nullValue);
 		return this;
@@ -21,7 +21,7 @@ public class Values {
 
 	public Values addStringValue(String stringValue) {
 		if (stringValue == null) {
-			return addNullValue(Column.TYPE_STRING);
+			return addNullValue(ColumnType.TYPE_STRING);
 		} else {
 			valueList.add(stringValue);
 			return this;
@@ -30,7 +30,7 @@ public class Values {
 
 	public Values addNumberValue(BigDecimal numberValue) {
 		if (numberValue == null) {
-			return addNullValue(Column.TYPE_NUMBER);
+			return addNullValue(ColumnType.TYPE_NUMBER);
 		} else {
 			valueList.add(numberValue);
 			return this;
@@ -39,7 +39,7 @@ public class Values {
 
 	public Values addTimestampValue(Timestamp timestampValue) {
 		if (timestampValue == null) {
-			return addNullValue(Column.TYPE_TIMESTAMP);
+			return addNullValue(ColumnType.TYPE_TIMESTAMP);
 		} else {
 			valueList.add(timestampValue);
 			return this;
@@ -48,7 +48,7 @@ public class Values {
 
 	public Values addClobValue(String clobValue) {
 		if (clobValue == null) {
-			return addNullValue(Column.TYPE_CLOB);
+			return addNullValue(ColumnType.TYPE_CLOB);
 		} else {
 			valueList.add(clobValue.toCharArray());
 			return this;
@@ -57,7 +57,7 @@ public class Values {
 
 	public Values addBlobValue(byte[] blobValue) {
 		if (blobValue == null) {
-			return addNullValue(Column.TYPE_BLOB);
+			return addNullValue(ColumnType.TYPE_BLOB);
 		} else {
 			valueList.add(blobValue);
 			return this;

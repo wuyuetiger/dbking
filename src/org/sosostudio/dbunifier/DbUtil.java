@@ -46,55 +46,55 @@ public class DbUtil {
 		}
 	}
 
-	public static String getColumnType(int dataType) {
+	public static ColumnType getColumnType(int dataType) {
 		if (dataType == Types.VARCHAR) {
-			return Column.TYPE_STRING;
+			return ColumnType.TYPE_STRING;
 		} else if (dataType == Types.LONGVARCHAR) {
-			return Column.TYPE_STRING;
+			return ColumnType.TYPE_STRING;
 		} else if (dataType == Types.NVARCHAR) {
-			return Column.TYPE_STRING;
+			return ColumnType.TYPE_STRING;
 		} else if (dataType == Types.CHAR) {
-			return Column.TYPE_STRING;
+			return ColumnType.TYPE_STRING;
 		} else if (dataType == Types.INTEGER) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.BIGINT) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.SMALLINT) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.TINYINT) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.FLOAT) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.DOUBLE) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.DECIMAL) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.REAL) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.NUMERIC) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.BIT) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.BOOLEAN) {
-			return Column.TYPE_NUMBER;
+			return ColumnType.TYPE_NUMBER;
 		} else if (dataType == Types.TIMESTAMP) {
-			return Column.TYPE_TIMESTAMP;
+			return ColumnType.TYPE_TIMESTAMP;
 		} else if (dataType == Types.DATE) {
-			return Column.TYPE_TIMESTAMP;
+			return ColumnType.TYPE_TIMESTAMP;
 		} else if (dataType == Types.TIME) {
-			return Column.TYPE_TIMESTAMP;
+			return ColumnType.TYPE_TIMESTAMP;
 		} else if (dataType == Types.BLOB) {
-			return Column.TYPE_BLOB;
+			return ColumnType.TYPE_BLOB;
 		} else if (dataType == Types.BINARY) {
-			return Column.TYPE_BLOB;
+			return ColumnType.TYPE_BLOB;
 		} else if (dataType == Types.VARBINARY) {
-			return Column.TYPE_BLOB;
+			return ColumnType.TYPE_BLOB;
 		} else if (dataType == Types.LONGVARBINARY) {
-			return Column.TYPE_BLOB;
+			return ColumnType.TYPE_BLOB;
 		} else if (dataType == Types.CLOB) {
-			return Column.TYPE_CLOB;
+			return ColumnType.TYPE_CLOB;
 		} else {
-			return Column.TYPE_UNKNOWN;
+			return ColumnType.TYPE_UNKNOWN;
 		}
 	}
 
@@ -106,16 +106,16 @@ public class DbUtil {
 			Object value = valueList.get(i);
 			if (value instanceof NullValue) {
 				NullValue nullValue = (NullValue) value;
-				String type = nullValue.getType();
-				if (Column.TYPE_STRING.equals(type)) {
+				ColumnType type = nullValue.getType();
+				if (type == ColumnType.TYPE_STRING) {
 					ps.setString(pos, null);
-				} else if (Column.TYPE_NUMBER.equals(type)) {
+				} else if (type == ColumnType.TYPE_NUMBER) {
 					ps.setBigDecimal(pos, null);
-				} else if (Column.TYPE_TIMESTAMP.equals(type)) {
+				} else if (type == ColumnType.TYPE_TIMESTAMP) {
 					ps.setTimestamp(pos, null);
-				} else if (Column.TYPE_CLOB.equals(type)) {
+				} else if (type == ColumnType.TYPE_CLOB) {
 					ps.setCharacterStream(pos, null, 0);
-				} else if (Column.TYPE_BLOB.equals(type)) {
+				} else if (type == ColumnType.TYPE_BLOB) {
 					ps.setBinaryStream(pos, null, 0);
 				}
 			} else if (value instanceof String) {
@@ -161,6 +161,32 @@ public class DbUtil {
 		if (DbXmlConfig.showSql) {
 			System.out.println(sb.toString());
 		}
+	}
+
+	private static String getName(String name, boolean first) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < name.length(); i++) {
+			char ch = name.charAt(i);
+			if (ch == '_') {
+				first = true;
+				continue;
+			}
+			if (first) {
+				sb.append(Character.toUpperCase(ch));
+				first = false;
+			} else {
+				sb.append(Character.toLowerCase(ch));
+			}
+		}
+		return sb.toString();
+	}
+
+	public static String getDefinationName(String name) {
+		return getName(name, true);
+	}
+
+	public static String getVariableName(String name) {
+		return getName(name, false);
 	}
 
 }

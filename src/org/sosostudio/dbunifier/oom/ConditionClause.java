@@ -19,8 +19,7 @@ public class ConditionClause {
 		this.logicalOp = logicalOp;
 	}
 
-	private ConditionClause addClause(String columnName, RelationOp relationOp,
-			Object value) {
+	private void setLogicalOp() {
 		if (sb.length() > 0) {
 			if (logicalOp == LogicalOp.AND) {
 				sb.append(" and ");
@@ -28,6 +27,11 @@ public class ConditionClause {
 				sb.append(" or ");
 			}
 		}
+	}
+
+	private ConditionClause addClause(String columnName, RelationOp relationOp,
+			Object value) {
+		setLogicalOp();
 		sb.append(columnName).append(" ");
 		if (relationOp == RelationOp.EQUAL) {
 			if (value == null) {
@@ -97,13 +101,7 @@ public class ConditionClause {
 
 	private ConditionClause addClause(String columnName, SetOp setOp,
 			Collection<? extends Object> collection) {
-		if (sb.length() > 0) {
-			if (logicalOp == LogicalOp.AND) {
-				sb.append(" and");
-			} else if (logicalOp == LogicalOp.OR) {
-				sb.append(" or");
-			}
-		}
+		setLogicalOp();
 		sb.append(columnName).append(" ");
 		if (setOp == SetOp.IN) {
 			if (collection != null) {
@@ -163,6 +161,20 @@ public class ConditionClause {
 	public ConditionClause addTimestampClause(String columnName, SetOp setOp,
 			Collection<Timestamp> timestampCollection) {
 		return addClause(columnName, setOp, timestampCollection);
+	}
+
+	public ConditionClause addClause(ConditionClause conditionClause) {
+		setLogicalOp();
+		sb.append("(").append(conditionClause.toString()).append(")");
+		values.addValues(conditionClause.getValues());
+		return this;
+	}
+
+	public ConditionClause addClause(String clause, Values values) {
+		setLogicalOp();
+		sb.append(clause);
+		values.addValues(values);
+		return this;
 	}
 
 	public String getClause() {
