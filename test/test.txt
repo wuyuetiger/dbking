@@ -1,60 +1,60 @@
-	¡¶¼ÒÓÃµçÄÔ¡·04ÄêµÚÈýÆÚÉÏÓÐÒ»Æª¡¶É÷Ñ¡ÒÆ¶¯°æÀ×Äñ1.2G¡·µÄÎÄÕÂ£¬ÎÒ¾õµÃµ±ÖÐÓÐ²»ÉÙÖµµÃÉÌÈ¶µÄÎÊÌâ£¬ÓÐ±ØÒªÄÃ³öÀ´¸úÖÚ¶àAMDµÄ°®ºÃÕßÒ»Í¬·ÖÏí¡£
-	ÊÐ³¡ÉÏAthlon 1.2GÐ¾Æ¬Ò»°ãÓÐÁ½ÖÖ£¬Ò»ÖÖ²ÉÓÃµÄÊÇ100ÍâÆµ12±¶ÆµPalaminoºËÐÄ£¬ÁíÒ»ÖÖÔò²ÉÓÃµÄÊÇ133ÍâÆµ9±¶ÆµThunderbirdºËÐÄ¡£¶ÔÓÚÒ»Ð©½ÏÀÏµÄÓÃ»§À´Ëµ£¬ÓÃµÄ¿ÉÄÜ»¹ÊÇKT133µÄ°å×Ó£¬±ÈÈçËµÎÒ£¬ÓÃµÄÊÇË¶Ì©¿ËSL-75KV2-X¡£ÕâÖÖKT133Ð¾Æ¬×éµÄÖ÷°åÖ»ÄÜÖ§³Ö100ÍâÆµµÄDuron»òAthlonÐ¾Æ¬£¬¶øÖ÷°åµÄÌøÏß×î¶àÒ²Ö»ÄÜÖ§³Ö12.5±¶Æµ£¬ËùÒÔÄÜ´îÅäµÄCPUÖ÷Æµ¼«ÏÞÒ²¾ÍÊÇ1250MHz¡£¾ÝÎÒËùÖª£¬AMDµÄ100ÍâÆµÏµÁÐCPUÖÐ×î¸ßÒ²¾ÍÊÇAthlon 1.4G£¬ÏÔÈ»Õâ¶ÔÓÚKT133µÄ°å×ÓÊÇºÜÀË·ÑµÄ£¬ÒòÎªËüÖ»ÄÜµ±1.25GÊ¹ÓÃ¡£¶øAthlon Palamino 4 ÒÆ¶¯Ð¾Æ¬£¨Athlon MPµÄÇ°Éí£©£¬256K¸ßËÙ¶þ¼¶»º´æ£¬ÔòÊÇ´îÅä´ËÖ÷°å×îÎªÀíÏëµÄ×éºÏ£¬ÒòÎª×÷ÎªÒ»¿îÒÆ¶¯Ð¾Æ¬ËüµÄ¶î¶¨µçÑ¹²Å 1.4V£¨ÎÒ²âÊÔÏÂÀ´ÔÚ1.6V²ÅÄÜÎÈ¶¨ÔËÐÐ3DMark 2001£¬Ë¶Ì©¿Ë¹Ù·½ÍøÕ¾½âÊÍÕâÊÇÌ¨Ê½»úÖ÷°åµÄÔµ¹Ê£©£¬ÉÔ¼ÓµçÑ¹¼´¿É½«±¶Æµ³¬µ½12.5±¶£¬³¬ÍâÆµºÃÏóºÜÀ§ÄÑ£¬ÎÒ¼ÓÑ¹µ½1.75V£¬²ÅÃãÇ¿½«ÍâÆµ³¬µ½104MHz£¬ÅäºÏ±¶Æµ´ïµ½ÁË1.3G£¨Á¬ÐøÍæ3DÓÎÏ·Á½¸öÐ¡Ê±ÎÂ¶ÈÔÚ60¶È×óÓÒ£©£¬3DMark 2001²âÊÔµÃ·Ö£¬ÓëÎÒÓÃDuron 750Ê±Ïà±È£¬´Ó32XX·Ö´ÜÉýµ½49XX·Ö£¬Ò²ËãÊÇÎï¾¡ÆäÓÃÁË¡£Èç¹ûÊÇKT133AÐ¾Æ¬×éµÄÓÃ»§£¬¿ÉÒÔµ½Ö÷°å³§ÉÌ´¦×ÉÑ¯Ò»ÏÂ£¬ÓÐÐ©½ÏºÃµÄ°å¿¨ÔÚÉý¼¶ÁËbiosÖ®ºóÉõÖÁÄÜÉÏDuron 1.8G»òAthlon XP 2600+£¬ÕæÊÇÏÛÉ·ÎÒµÈ°¡¡£
-	ÌýÁËÎÒÕâ·¬²ûÊöÏëÉý¼¶Õâ¿îCPUµÄ»°£¬¾ÍÒª×¢ÒâÁË£¬²»ÉÙJS¶¼»Ñ³ÆAthlon Palamino 4ÎªThunderbird£¨À×Äñ£©£¬ÓÉÓÚÀ×ÄñÃûÉùÔÚÍâ£¬ºÜ½ÐµÃÏì£¬ËùÒÔ×ÜÓÐ¹ÒÑòÍ·Âô¹·ÈâµÄÊÂ·¢Éú¡£Èç¹ûÄãµÄÖ÷°åÖ§³Ö133ÍâÆµµÄ»°£¬ÕâÁ½ÖÖÐ¾Æ¬¶¼ÄÜÓÃ£¬²»¹ýºÃÏóÃ»±ØÒªÉýÕâÑùµÄ¼¦Àß°É¡£Èç¹ûÄãµÄÖ÷°åÖ»Ö§³Ö100ÍâÆµµÄ»°¾ÍÒªÐ¡ÐÄÁË£¬ÂòÁËÀ×Äñ1.2G»ØÈ¥£¬Ö»ÄÜ½µÆµµ±³ÉAthlon 900ÓÃÁË£¬ËùÒÔÒ»¶¨ÒªÎÊÇå³þÂô¼Ò¡£Èç¹ûÅöµ½JSÔõÃ´°ì°¡£¿Ã»¹ØÏµ£¬ÎÒÃÇ¿ÉÒÔÍ¨¹ý±æÊ¶CPUÉÏµÄOPN±êÊ¶À´¿´ÇåCPUµÄ±¾ÖÊ£¨µ±È»»¹ÒªÌá·À´òÄ¥Æ·£©£¬ÏÂÃæ¾Í¸ø´ó¼Ò½éÉÜÒ»ÏÂOPN¸÷¸ö×ÖÄ¸ºÍÊý×ÖµÄ¾ßÌåº¬Òå¡£
-	¾Ù¸öÀý×Ó£¬Ä³AMD CPU±àºÅÎªAXDA2700DKV3D¡£
+	ã€Šå®¶ç”¨ç”µè„‘ã€‹04å¹´ç¬¬ä¸‰æœŸä¸Šæœ‰ä¸€ç¯‡ã€Šæ…Žé€‰ç§»åŠ¨ç‰ˆé›·é¸Ÿ1.2Gã€‹çš„æ–‡ç« ï¼Œæˆ‘è§‰å¾—å½“ä¸­æœ‰ä¸å°‘å€¼å¾—å•†æ¦·çš„é—®é¢˜ï¼Œæœ‰å¿…è¦æ‹¿å‡ºæ¥è·Ÿä¼—å¤šAMDçš„çˆ±å¥½è€…ä¸€åŒåˆ†äº«ã€‚
+	å¸‚åœºä¸ŠAthlon 1.2GèŠ¯ç‰‡ä¸€èˆ¬æœ‰ä¸¤ç§ï¼Œä¸€ç§é‡‡ç”¨çš„æ˜¯100å¤–é¢‘12å€é¢‘Palaminoæ ¸å¿ƒï¼Œå¦ä¸€ç§åˆ™é‡‡ç”¨çš„æ˜¯133å¤–é¢‘9å€é¢‘Thunderbirdæ ¸å¿ƒã€‚å¯¹äºŽä¸€äº›è¾ƒè€çš„ç”¨æˆ·æ¥è¯´ï¼Œç”¨çš„å¯èƒ½è¿˜æ˜¯KT133çš„æ¿å­ï¼Œæ¯”å¦‚è¯´æˆ‘ï¼Œç”¨çš„æ˜¯ç¡•æ³°å…‹SL-75KV2-Xã€‚è¿™ç§KT133èŠ¯ç‰‡ç»„çš„ä¸»æ¿åªèƒ½æ”¯æŒ100å¤–é¢‘çš„Duronæˆ–AthlonèŠ¯ç‰‡ï¼Œè€Œä¸»æ¿çš„è·³çº¿æœ€å¤šä¹Ÿåªèƒ½æ”¯æŒ12.5å€é¢‘ï¼Œæ‰€ä»¥èƒ½æ­é…çš„CPUä¸»é¢‘æžé™ä¹Ÿå°±æ˜¯1250MHzã€‚æ®æˆ‘æ‰€çŸ¥ï¼ŒAMDçš„100å¤–é¢‘ç³»åˆ—CPUä¸­æœ€é«˜ä¹Ÿå°±æ˜¯Athlon 1.4Gï¼Œæ˜¾ç„¶è¿™å¯¹äºŽKT133çš„æ¿å­æ˜¯å¾ˆæµªè´¹çš„ï¼Œå› ä¸ºå®ƒåªèƒ½å½“1.25Gä½¿ç”¨ã€‚è€ŒAthlon Palamino 4 ç§»åŠ¨èŠ¯ç‰‡ï¼ˆAthlon MPçš„å‰èº«ï¼‰ï¼Œ256Ké«˜é€ŸäºŒçº§ç¼“å­˜ï¼Œåˆ™æ˜¯æ­é…æ­¤ä¸»æ¿æœ€ä¸ºç†æƒ³çš„ç»„åˆï¼Œå› ä¸ºä½œä¸ºä¸€æ¬¾ç§»åŠ¨èŠ¯ç‰‡å®ƒçš„é¢å®šç”µåŽ‹æ‰ 1.4Vï¼ˆæˆ‘æµ‹è¯•ä¸‹æ¥åœ¨1.6Væ‰èƒ½ç¨³å®šè¿è¡Œ3DMark 2001ï¼Œç¡•æ³°å…‹å®˜æ–¹ç½‘ç«™è§£é‡Šè¿™æ˜¯å°å¼æœºä¸»æ¿çš„ç¼˜æ•…ï¼‰ï¼Œç¨åŠ ç”µåŽ‹å³å¯å°†å€é¢‘è¶…åˆ°12.5å€ï¼Œè¶…å¤–é¢‘å¥½è±¡å¾ˆå›°éš¾ï¼Œæˆ‘åŠ åŽ‹åˆ°1.75Vï¼Œæ‰å‹‰å¼ºå°†å¤–é¢‘è¶…åˆ°104MHzï¼Œé…åˆå€é¢‘è¾¾åˆ°äº†1.3Gï¼ˆè¿žç»­çŽ©3Dæ¸¸æˆä¸¤ä¸ªå°æ—¶æ¸©åº¦åœ¨60åº¦å·¦å³ï¼‰ï¼Œ3DMark 2001æµ‹è¯•å¾—åˆ†ï¼Œä¸Žæˆ‘ç”¨Duron 750æ—¶ç›¸æ¯”ï¼Œä»Ž32XXåˆ†çªœå‡åˆ°49XXåˆ†ï¼Œä¹Ÿç®—æ˜¯ç‰©å°½å…¶ç”¨äº†ã€‚å¦‚æžœæ˜¯KT133AèŠ¯ç‰‡ç»„çš„ç”¨æˆ·ï¼Œå¯ä»¥åˆ°ä¸»æ¿åŽ‚å•†å¤„å’¨è¯¢ä¸€ä¸‹ï¼Œæœ‰äº›è¾ƒå¥½çš„æ¿å¡åœ¨å‡çº§äº†biosä¹‹åŽç”šè‡³èƒ½ä¸ŠDuron 1.8Gæˆ–Athlon XP 2600+ï¼ŒçœŸæ˜¯ç¾¡ç…žæˆ‘ç­‰å•Šã€‚
+	å¬äº†æˆ‘è¿™ç•ªé˜è¿°æƒ³å‡çº§è¿™æ¬¾CPUçš„è¯ï¼Œå°±è¦æ³¨æ„äº†ï¼Œä¸å°‘JSéƒ½è°Žç§°Athlon Palamino 4ä¸ºThunderbirdï¼ˆé›·é¸Ÿï¼‰ï¼Œç”±äºŽé›·é¸Ÿåå£°åœ¨å¤–ï¼Œå¾ˆå«å¾—å“ï¼Œæ‰€ä»¥æ€»æœ‰æŒ‚ç¾Šå¤´å–ç‹—è‚‰çš„äº‹å‘ç”Ÿã€‚å¦‚æžœä½ çš„ä¸»æ¿æ”¯æŒ133å¤–é¢‘çš„è¯ï¼Œè¿™ä¸¤ç§èŠ¯ç‰‡éƒ½èƒ½ç”¨ï¼Œä¸è¿‡å¥½è±¡æ²¡å¿…è¦å‡è¿™æ ·çš„é¸¡è‚‹å§ã€‚å¦‚æžœä½ çš„ä¸»æ¿åªæ”¯æŒ100å¤–é¢‘çš„è¯å°±è¦å°å¿ƒäº†ï¼Œä¹°äº†é›·é¸Ÿ1.2Gå›žåŽ»ï¼Œåªèƒ½é™é¢‘å½“æˆAthlon 900ç”¨äº†ï¼Œæ‰€ä»¥ä¸€å®šè¦é—®æ¸…æ¥šå–å®¶ã€‚å¦‚æžœç¢°åˆ°JSæ€Žä¹ˆåŠžå•Šï¼Ÿæ²¡å…³ç³»ï¼Œæˆ‘ä»¬å¯ä»¥é€šè¿‡è¾¨è¯†CPUä¸Šçš„OPNæ ‡è¯†æ¥çœ‹æ¸…CPUçš„æœ¬è´¨ï¼ˆå½“ç„¶è¿˜è¦æé˜²æ‰“ç£¨å“ï¼‰ï¼Œä¸‹é¢å°±ç»™å¤§å®¶ä»‹ç»ä¸€ä¸‹OPNå„ä¸ªå­—æ¯å’Œæ•°å­—çš„å…·ä½“å«ä¹‰ã€‚
+	ä¸¾ä¸ªä¾‹å­ï¼ŒæŸAMD CPUç¼–å·ä¸ºAXDA2700DKV3Dã€‚
 
-	µÚÒ»²¿·ÖAXDAÎª´¦ÀíÆ÷ºËÐÄ¼¼Êõ£¬ÓÐÒÔÏÂÒ»Ð©È¡Öµ£º
-	AXDA£¨AMD Athlon XP 0.13¦Ìm£©
-	AX£¨AMD Athlon XP 0.18¦Ìm£©
-	AMSN£¨AMD Athlon MP 0.13¦Ìm£©
-	AMP/AHX£¨AMD Athlon MP 0.18¦Ìm£©
-	K7/A£¨AMD Athlon 0.18¦Ìm£©
-	AHM£¨Mobile AMD Athlon 4 0.18¦Ìm£©
-	AXMS/AXMD/AXDH£¨Mobile AMD Athlon XP 0.13¦Ìm£©
-	D/DHD/DHM/DHL£¨AMD Duron 0.18¦Ìm£©
+	ç¬¬ä¸€éƒ¨åˆ†AXDAä¸ºå¤„ç†å™¨æ ¸å¿ƒæŠ€æœ¯ï¼Œæœ‰ä»¥ä¸‹ä¸€äº›å–å€¼ï¼š
+	AXDAï¼ˆAMD Athlon XP 0.13Î¼mï¼‰
+	AXï¼ˆAMD Athlon XP 0.18Î¼mï¼‰
+	AMSNï¼ˆAMD Athlon MP 0.13Î¼mï¼‰
+	AMP/AHXï¼ˆAMD Athlon MP 0.18Î¼mï¼‰
+	K7/Aï¼ˆAMD Athlon 0.18Î¼mï¼‰
+	AHMï¼ˆMobile AMD Athlon 4 0.18Î¼mï¼‰
+	AXMS/AXMD/AXDHï¼ˆMobile AMD Athlon XP 0.13Î¼mï¼‰
+	D/DHD/DHM/DHLï¼ˆAMD Duron 0.18Î¼mï¼‰
 
-	µÚ¶þ²¿·Ö2700ÎªÄ£¿é±àºÅ£¬µÍÓÚ1400µÄÄ£¿é±àºÅµÈÓÚCPUµÄÖ÷Æµ£¬Ö÷ÓÚ1400µÄÒ»°ã¶¼ÊÇCPUµÄ±ê³ÆÖµ¡£
+	ç¬¬äºŒéƒ¨åˆ†2700ä¸ºæ¨¡å—ç¼–å·ï¼Œä½ŽäºŽ1400çš„æ¨¡å—ç¼–å·ç­‰äºŽCPUçš„ä¸»é¢‘ï¼Œä¸»äºŽ1400çš„ä¸€èˆ¬éƒ½æ˜¯CPUçš„æ ‡ç§°å€¼ã€‚
 
-	µÚÈý²¿·ÖD±íÊ¾CPUµÄ·â×°·½Ê½
-	A£¨CPGA£©
-	B£¨OBGA£©
-	D/F£¨OPGA£©
-	E/G£¨uPGA£©
+	ç¬¬ä¸‰éƒ¨åˆ†Dè¡¨ç¤ºCPUçš„å°è£…æ–¹å¼
+	Aï¼ˆCPGAï¼‰
+	Bï¼ˆOBGAï¼‰
+	D/Fï¼ˆOPGAï¼‰
+	E/Gï¼ˆuPGAï¼‰
 
-	µÚËÄ²¿·ÖK±íÊ¾¶î¶¨ºËÐÄµçÑ¹
-	Y£¨1.10V£©
-	C£¨1.15V£©
-	T£¨1.20V£©
-	X£¨1.25V£©
-	W£¨1.30V£©
-	J£¨1.35V£©
-	V£¨1.40V£©
-	Q£¨1.45V£©
-	L£¨1.50V£©
-	H£¨1.55V£©
-	U£¨1.60V£©
-	K£¨1.65V£©
-	P£¨1.70V£©
-	M£¨1.75V£©
-	N£¨1.80V£©
+	ç¬¬å››éƒ¨åˆ†Kè¡¨ç¤ºé¢å®šæ ¸å¿ƒç”µåŽ‹
+	Yï¼ˆ1.10Vï¼‰
+	Cï¼ˆ1.15Vï¼‰
+	Tï¼ˆ1.20Vï¼‰
+	Xï¼ˆ1.25Vï¼‰
+	Wï¼ˆ1.30Vï¼‰
+	Jï¼ˆ1.35Vï¼‰
+	Vï¼ˆ1.40Vï¼‰
+	Qï¼ˆ1.45Vï¼‰
+	Lï¼ˆ1.50Vï¼‰
+	Hï¼ˆ1.55Vï¼‰
+	Uï¼ˆ1.60Vï¼‰
+	Kï¼ˆ1.65Vï¼‰
+	Pï¼ˆ1.70Vï¼‰
+	Mï¼ˆ1.75Vï¼‰
+	Nï¼ˆ1.80Vï¼‰
 
-	µÚÎå²¿·ÖV±íÊ¾×î¸ß³ÐÊÜÎÂ¶È
-	R£¨70ÉãÊÏ¶È£©
-	V£¨85ÉãÊÏ¶È£©
-	T£¨90ÉãÊÏ¶È£©
-	S£¨95ÉãÊÏ¶È£©
-	Q£¨100ÉãÊÏ¶È£©
+	ç¬¬äº”éƒ¨åˆ†Vè¡¨ç¤ºæœ€é«˜æ‰¿å—æ¸©åº¦
+	Rï¼ˆ70æ‘„æ°åº¦ï¼‰
+	Vï¼ˆ85æ‘„æ°åº¦ï¼‰
+	Tï¼ˆ90æ‘„æ°åº¦ï¼‰
+	Sï¼ˆ95æ‘„æ°åº¦ï¼‰
+	Qï¼ˆ100æ‘„æ°åº¦ï¼‰
 
-	µÚÁù²¿·Ö3±íÊ¾¶þ¼¶»º´æµÄ´óÐ¡
-	1£¨64K£©
-	2£¨128K£©
-	3£¨256K£©
-	4£¨512K£©
+	ç¬¬å…­éƒ¨åˆ†3è¡¨ç¤ºäºŒçº§ç¼“å­˜çš„å¤§å°
+	1ï¼ˆ64Kï¼‰
+	2ï¼ˆ128Kï¼‰
+	3ï¼ˆ256Kï¼‰
+	4ï¼ˆ512Kï¼‰
 
-	µÚÆß²¿·Ö±íÊ¾ÍâÆµ´óÐ¡
-	B£¨100MHz£©
-	C£¨266MHz£©
-	D£¨333MHz£©
-	E£¨400MHz£©
+	ç¬¬ä¸ƒéƒ¨åˆ†è¡¨ç¤ºå¤–é¢‘å¤§å°
+	Bï¼ˆ100MHzï¼‰
+	Cï¼ˆ266MHzï¼‰
+	Dï¼ˆ333MHzï¼‰
+	Eï¼ˆ400MHzï¼‰
 
-	ÏÖÔÚÄÃ³öÄãµÄAthlon£¬¿´¿´ËüµÄÂ®É½ÕæÃæÄ¿°É¡£
+	çŽ°åœ¨æ‹¿å‡ºä½ çš„Athlonï¼Œçœ‹çœ‹å®ƒçš„åºå±±çœŸé¢ç›®å§ã€‚

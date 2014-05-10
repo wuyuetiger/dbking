@@ -1,6 +1,7 @@
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -232,7 +233,10 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	public void testClob(String typeName) {
-		testClob(typeName, new String(getFile("test.txt")));
+		try {
+			testClob(typeName, new String(getFile("test.txt"), "UTF-8"));
+		} catch (UnsupportedEncodingException e) {
+		}
 	}
 
 	public void testSmallClob(String typeName) {

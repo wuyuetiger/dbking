@@ -3,8 +3,8 @@
 	<show_sql>true</show_sql>
 	<mode>1</mode>
 	<database_driver>com.mysql.jdbc.Driver</database_driver>
-	<database_url>jdbc:mysql://localhost:3306/coral</database_url>
+	<database_url>jdbc:mysql://localhost:3306/test</database_url>
 	<username>root</username>
-	<password>hakdfha</password>
+	<password>55780029</password>
 	<jndi>java:test</jndi>
 </db-unifier>
