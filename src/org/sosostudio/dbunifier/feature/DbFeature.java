@@ -6,9 +6,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.sosostudio.dbunifier.DbUnifierException;
-import org.sosostudio.dbunifier.DbUtil;
 import org.sosostudio.dbunifier.Values;
+import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.DbUtil;
 
 public abstract class DbFeature {
 

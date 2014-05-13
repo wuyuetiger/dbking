@@ -1,3 +1,4 @@
+package org.sosostudio.dbunifier.test;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,7 +14,6 @@ import org.junit.Test;
 import org.sosostudio.dbunifier.Column;
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.DbUnifier;
-import org.sosostudio.dbunifier.DbUnifierException;
 import org.sosostudio.dbunifier.Row;
 import org.sosostudio.dbunifier.RowSet;
 import org.sosostudio.dbunifier.Table;
@@ -27,6 +27,7 @@ import org.sosostudio.dbunifier.oom.RelationOp;
 import org.sosostudio.dbunifier.oom.SelectSql;
 import org.sosostudio.dbunifier.oom.UpdateKeyValueClause;
 import org.sosostudio.dbunifier.oom.UpdateSql;
+import org.sosostudio.dbunifier.util.DbUnifierException;
 
 public abstract class BaseTester extends TestCase {
 

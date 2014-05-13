@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.sosostudio.dbunifier.DbUnifier;
-import org.sosostudio.dbunifier.DbUnifierException;
 import org.sosostudio.dbunifier.Table;
+import org.sosostudio.dbunifier.util.DbUnifierException;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;

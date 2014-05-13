@@ -1,8 +1,11 @@
+package org.sosostudio.dbunifier.test;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sosostudio.dbunifier.DbConfig;
 import org.sosostudio.dbunifier.DbUnifier;
+import org.sosostudio.dbunifier.dbsource.DbSource;
+import org.sosostudio.dbunifier.dbsource.JdbcDbSource;
 
 public class MySql5Tester extends BaseTester {
 
@@ -15,9 +18,9 @@ public class MySql5Tester extends BaseTester {
 	}
 
 	public void init() {
-		DbConfig config = new DbConfig("com.mysql.jdbc.Driver",
+		DbSource dbSource = new JdbcDbSource("com.mysql.jdbc.Driver",
 				"jdbc:mysql://localhost:3306/test", "root", "55780029");
-		unifier = new DbUnifier(config);
+		unifier = new DbUnifier(dbSource);
 	}
 
 	@Test

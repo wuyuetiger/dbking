@@ -1,9 +1,11 @@
 package org.sosostudio.dbunifier.pipe;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -20,16 +22,17 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.sosostudio.dbunifier.Column;
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.DbUnifier;
-import org.sosostudio.dbunifier.DbUnifierException;
-import org.sosostudio.dbunifier.DbUtil;
-import org.sosostudio.dbunifier.DbXmlConfig;
 import org.sosostudio.dbunifier.Table;
+import org.sosostudio.dbunifier.config.XmlConfig;
+import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.DbUtil;
 
 public class DbImporter {
 
@@ -37,10 +40,10 @@ public class DbImporter {
 
 	public static void main(String[] args) {
 		Connection con = null;
-		FileInputStream xmlis = null;
+		InputStream xmlis = null;
 		XMLEventReader xmlr = null;
 		try {
-			con = DbXmlConfig.dbConfig.getConnection();
+			con = XmlConfig.getDbSource("import").getConnection();
 			DbUnifier unifier = new DbUnifier(con);
 			// produce name mapping
 			Map<String, String> map = new HashMap<String, String>();
@@ -49,11 +52,13 @@ public class DbImporter {
 			for (Table table : tableList) {
 				tableMap.put(table.getName(), table);
 			}
-
+			// extract xml
 			XMLInputFactory xmlif = XMLInputFactory.newInstance();
-			xmlis = new FileInputStream("result/data.xml");
+			xmlis = new BufferedInputStream(new FileInputStream(
+					"result/data.xml"));
 			xmlr = xmlif.createXMLEventReader(xmlis, "UTF-8");
 
+			int rowCount = 0;
 			while (xmlr.hasNext()) {
 				try {
 					XMLEvent event = xmlr.nextEvent();
@@ -67,14 +72,17 @@ public class DbImporter {
 									new QName("s")).getValue();
 							map.put(s, n);
 						} else if ("t".equals(elementName)) {
+							rowCount++;
 							String tableSeq = element.getAttributeByName(
 									new QName("s")).getValue();
 							String tableName = map.get(tableSeq);
+							System.out.println(rowCount + " - " + tableName);
 							Table table = tableMap.get(tableName);
 							Map<String, String> valueMap = new HashMap<String, String>();
 							while (xmlr.hasNext()) {
 								XMLEvent event2 = xmlr.nextEvent();
-								if (event2.getEventType() == XMLStreamReader.START_ELEMENT) {
+								int eventType2 = event2.getEventType();
+								if (eventType2 == XMLStreamReader.START_ELEMENT) {
 									StartElement element2 = event2
 											.asStartElement();
 									String columnSeq = element2
@@ -90,6 +98,12 @@ public class DbImporter {
 										columnValue2 = vAttribute.getValue();
 									}
 									valueMap.put(columnName2, columnValue2);
+								} else if (eventType2 == XMLStreamReader.END_ELEMENT) {
+									EndElement element2 = event2.asEndElement();
+									if ("t".equals(element2.getName()
+											.getLocalPart())) {
+										break;
+									}
 								}
 							}
 							PipeSql pipeSql = getPipeSql(table, valueMap);
@@ -100,34 +114,35 @@ public class DbImporter {
 								PreparedStatement ps = null;
 								try {
 									ps = con.prepareStatement(insertSql);
-									for (int i = 0; i < nameTypeList.size(); i++) {
-										NameType nameType = nameTypeList.get(i);
+									for (int i = 1; i <= nameTypeList.size(); i++) {
+										NameType nameType = nameTypeList
+												.get(i - 1);
 										String columnName = nameType.getName();
 										String sValue = valueMap
 												.get(columnName);
 										ColumnType type = nameType.getType();
 										if (type == ColumnType.TYPE_STRING) {
-											ps.setString(i + 1, sValue);
+											ps.setString(i, sValue);
 										} else if (type == ColumnType.TYPE_NUMBER) {
 											if (sValue == null) {
-												ps.setBigDecimal(i + 1, null);
+												ps.setBigDecimal(i, null);
 											} else {
-												ps.setBigDecimal(i + 1,
+												ps.setBigDecimal(i,
 														new BigDecimal(sValue));
 											}
 										} else if (type == ColumnType.TYPE_TIMESTAMP) {
 											if (sValue == null) {
-												ps.setTimestamp(i + 1, null);
+												ps.setTimestamp(i, null);
 											} else {
 												ps.setTimestamp(
-														i + 1,
+														i,
 														new Timestamp(
 																Long.parseLong(sValue)));
 											}
 										} else if (type == ColumnType.TYPE_CLOB) {
 											if (sValue == null) {
-												ps.setCharacterStream(i + 1,
-														null, 0);
+												ps.setCharacterStream(i, null,
+														0);
 											} else {
 												FileInputStream is = null;
 												InputStreamReader reader = null;
@@ -137,8 +152,8 @@ public class DbImporter {
 															file);
 													reader = new InputStreamReader(
 															is);
-													ps.setCharacterStream(
-															i + 1, reader,
+													ps.setCharacterStream(i,
+															reader,
 															(int) file.length());
 												} finally {
 													try {
@@ -156,16 +171,14 @@ public class DbImporter {
 											}
 										} else if (type == ColumnType.TYPE_BLOB) {
 											if (sValue == null) {
-												ps.setBinaryStream(i + 1, null,
-														0);
+												ps.setBinaryStream(i, null, 0);
 											} else {
 												FileInputStream is = null;
 												try {
 													File file = new File(sValue);
 													is = new FileInputStream(
 															file);
-													ps.setBinaryStream(i + 1,
-															is,
+													ps.setBinaryStream(i, is,
 															(int) file.length());
 												} finally {
 													try {

@@ -1,5 +1,7 @@
 package org.sosostudio.dbunifier;
 
+import org.sosostudio.dbunifier.util.DbUtil;
+
 public class Column {
 
 	private String name;

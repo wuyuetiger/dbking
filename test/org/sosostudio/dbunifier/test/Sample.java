@@ -1,7 +1,10 @@
-import org.sosostudio.dbunifier.DbConfig;
+package org.sosostudio.dbunifier.test;
+
 import org.sosostudio.dbunifier.DbUnifier;
 import org.sosostudio.dbunifier.Row;
 import org.sosostudio.dbunifier.RowSet;
+import org.sosostudio.dbunifier.dbsource.DbSource;
+import org.sosostudio.dbunifier.dbsource.JdbcDbSource;
 import org.sosostudio.dbunifier.oom.Direction;
 import org.sosostudio.dbunifier.oom.OrderByClause;
 import org.sosostudio.dbunifier.oom.SelectSql;
@@ -9,9 +12,9 @@ import org.sosostudio.dbunifier.oom.SelectSql;
 public class Sample {
 
 	public static void main(String[] args) {
-		DbConfig config = new DbConfig("com.mysql.jdbc.Driver",
+		DbSource dbSource = new JdbcDbSource("com.mysql.jdbc.Driver",
 				"jdbc:mysql://localhost:3306/test", "root", "password");
-		DbUnifier unifier = new DbUnifier(config);
+		DbUnifier unifier = new DbUnifier(dbSource);
 		SelectSql selectSql = new SelectSql()
 				.setTableName("CS_USER")
 				.setColumns("*")

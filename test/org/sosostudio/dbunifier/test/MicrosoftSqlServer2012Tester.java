@@ -1,8 +1,11 @@
+package org.sosostudio.dbunifier.test;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sosostudio.dbunifier.DbConfig;
 import org.sosostudio.dbunifier.DbUnifier;
+import org.sosostudio.dbunifier.dbsource.DbSource;
+import org.sosostudio.dbunifier.dbsource.JdbcDbSource;
 
 public class MicrosoftSqlServer2012Tester extends BaseTester {
 
@@ -15,11 +18,11 @@ public class MicrosoftSqlServer2012Tester extends BaseTester {
 	}
 
 	public void init() {
-		DbConfig config = new DbConfig(
+		DbSource dbSource = new JdbcDbSource(
 				"com.microsoft.sqlserver.jdbc.SQLServerDriver",
 				"jdbc:sqlserver://localhost:1433;DatabaseName=master", "sa",
 				"55780029");
-		unifier = new DbUnifier(config);
+		unifier = new DbUnifier(dbSource);
 	}
 
 	@Test

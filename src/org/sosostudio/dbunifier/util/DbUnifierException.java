@@ -1,4 +1,4 @@
-package org.sosostudio.dbunifier;
+package org.sosostudio.dbunifier.util;
 
 public class DbUnifierException extends RuntimeException {
 

@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
-import org.sosostudio.dbunifier.DbUnifierException;
-import org.sosostudio.dbunifier.DbUtil;
 import org.sosostudio.dbunifier.Values;
+import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.DbUtil;
 
 public class MySqlFeature extends DbFeature {
 

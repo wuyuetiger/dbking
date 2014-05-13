@@ -1,10 +1,13 @@
+package org.sosostudio.dbunifier.test;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.sosostudio.dbunifier.DbConfig;
 import org.sosostudio.dbunifier.DbUnifier;
+import org.sosostudio.dbunifier.dbsource.DbSource;
+import org.sosostudio.dbunifier.dbsource.JdbcDbSource;
 
-public class PostgreSql9Tester extends BaseTester {
+public class Oracle11gTester extends BaseTester {
 
 	@Before
 	public void setUp() {
@@ -15,15 +18,14 @@ public class PostgreSql9Tester extends BaseTester {
 	}
 
 	public void init() {
-		DbConfig config = new DbConfig("org.postgresql.Driver",
-				"jdbc:postgresql://localhost:5432/postgres", "postgres",
-				"55780029");
-		unifier = new DbUnifier(config);
+		DbSource dbSource = new JdbcDbSource("oracle.jdbc.driver.OracleDriver",
+				"jdbc:oracle:thin:@localhost:1521:orcl", "system", "55780029");
+		unifier = new DbUnifier(dbSource);
 	}
 
 	@Test
-	public void testBytea() {
-		String typeName = "bytea";
+	public void testBlob() {
+		String typeName = "blob";
 		testBlob(typeName);
 	}
 
@@ -34,15 +36,33 @@ public class PostgreSql9Tester extends BaseTester {
 	}
 
 	@Test
+	public void testCharVarying() {
+		String typeName = "char varying(50)";
+		testString(typeName);
+	}
+
+	@Test
 	public void testCharacter() {
 		String typeName = "character(10)";
 		testString(typeName);
 	}
 
 	@Test
+	public void testCharacterVarying() {
+		String typeName = "character varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testClob() {
+		String typeName = "clob";
+		testClob(typeName);
+	}
+
+	@Test
 	public void testDate() {
 		String typeName = "date";
-		testDate(typeName);
+		testTimestamp(typeName);
 	}
 
 	@Test
@@ -54,6 +74,12 @@ public class PostgreSql9Tester extends BaseTester {
 	@Test
 	public void testDecimal() {
 		String typeName = "decimal(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testDoublePrecision() {
+		String typeName = "double precision";
 		testDecimal(typeName);
 	}
 
@@ -73,6 +99,24 @@ public class PostgreSql9Tester extends BaseTester {
 	public void testInteger() {
 		String typeName = "integer";
 		testInteger(typeName);
+	}
+
+	@Test
+	public void testLong() {
+		String typeName = "long";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testLongRaw() {
+		String typeName = "long raw";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testLongVarchar() {
+		String typeName = "long varchar";
+		testClob(typeName);
 	}
 
 	@Test
@@ -112,26 +156,62 @@ public class PostgreSql9Tester extends BaseTester {
 	}
 
 	@Test
+	public void testNclob() {
+		String typeName = "nclob";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testNumber() {
+		String typeName = "number(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
 	public void testNumeric() {
 		String typeName = "numeric(10,2)";
 		testDecimal(typeName);
 	}
 
 	@Test
-	public void testTime() {
-		String typeName = "time";
-		testTime(typeName);
+	public void testNvarchar2() {
+		String typeName = "nvarchar2(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testRaw() {
+		String typeName = "raw(200)";
+		testSmallBlob(typeName);
+	}
+
+	@Test
+	public void testReal() {
+		String typeName = "real";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testSmallInt() {
+		String typeName = "smallint";
+		testInteger(typeName);
 	}
 
 	@Test
 	public void testTimestamp() {
-		String typeName = "timestamp null";
+		String typeName = "timestamp";
 		testTimestamp(typeName);
 	}
 
 	@Test
 	public void testVarchar() {
 		String typeName = "varchar(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testVarchar2() {
+		String typeName = "varchar2(50)";
 		testString(typeName);
 	}
 

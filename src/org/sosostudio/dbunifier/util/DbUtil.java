@@ -1,4 +1,4 @@
-package org.sosostudio.dbunifier;
+package org.sosostudio.dbunifier.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -13,6 +13,11 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
+
+import org.sosostudio.dbunifier.ColumnType;
+import org.sosostudio.dbunifier.NullValue;
+import org.sosostudio.dbunifier.Values;
+import org.sosostudio.dbunifier.config.XmlConfig;
 
 public class DbUtil {
 
@@ -158,7 +163,7 @@ public class DbUtil {
 			}
 			sb.append("]\n");
 		}
-		if (DbXmlConfig.showSql) {
+		if (XmlConfig.needsShowSql()) {
 			System.out.println(sb.toString());
 		}
 	}

@@ -3,6 +3,8 @@ package org.sosostudio.dbunifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sosostudio.dbunifier.util.DbUtil;
+
 public class Table {
 
 	private String name;

@@ -1,3 +1,4 @@
+package org.sosostudio.dbunifier.test;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
