@@ -29,7 +29,7 @@ public class AutoCodeTester {
 					.addColumn(
 							new Column("DT_VALUE", ColumnType.TYPE_TIMESTAMP,
 									false, false)));
-			DaoGenerator.main(new String[] { "test", "test.dbunifier",
+			DaoGenerator.main(new String[] { "test", "org.sosostudio.dbunifier.test.dao",
 					tableName });
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);

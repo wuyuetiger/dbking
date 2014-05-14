@@ -35,6 +35,7 @@ import org.sosostudio.dbunifier.oom.UpdateKeyValueClause;
 import org.sosostudio.dbunifier.oom.UpdateSql;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
+import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbUnifier {
 
@@ -45,7 +46,7 @@ public class DbUnifier {
 	private Connection con;
 
 	public DbUnifier() {
-		dbSource = XmlConfig.getDbSource("default");
+		dbSource = XmlConfig.getDbSource("");
 	}
 
 	public DbUnifier(String dbSourceName) {
@@ -476,48 +477,26 @@ public class DbUnifier {
 						if (containsLob) {
 							Reader reader = rs.getCharacterStream(i + 1);
 							if (reader != null) {
-								StringWriter sw = new StringWriter();
-								char[] buffer = new char[2048];
-								int charsRead;
 								try {
-									while ((charsRead = reader.read(buffer, 0,
-											1024)) != -1) {
-										sw.write(buffer, 0, charsRead);
-									}
+									value = IoUtil.convertStream(reader);
 								} catch (IOException e) {
 									throw new DbUnifierException(e);
 								} finally {
-									try {
-										reader.close();
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
-									}
+									IoUtil.closeReader(reader);
 								}
-								value = sw.getBuffer().toString();
 							}
 						}
 					} else if (type == ColumnType.TYPE_BLOB) {
 						if (containsLob) {
 							InputStream is = rs.getBinaryStream(i + 1);
 							if (is != null) {
-								ByteArrayOutputStream baos = new ByteArrayOutputStream();
-								byte[] buffer = new byte[2048];
-								int bytesRead;
 								try {
-									while ((bytesRead = is
-											.read(buffer, 0, 1024)) != -1) {
-										baos.write(buffer, 0, bytesRead);
-									}
+									value = IoUtil.convertStream(is);
 								} catch (IOException e) {
 									throw new DbUnifierException(e);
 								} finally {
-									try {
-										is.close();
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
-									}
+									IoUtil.closeInputStream(is);
 								}
-								value = baos.toByteArray();
 							}
 						}
 					} else {
@@ -594,48 +573,26 @@ public class DbUnifier {
 						if (containsLob) {
 							Reader reader = rs.getCharacterStream(i + 1);
 							if (reader != null) {
-								StringWriter sw = new StringWriter();
-								char[] buffer = new char[2048];
-								int charsRead;
 								try {
-									while ((charsRead = reader.read(buffer, 0,
-											1024)) != -1) {
-										sw.write(buffer, 0, charsRead);
-									}
+									value = IoUtil.convertStream(reader);
 								} catch (IOException e) {
 									throw new DbUnifierException(e);
 								} finally {
-									try {
-										reader.close();
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
-									}
+									IoUtil.closeReader(reader);
 								}
-								value = sw.getBuffer().toString();
 							}
 						}
 					} else if (type == ColumnType.TYPE_BLOB) {
 						if (containsLob) {
 							InputStream is = rs.getBinaryStream(i + 1);
 							if (is != null) {
-								ByteArrayOutputStream baos = new ByteArrayOutputStream();
-								byte[] buffer = new byte[2048];
-								int bytesRead;
 								try {
-									while ((bytesRead = is
-											.read(buffer, 0, 1024)) != -1) {
-										baos.write(buffer, 0, bytesRead);
-									}
+									value = IoUtil.convertStream(is);
 								} catch (IOException e) {
 									throw new DbUnifierException(e);
 								} finally {
-									try {
-										is.close();
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
-									}
+									IoUtil.closeInputStream(is);
 								}
-								value = baos.toByteArray();
 							}
 						}
 					} else {
@@ -828,20 +785,12 @@ public class DbUnifier {
 			while (rs.next()) {
 				Reader reader = rs.getCharacterStream(1);
 				if (reader != null) {
-					char[] buffer = new char[2048];
-					int charsRead;
 					try {
-						while ((charsRead = reader.read(buffer, 0, 1024)) != -1) {
-							writer.write(buffer, 0, charsRead);
-						}
+						IoUtil.convertStream(reader, writer);
 					} catch (IOException e) {
 						throw new DbUnifierException(e);
 					} finally {
-						try {
-							reader.close();
-						} catch (IOException e) {
-							throw new DbUnifierException(e);
-						}
+						IoUtil.closeReader(reader);
 					}
 				}
 			}
@@ -907,20 +856,12 @@ public class DbUnifier {
 			while (rs.next()) {
 				InputStream is = rs.getBinaryStream(1);
 				if (is != null) {
-					byte[] buffer = new byte[2048];
-					int bytesRead;
 					try {
-						while ((bytesRead = is.read(buffer, 0, 1024)) != -1) {
-							os.write(buffer, 0, bytesRead);
-						}
+						IoUtil.convertStream(is, os);
 					} catch (IOException e) {
 						throw new DbUnifierException(e);
 					} finally {
-						try {
-							is.close();
-						} catch (IOException e) {
-							throw new DbUnifierException(e);
-						}
+						IoUtil.closeInputStream(is);
 					}
 				}
 			}

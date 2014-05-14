@@ -1,12 +1,15 @@
 package org.sosostudio.dbunifier.pipe;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,6 +36,7 @@ import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.config.XmlConfig;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
+import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbImporter {
 
@@ -144,51 +148,32 @@ public class DbImporter {
 												ps.setCharacterStream(i, null,
 														0);
 											} else {
-												FileInputStream is = null;
-												InputStreamReader reader = null;
+												Reader reader = null;
 												try {
 													File file = new File(sValue);
-													is = new FileInputStream(
-															file);
-													reader = new InputStreamReader(
-															is);
+													reader = new BufferedReader(
+															new FileReader(file));
 													ps.setCharacterStream(i,
 															reader,
 															(int) file.length());
 												} finally {
-													try {
-														if (reader != null) {
-															reader.close();
-														}
-														if (is != null) {
-															is.close();
-														}
-													} catch (IOException e) {
-														throw new DbUnifierException(
-																e);
-													}
+													IoUtil.closeReader(reader);
 												}
 											}
 										} else if (type == ColumnType.TYPE_BLOB) {
 											if (sValue == null) {
 												ps.setBinaryStream(i, null, 0);
 											} else {
-												FileInputStream is = null;
+												InputStream is = null;
 												try {
 													File file = new File(sValue);
-													is = new FileInputStream(
-															file);
+													is = new BufferedInputStream(
+															new FileInputStream(
+																	file));
 													ps.setBinaryStream(i, is,
 															(int) file.length());
 												} finally {
-													try {
-														if (is != null) {
-															is.close();
-														}
-													} catch (IOException e) {
-														throw new DbUnifierException(
-																e);
-													}
+													IoUtil.closeInputStream(is);
 												}
 											}
 										}
@@ -220,13 +205,7 @@ public class DbImporter {
 			} catch (XMLStreamException e) {
 				throw new DbUnifierException(e);
 			}
-			try {
-				if (xmlis != null) {
-					xmlis.close();
-				}
-			} catch (IOException e) {
-				throw new DbUnifierException(e);
-			}
+			IoUtil.closeInputStream(xmlis);
 			DbUtil.closeConnection(con);
 		}
 	}

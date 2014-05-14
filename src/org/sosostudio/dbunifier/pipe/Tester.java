@@ -1,5 +1,7 @@
 package org.sosostudio.dbunifier.pipe;
 
+import java.io.StringWriter;
+
 public class Tester {
 
 	/**
@@ -11,7 +13,6 @@ public class Tester {
 		DbImporter.main(new String[]{});
 		long end = System.currentTimeMillis();
 		System.out.println(end - start);
-
 	}
 
 }

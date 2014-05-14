@@ -1,4 +1,5 @@
 package org.sosostudio.dbunifier.test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +29,7 @@ import org.sosostudio.dbunifier.oom.SelectSql;
 import org.sosostudio.dbunifier.oom.UpdateKeyValueClause;
 import org.sosostudio.dbunifier.oom.UpdateSql;
 import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.IoUtil;
 
 public abstract class BaseTester extends TestCase {
 
@@ -47,23 +49,13 @@ public abstract class BaseTester extends TestCase {
 
 	private byte[] getFile(String filename) {
 		InputStream is = BaseTester.class.getResourceAsStream(filename);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[2048];
-		int bytesRead;
 		try {
-			while ((bytesRead = is.read(buffer, 0, 1024)) != -1) {
-				baos.write(buffer, 0, bytesRead);
-			}
+			return IoUtil.convertStream(is);
 		} catch (IOException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				throw new DbUnifierException(e);
-			}
+			IoUtil.closeInputStream(is);
 		}
-		return baos.toByteArray();
 	}
 
 	public void testString(String typeName) {

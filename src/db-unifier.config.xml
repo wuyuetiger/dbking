@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <db-unifier xmlns="http://www.sosostudio.org/db-unifier/config">
 	<show_sql>true</show_sql>
-	<db_source name="default">
+	<db_source>
 		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
 		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
 		<username>system</username>

@@ -1,11 +1,9 @@
 package org.sosostudio.dbunifier.autocode;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +11,7 @@ import java.util.Map;
 import org.sosostudio.dbunifier.DbUnifier;
 import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.IoUtil;
 
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
@@ -22,28 +21,19 @@ import freemarker.template.TemplateException;
 public class DaoGenerator {
 
 	private static String getTemplate(String templateFilename)
-			throws IOException, UnsupportedEncodingException {
+			throws IOException {
 		InputStream is = DaoGenerator.class
 				.getResourceAsStream(templateFilename);
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		byte[] buffer = new byte[2048];
-		int bytesRead;
 		try {
-			while ((bytesRead = is.read(buffer, 0, 1024)) != -1) {
-				baos.write(buffer, 0, bytesRead);
-			}
+			byte[] bytes = IoUtil.convertStream(is);
+			return new String(bytes, "UTF-8");
 		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				throw new DbUnifierException(e);
-			}
+			IoUtil.closeInputStream(is);
 		}
-		return new String(baos.toByteArray(), "UTF-8");
 	}
 
 	public static void main(String[] args) throws TemplateException,
-			IOException, UnsupportedEncodingException {
+			IOException {
 		Configuration cfg = new Configuration();
 		StringTemplateLoader loader = new StringTemplateLoader();
 		String infoTemplateSource = getTemplate("bean.ftl");
@@ -64,18 +54,26 @@ public class DaoGenerator {
 			root.put("package", packagePath);
 			root.put("table", table);
 			{
-				Writer out = new FileWriter(destPath + "/"
-						+ table.getDefinationName() + ".java");
-				beanTemplate.process(root, out);
-				out.flush();
-				out.close();
+				Writer writer = null;
+				try {
+					writer = new FileWriter(destPath + "/"
+							+ table.getDefinationName() + ".java");
+					beanTemplate.process(root, writer);
+					writer.flush();
+				} finally {
+					IoUtil.closeWriter(writer);
+				}
 			}
 			{
-				Writer out = new FileWriter(destPath + "/"
-						+ table.getDefinationName() + "Dao.java");
-				daoTemplate.process(root, out);
-				out.flush();
-				out.close();
+				Writer writer = null;
+				try {
+					writer = new FileWriter(destPath + "/"
+							+ table.getDefinationName() + "Dao.java");
+					daoTemplate.process(root, writer);
+					writer.flush();
+				} finally {
+					IoUtil.closeWriter(writer);
+				}
 			}
 			System.out.println(table.getName()
 					+ " DAO classes had been generated");

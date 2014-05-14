@@ -14,6 +14,7 @@ import org.sosostudio.dbunifier.dbsource.DbSource;
 import org.sosostudio.dbunifier.dbsource.JdbcDbSource;
 import org.sosostudio.dbunifier.dbsource.JndiDbSource;
 import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.IoUtil;
 
 public class XmlConfig {
 
@@ -25,21 +26,25 @@ public class XmlConfig {
 		SAXReader saxReader = new SAXReader();
 		InputStream is = null;
 		try {
-			is = XmlConfig.class
-					.getResourceAsStream("/db-unifier.config.xml");
+			is = XmlConfig.class.getResourceAsStream("/db-unifier.config.xml");
 			Document doc = saxReader.read(is);
 			Element rootElement = doc.getRootElement();
 			showSql = Boolean.valueOf(rootElement.elementText("show_sql"));
+			@SuppressWarnings("unchecked")
 			List<Element> dbSourceElementList = rootElement
 					.elements("db_source");
 			for (Element dbSourceElement : dbSourceElementList) {
 				String dbSourceName = dbSourceElement.attributeValue("name");
-				String databaseDriver = rootElement
+				if (dbSourceName == null) {
+					dbSourceName = "";
+				}
+				String databaseDriver = dbSourceElement
 						.elementText("database_driver");
-				String databaseUrl = rootElement.elementText("database_url");
-				String username = rootElement.elementText("username");
-				String password = rootElement.elementText("password");
-				String jndi = rootElement.elementText("jndi");
+				String databaseUrl = dbSourceElement
+						.elementText("database_url");
+				String username = dbSourceElement.elementText("username");
+				String password = dbSourceElement.elementText("password");
+				String jndi = dbSourceElement.elementText("jndi");
 				if (databaseDriver != null && databaseUrl != null
 						&& username != null && password != null) {
 					DbSource dbSource = new JdbcDbSource(databaseDriver,
@@ -65,13 +70,7 @@ public class XmlConfig {
 		} catch (DocumentException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (is != null) {
-				try {
-					is.close();
-				} catch (IOException e) {
-					throw new DbUnifierException(e);
-				}
-			}
+			IoUtil.closeInputStream(is);
 		}
 	}
 

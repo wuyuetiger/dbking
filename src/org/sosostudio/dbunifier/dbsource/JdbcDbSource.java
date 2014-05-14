@@ -33,8 +33,7 @@ public class JdbcDbSource implements DbSource {
 		if (username == null) {
 			try {
 				Class.forName(databaseDriver);
-				return DriverManager.getConnection(databaseUrl, username,
-						password);
+				return DriverManager.getConnection(databaseUrl);
 			} catch (ClassNotFoundException e) {
 				throw new DbUnifierException(e);
 			} catch (SQLException e) {
@@ -43,7 +42,8 @@ public class JdbcDbSource implements DbSource {
 		} else {
 			try {
 				Class.forName(databaseDriver);
-				return DriverManager.getConnection(databaseUrl);
+				return DriverManager.getConnection(databaseUrl, username,
+						password);
 			} catch (ClassNotFoundException e) {
 				throw new DbUnifierException(e);
 			} catch (SQLException e) {

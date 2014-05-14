@@ -1,6 +1,8 @@
 package org.sosostudio.dbunifier.pipe;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,6 +36,7 @@ import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.config.XmlConfig;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
+import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbExporter {
 
@@ -162,58 +165,39 @@ public class DbExporter {
 							} else if (type == ColumnType.TYPE_CLOB) {
 								Reader reader = rs.getCharacterStream(i);
 								if (reader != null) {
+									reader = new BufferedReader(reader);
 									String filename = "result/"
 											+ UUID.randomUUID() + ".txt";
+
 									Writer writer = null;
-									char[] buffer = new char[2048];
-									int charsRead;
 									try {
 										writer = new BufferedWriter(
 												new FileWriter(filename));
-										while ((charsRead = reader.read(buffer,
-												0, 1024)) != -1) {
-											writer.write(buffer, 0, charsRead);
-										}
+										IoUtil.convertStream(reader, writer);
 									} catch (IOException e) {
 										throw new DbUnifierException(e);
 									} finally {
-										try {
-											if (writer != null) {
-												writer.close();
-											}
-											reader.close();
-										} catch (IOException e) {
-											throw new DbUnifierException(e);
-										}
+										IoUtil.closeWriter(writer);
+										IoUtil.closeReader(reader);
 									}
 									xmlw.writeAttribute("v", filename);
 								}
 							} else if (type == ColumnType.TYPE_BLOB) {
 								InputStream is = rs.getBinaryStream(i);
 								if (is != null) {
+									is = new BufferedInputStream(is);
 									String filename = "result/"
 											+ UUID.randomUUID() + ".dat";
 									OutputStream os = null;
-									byte[] buffer = new byte[2048];
-									int bytesRead;
 									try {
 										os = new BufferedOutputStream(
 												new FileOutputStream(filename));
-										while ((bytesRead = is.read(buffer, 0,
-												1024)) != -1) {
-											os.write(buffer, 0, bytesRead);
-										}
+										IoUtil.convertStream(is, os);
 									} catch (IOException e) {
 										throw new DbUnifierException(e);
 									} finally {
-										try {
-											if (os != null) {
-												os.close();
-											}
-											is.close();
-										} catch (IOException e) {
-											throw new DbUnifierException(e);
-										}
+										IoUtil.closeOutputStream(os);
+										IoUtil.closeInputStream(is);
 									}
 									xmlw.writeAttribute("v", filename);
 								}
@@ -241,20 +225,14 @@ public class DbExporter {
 		} catch (XMLStreamException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			try {
-				if (xmlw != null) {
+			if (xmlw != null) {
+				try {
 					xmlw.close();
+				} catch (XMLStreamException e) {
+					throw new DbUnifierException(e);
 				}
-			} catch (XMLStreamException e) {
-				throw new DbUnifierException(e);
 			}
-			try {
-				if (xmlos != null) {
-					xmlos.close();
-				}
-			} catch (IOException e) {
-				throw new DbUnifierException(e);
-			}
+			IoUtil.closeOutputStream(xmlos);
 			DbUtil.closeConnection(con);
 		}
 	}

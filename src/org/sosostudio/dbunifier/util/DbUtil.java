@@ -22,32 +22,32 @@ import org.sosostudio.dbunifier.config.XmlConfig;
 public class DbUtil {
 
 	public static void closeConnection(Connection con) {
-		try {
-			if (con != null) {
+		if (con != null) {
+			try {
 				con.close();
+			} catch (SQLException e) {
+				throw new DbUnifierException(e);
 			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
 		}
 	}
 
 	public static void closeStatement(Statement statement) {
-		try {
-			if (statement != null) {
+		if (statement != null) {
+			try {
 				statement.close();
+			} catch (SQLException e) {
+				throw new DbUnifierException(e);
 			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
 		}
 	}
 
 	public static void closeResultSet(ResultSet resultSet) {
-		try {
-			if (resultSet != null) {
+		if (resultSet != null) {
+			try {
 				resultSet.close();
+			} catch (SQLException e) {
+				throw new DbUnifierException(e);
 			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
 		}
 	}
 
