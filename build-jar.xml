@@ -22,7 +22,7 @@
 	<!-- pack -->
 	<target name="pack" depends="compile" description="make .jar file">
 		<mkdir dir="${dist.dir}" />
-		<jar destfile="${dist.dir}/db-unifier-v0.1.jar" basedir="${classes.dir}">
+		<jar destfile="${dist.dir}/db-unifier-v0.2.jar" basedir="${classes.dir}">
 			<include name="org/sosostudio/dbunifier/**/*.*" />
 		</jar>
 	</target>
