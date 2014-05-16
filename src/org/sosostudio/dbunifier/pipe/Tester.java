@@ -1,6 +1,5 @@
 package org.sosostudio.dbunifier.pipe;
 
-import java.io.StringWriter;
 
 public class Tester {
 

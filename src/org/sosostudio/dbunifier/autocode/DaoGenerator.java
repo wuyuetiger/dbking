@@ -10,7 +10,6 @@ import java.util.Map;
 
 import org.sosostudio.dbunifier.DbUnifier;
 import org.sosostudio.dbunifier.Table;
-import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.IoUtil;
 
 import freemarker.cache.StringTemplateLoader;
