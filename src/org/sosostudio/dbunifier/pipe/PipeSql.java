@@ -1,3 +1,15 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2014 YU YUE, SOSO STUDIO, wuyuetiger@gmail.com
+ *
+ * License: GNU Lesser General Public License (LGPL)
+ * 
+ * Source code availability:
+ *  https://github.com/wuyuetiger/db-unifier
+ *  https://code.csdn.net/tigeryu/db-unifier
+ */
+
 package org.sosostudio.dbunifier.pipe;
 
 import java.util.ArrayList;
@@ -5,68 +17,30 @@ import java.util.List;
 
 public class PipeSql {
 
-	private String insertSql;
+	private String sql;
 
-	private List<NameType> insertNameTypeList = new ArrayList<NameType>();
+	private List<NameType> nameTypeList = new ArrayList<NameType>();
 
-	private boolean needUpdate = false;
-
-	private String updateSql;
-
-	private List<NameType> updateNameTypeList = new ArrayList<NameType>();
-
-	public String getInsertSql() {
-		return insertSql;
+	public String getSql() {
+		return sql;
 	}
 
-	public PipeSql setInsertSql(String insertSql) {
-		this.insertSql = insertSql;
+	public PipeSql setSql(String sql) {
+		this.sql = sql;
 		return this;
 	}
 
-	public List<NameType> getInsertNameTypeList() {
-		return insertNameTypeList;
+	public List<NameType> getNameTypeList() {
+		return nameTypeList;
 	}
 
-	public PipeSql addInsertNameType(NameType insertNameType) {
-		this.insertNameTypeList.add(insertNameType);
+	public PipeSql addNameType(NameType nameType) {
+		this.nameTypeList.add(nameType);
 		return this;
 	}
 
-	public PipeSql addInsertNameTypeList(List<NameType> insertNameTypeList) {
-		this.insertNameTypeList.addAll(insertNameTypeList);
-		return this;
-	}
-
-	public boolean getNeedUpdate() {
-		return needUpdate;
-	}
-
-	public PipeSql setNeedUpdate(boolean needUpdate) {
-		this.needUpdate = needUpdate;
-		return this;
-	}
-
-	public String getUpdateSql() {
-		return updateSql;
-	}
-
-	public PipeSql setUpdateSql(String updateSql) {
-		this.updateSql = updateSql;
-		return this;
-	}
-
-	public List<NameType> getUpdateNameTypeList() {
-		return updateNameTypeList;
-	}
-
-	public PipeSql addUpdateNameType(NameType updateNameType) {
-		this.updateNameTypeList.add(updateNameType);
-		return this;
-	}
-
-	public PipeSql addUpdateNameTypeList(List<NameType> updateNameTypeList) {
-		this.updateNameTypeList.addAll(updateNameTypeList);
+	public PipeSql addNameTypeList(List<NameType> nameTypeList) {
+		this.nameTypeList.addAll(nameTypeList);
 		return this;
 	}
 

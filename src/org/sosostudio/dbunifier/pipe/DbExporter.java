@@ -1,3 +1,15 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2014 YU YUE, SOSO STUDIO, wuyuetiger@gmail.com
+ *
+ * License: GNU Lesser General Public License (LGPL)
+ * 
+ * Source code availability:
+ *  https://github.com/wuyuetiger/db-unifier
+ *  https://code.csdn.net/tigeryu/db-unifier
+ */
+
 package org.sosostudio.dbunifier.pipe;
 
 import java.io.BufferedInputStream;
@@ -5,11 +17,11 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
@@ -23,7 +35,6 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -34,6 +45,7 @@ import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.DbUnifier;
 import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.config.XmlConfig;
+import org.sosostudio.dbunifier.dbsource.DbSource;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
 import org.sosostudio.dbunifier.util.IoUtil;
@@ -41,14 +53,30 @@ import org.sosostudio.dbunifier.util.IoUtil;
 public class DbExporter {
 
 	public static void main(String[] args) {
+		long start = System.currentTimeMillis();
 		Connection con = null;
 		OutputStream xmlos = null;
 		XMLStreamWriter xmlw = null;
+		Writer clobw = null;
+		OutputStream blobos = null;
 		try {
-			con = XmlConfig.getDbSource("export").getConnection();
+			DbSource dbSource = XmlConfig.getDbSource("export");
+			System.out.println("You will operate the following database:");
+			System.out.println(dbSource);
+			System.out
+					.println("Please confirm the database you really want to operate, (Y)es for going on or (N)o for breaking?");
+			while (true) {
+				int ch = System.in.read();
+				if (ch == 'Y' || ch == 'y') {
+					break;
+				} else if (ch == 'N' || ch == 'n') {
+					return;
+				}
+			}
+			con = dbSource.getConnection();
 			DbUnifier unifier = new DbUnifier(con);
 			// produce name mapping and table mapping
-			List<Table> tableList = unifier.getTableList();
+			List<Table> tableList = unifier.getTableList(true);
 			Map<String, Table> tableMap = new HashMap<String, Table>();
 			Map<String, String> map = new HashMap<String, String>();
 			int num = 1;
@@ -90,6 +118,12 @@ public class DbExporter {
 				xmlw.writeAttribute("s", value);
 				xmlw.writeEndElement();
 			}
+			// create bin and txt files to store blob and clob content
+			clobw = new BufferedWriter(new FileWriter("result/data.txt"));
+			int clobStartPos = 0;
+			blobos = new BufferedOutputStream(new FileOutputStream(
+					"result/data.bin"));
+			int blobStartPos = 0;
 			// loop tables
 			for (int m = 0; m < args.length; m++) {
 				String[] params = args[m].split("\\|");
@@ -120,6 +154,20 @@ public class DbExporter {
 				if (table == null) {
 					System.out.println(tableName + " not exists");
 					continue;
+				}
+				// write table info into xml
+				String filename = "result/" + tableName + ".obj";
+				FileOutputStream fos = null;
+				try {
+					fos = new FileOutputStream(filename);
+					ObjectOutputStream oos = new ObjectOutputStream(fos);
+					oos.writeObject(table);
+					xmlw.writeStartElement("i");
+					xmlw.writeAttribute("n", tableName);
+					xmlw.writeAttribute("f", filename);
+					xmlw.writeEndElement();
+				} finally {
+					IoUtil.closeOutputStream(fos);
 				}
 				// format sql
 				String sql = "select " + fields + " from " + tableAndAlias;
@@ -166,40 +214,30 @@ public class DbExporter {
 								Reader reader = rs.getCharacterStream(i);
 								if (reader != null) {
 									reader = new BufferedReader(reader);
-									String filename = "result/"
-											+ UUID.randomUUID() + ".txt";
-
-									Writer writer = null;
+									int count = 0;
 									try {
-										writer = new BufferedWriter(
-												new FileWriter(filename));
-										IoUtil.convertStream(reader, writer);
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
+										count = IoUtil.convertStream(reader,
+												clobw);
 									} finally {
-										IoUtil.closeWriter(writer);
 										IoUtil.closeReader(reader);
 									}
-									xmlw.writeAttribute("v", filename);
+									xmlw.writeAttribute("v", clobStartPos + ","
+											+ count);
+									clobStartPos += count;
 								}
 							} else if (type == ColumnType.TYPE_BLOB) {
 								InputStream is = rs.getBinaryStream(i);
 								if (is != null) {
 									is = new BufferedInputStream(is);
-									String filename = "result/"
-											+ UUID.randomUUID() + ".dat";
-									OutputStream os = null;
+									int count = 0;
 									try {
-										os = new BufferedOutputStream(
-												new FileOutputStream(filename));
-										IoUtil.convertStream(is, os);
-									} catch (IOException e) {
-										throw new DbUnifierException(e);
+										IoUtil.convertStream(is, blobos);
 									} finally {
-										IoUtil.closeOutputStream(os);
 										IoUtil.closeInputStream(is);
 									}
-									xmlw.writeAttribute("v", filename);
+									xmlw.writeAttribute("v", blobStartPos + ","
+											+ count);
+									blobStartPos += count;
 								}
 							} else {
 								System.out.println("not support data type: "
@@ -210,8 +248,6 @@ public class DbExporter {
 						}
 						xmlw.writeEndElement();
 					}
-				} catch (SQLException e) {
-					throw new DbUnifierException(e);
 				} finally {
 					DbUtil.closeResultSet(rs);
 					DbUtil.closeStatement(statement);
@@ -220,21 +256,21 @@ public class DbExporter {
 			xmlw.writeEndElement();
 			xmlw.writeEndDocument();
 			xmlw.flush();
-		} catch (FileNotFoundException e) {
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} catch (IOException e) {
 			throw new DbUnifierException(e);
 		} catch (XMLStreamException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (xmlw != null) {
-				try {
-					xmlw.close();
-				} catch (XMLStreamException e) {
-					throw new DbUnifierException(e);
-				}
-			}
+			IoUtil.closeOutputStream(blobos);
+			IoUtil.closeWriter(clobw);
+			IoUtil.closeWriter(xmlw);
 			IoUtil.closeOutputStream(xmlos);
 			DbUtil.closeConnection(con);
 		}
+		long end = System.currentTimeMillis();
+		System.out.println("It took up " + (end - start) / 1000 + " minutes.");
 	}
 
 }

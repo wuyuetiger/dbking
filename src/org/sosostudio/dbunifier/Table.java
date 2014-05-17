@@ -1,11 +1,29 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2014 YU YUE, SOSO STUDIO, wuyuetiger@gmail.com
+ *
+ * License: GNU Lesser General Public License (LGPL)
+ * 
+ * Source code availability:
+ *  https://github.com/wuyuetiger/db-unifier
+ *  https://code.csdn.net/tigeryu/db-unifier
+ */
+
 package org.sosostudio.dbunifier;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sosostudio.dbunifier.util.DbUtil;
+import org.sosostudio.dbunifier.util.StringUtil;
 
-public class Table {
+public class Table implements Comparable<Table>, Serializable {
+
+	private static final long serialVersionUID = 7642707849725992210L;
+
+	// it's used to sort tables with foreign key relations
+	private int seq = 0;
 
 	private String name;
 
@@ -18,16 +36,25 @@ public class Table {
 		this.name = name;
 	}
 
+	public int getSeq() {
+		return seq;
+	}
+
+	public Table setSeq(int seq) {
+		this.seq = seq;
+		return this;
+	}
+
 	public String getName() {
 		return name;
 	}
 
 	public String getDefinationName() {
-		return DbUtil.getDefinationName(name);
+		return StringUtil.getDefinationName(name);
 	}
 
 	public String getVariableName() {
-		return DbUtil.getVariableName(name);
+		return StringUtil.getVariableName(name);
 	}
 
 	public Table setName(String name) {
@@ -47,6 +74,11 @@ public class Table {
 	public Table addColumnList(List<Column> columnList) {
 		this.columnList.addAll(columnList);
 		return this;
+	}
+
+	@Override
+	public int compareTo(Table table) {
+		return seq - table.getSeq();
 	}
 
 	@Override

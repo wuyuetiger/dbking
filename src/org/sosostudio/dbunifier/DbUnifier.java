@@ -1,3 +1,15 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright 2014 YU YUE, SOSO STUDIO, wuyuetiger@gmail.com
+ *
+ * License: GNU Lesser General Public License (LGPL)
+ * 
+ * Source code availability:
+ *  https://github.com/wuyuetiger/db-unifier
+ *  https://code.csdn.net/tigeryu/db-unifier
+ */
+
 package org.sosostudio.dbunifier;
 
 import java.io.IOException;
@@ -13,8 +25,11 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.sosostudio.dbunifier.config.XmlConfig;
@@ -36,6 +51,8 @@ import org.sosostudio.dbunifier.util.DbUtil;
 import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbUnifier {
+
+	private static final int MAX_TABLE_COUNT = 100000;
 
 	private static Boolean existsSequenceTable = false;
 
@@ -99,7 +116,7 @@ public class DbUnifier {
 		return column;
 	}
 
-	public List<Table> getTableList() {
+	public List<Table> getTableList(boolean sortByFk) {
 		Connection con;
 		if (this.con == null) {
 			con = dbSource.getConnection();
@@ -108,6 +125,7 @@ public class DbUnifier {
 		}
 		try {
 			List<Table> tableList = new ArrayList<Table>();
+			Map<String, Table> tableMap = new HashMap<String, Table>();
 			ResultSet tableRs = null;
 			try {
 				DatabaseMetaData dmd = con.getMetaData();
@@ -148,6 +166,32 @@ public class DbUnifier {
 					table.setName(tableName);
 					table.addColumnList(columnList);
 					tableList.add(table);
+					tableMap.put(tableName, table);
+				}
+				if (sortByFk) {
+					int step = MAX_TABLE_COUNT;
+					for (Table table : tableList) {
+						String tableName = table.getName();
+						ResultSet fkRs = null;
+						try {
+							fkRs = dmd.getImportedKeys(null, schema, tableName);
+							while (fkRs.next()) {
+								String parentTableName = fkRs
+										.getString("PKTABLE_NAME");
+								parentTableName = parentTableName.toUpperCase();
+								Table parentTable = tableMap
+										.get(parentTableName);
+								int seq = parentTable.getSeq() + step;
+								if (seq > table.getSeq()) {
+									table.setSeq(seq);
+								}
+							}
+						} finally {
+							DbUtil.closeResultSet(fkRs);
+						}
+						step--;
+					}
+					Collections.sort(tableList);
 				}
 			} finally {
 				DbUtil.closeResultSet(tableRs);
@@ -160,6 +204,10 @@ public class DbUnifier {
 				DbUtil.closeConnection(con);
 			}
 		}
+	}
+
+	public List<Table> getTableList() {
+		return getTableList(false);
 	}
 
 	public Table getTable(String tableName) {

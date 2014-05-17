@@ -13,7 +13,7 @@
 		<username>rk</username>
 		<password>rk</password>
 	</db_source>
-	<db_source name="import">
+	<db_source name="import_bak">
 		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
 		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
 		<username>rk2</username>
@@ -37,10 +37,9 @@
 		<username>root</username>
 		<password>55780029</password>
 	</db_source>
-	<db_source name="postgresql">
+	<db_source name="import">
 		<database_driver>org.postgresql.Driver</database_driver>
-		<database_url>jdbc:postgresql://localhost:5432/postgres
-		</database_url>
+		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
 		<username>postgres</username>
 		<password>55780029</password>
 	</db_source>
