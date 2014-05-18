@@ -39,6 +39,7 @@ public class JndiDbSource implements DbSource {
 		this.password = password;
 	}
 
+	@Override
 	public Connection getConnection() {
 		if (username == null) {
 			try {

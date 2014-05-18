@@ -41,6 +41,7 @@ public class JdbcDbSource implements DbSource {
 		this.databaseUrl = databaseUrl;
 	}
 
+	@Override
 	public Connection getConnection() {
 		if (username == null) {
 			try {
@@ -66,8 +67,9 @@ public class JdbcDbSource implements DbSource {
 
 	@Override
 	public String toString() {
-		return new StringBuilder().append("\ndatabaseUrl: ").append(databaseUrl)
-				.append("\nusername: ").append(username).append("\n").toString();
+		return new StringBuilder().append("\ndatabaseUrl: ")
+				.append(databaseUrl).append("\nusername: ").append(username)
+				.append("\n").toString();
 	}
 
 }
