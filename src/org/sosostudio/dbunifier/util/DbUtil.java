@@ -14,12 +14,22 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.NullValue;
 import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.config.XmlConfig;
 
 public class DbUtil {
+
+	public static Connection getConnection(DataSource dataSource) {
+		try {
+			return dataSource.getConnection();
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		}
+	}
 
 	public static void closeConnection(Connection con) {
 		if (con != null) {

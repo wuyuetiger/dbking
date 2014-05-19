@@ -13,11 +13,13 @@ import org.sosostudio.dbunifier.util.DbUtil;
 
 public class EmptyTableRows {
 
+	private static final String CONFIG_NAME = "importer";
+
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		Connection con = null;
 		try {
-			DbSource dbSource = XmlConfig.getDbSource("import");
+			DbSource dbSource = XmlConfig.getDbSource(CONFIG_NAME);
 			System.out.println("You will operate the following database:");
 			System.out.println(dbSource);
 			System.out

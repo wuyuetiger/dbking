@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
-		http://www.springframework.org/schema/beans/spring-beans.xsd"
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/jee
+		http://www.springframework.org/schema/jee/spring-jee.xsd"
 	default-lazy-init="true">
 
-	<bean id="dbSource1" class="org.sosostudio.dbunifier.dbsource.JdbcDbSource">
-		<constructor-arg value="com.mysql.jdbc.Driver" />
-		<constructor-arg value="jdbc:mysql://localhost:3306/test" />
-		<constructor-arg value="root" />
-		<constructor-arg value="55780029" />
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.postgresql.Driver" />
+		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
+		<property name="username" value="postgres" />
+		<property name="password" value="55780029" />
 	</bean>
 
-	<bean id="dbSource2" class="org.sosostudio.dbunifier.dbsource.JdbcDbSource">
-		<constructor-arg value="com.mysql.jdbc.Driver" />
-		<constructor-arg value="jdbc:mysql://localhost:3306/test" />
+	<!-- JNDI -->
+	<!-- <jee:jndi-lookup id="dataSource" lookup-on-startup="true" jndi-name="java:test"/> -->
+
+	<bean id="dataSourceProxy"
+		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+		<constructor-arg ref bean="dataSource" />
 	</bean>
 
-	<bean id="dbSource3" class="org.sosostudio.dbunifier.dbsource.JndiDbSource">
-		<constructor-arg value="java:test" />
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
 	</bean>
 
-	<bean id="dbSource4" class="org.sosostudio.dbunifier.dbsource.JndiDbSource">
-		<constructor-arg value="java:test" />
-		<constructor-arg value="root" />
-		<constructor-arg value="55780029" />
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<bean id="dbunifier" class="org.sosostudio.dbunifier.DbUnifier">
+		<constructor-arg ref="dataSource" />
 	</bean>
 
 </beans>

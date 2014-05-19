@@ -31,6 +31,8 @@ import freemarker.template.TemplateException;
 
 public class DaoGenerator {
 
+	private static final String CONFIG_NAME = "autocode";
+
 	private static String getTemplate(String templateFilename)
 			throws IOException {
 		InputStream is = DaoGenerator.class
@@ -54,7 +56,7 @@ public class DaoGenerator {
 		cfg.setTemplateLoader(loader);
 		Template beanTemplate = cfg.getTemplate("bean", "UTF-8");
 		Template daoTemplate = cfg.getTemplate("dao", "UTF-8");
-		DbUnifier unifier = new DbUnifier();
+		DbUnifier unifier = new DbUnifier(CONFIG_NAME);
 		String classPath = args[0];
 		String packagePath = args[1];
 		String destPath = classPath + "/" + packagePath.replaceAll("\\.", "/");
@@ -91,5 +93,4 @@ public class DaoGenerator {
 		}
 
 	}
-
 }

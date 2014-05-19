@@ -32,8 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.sql.DataSource;
+
 import org.sosostudio.dbunifier.config.XmlConfig;
-import org.sosostudio.dbunifier.dbsource.DbSource;
 import org.sosostudio.dbunifier.feature.DbFeature;
 import org.sosostudio.dbunifier.oom.ConditionClause;
 import org.sosostudio.dbunifier.oom.DeleteSql;
@@ -56,20 +57,20 @@ public class DbUnifier {
 
 	private static Boolean existsSequenceTable = false;
 
-	private DbSource dbSource;
+	private DataSource dataSource;
 
 	private Connection con;
 
 	public DbUnifier() {
-		dbSource = XmlConfig.getDbSource("");
+		dataSource = XmlConfig.getDbSource("");
 	}
 
 	public DbUnifier(String dbSourceName) {
-		dbSource = XmlConfig.getDbSource(dbSourceName);
+		dataSource = XmlConfig.getDbSource(dbSourceName);
 	}
 
-	public DbUnifier(DbSource dbSource) {
-		this.dbSource = dbSource;
+	public DbUnifier(DataSource dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	public DbUnifier(Connection con) {
@@ -79,7 +80,7 @@ public class DbUnifier {
 	public String getDatabaseName() {
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -119,7 +120,7 @@ public class DbUnifier {
 	public List<Table> getTableList(boolean sortByFk) {
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -213,7 +214,7 @@ public class DbUnifier {
 	public Table getTable(String tableName) {
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -271,7 +272,7 @@ public class DbUnifier {
 	public List<Table> getViewList() {
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -319,7 +320,7 @@ public class DbUnifier {
 	public Table getView(String viewName) {
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -364,7 +365,7 @@ public class DbUnifier {
 	public void createTable(Table table) {
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -428,7 +429,7 @@ public class DbUnifier {
 		}
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -582,7 +583,7 @@ public class DbUnifier {
 		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -745,7 +746,7 @@ public class DbUnifier {
 		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -818,7 +819,7 @@ public class DbUnifier {
 		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -858,7 +859,7 @@ public class DbUnifier {
 		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -889,7 +890,7 @@ public class DbUnifier {
 		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}
@@ -930,7 +931,7 @@ public class DbUnifier {
 		DbUtil.printSql(sql, values);
 		Connection con;
 		if (this.con == null) {
-			con = dbSource.getConnection();
+			con = DbUtil.getConnection(dataSource);
 		} else {
 			con = this.con;
 		}

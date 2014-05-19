@@ -18,7 +18,7 @@ import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.util.DbUnifierException;
 
-public class JdbcDbSource implements DbSource {
+public class JdbcDbSource extends DbSource {
 
 	private String databaseDriver;
 

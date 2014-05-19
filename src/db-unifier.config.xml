@@ -2,22 +2,28 @@
 <db-unifier xmlns="http://www.sosostudio.org/db-unifier/config">
 	<show_sql>true</show_sql>
 	<db_source>
-		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
-		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
-		<username>system</username>
+		<database_driver>org.postgresql.Driver</database_driver>
+		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
+		<username>postgres</username>
 		<password>55780029</password>
 	</db_source>
-	<db_source name="export">
+	<db_source name="autocode">
+		<database_driver>org.postgresql.Driver</database_driver>
+		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
+		<username>postgres</username>
+		<password>55780029</password>
+	</db_source>
+	<db_source name="exporter">
 		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
 		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
 		<username>rk</username>
 		<password>rk</password>
 	</db_source>
-	<db_source name="import_bak">
-		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
-		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
-		<username>rk2</username>
-		<password>rk2</password>
+	<db_source name="importer">
+		<database_driver>org.postgresql.Driver</database_driver>
+		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
+		<username>postgres</username>
+		<password>55780029</password>
 	</db_source>
 	<db_source name="oracle">
 		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
@@ -37,13 +43,7 @@
 		<username>root</username>
 		<password>55780029</password>
 	</db_source>
-	<db_source name="import">
-		<database_driver>org.postgresql.Driver</database_driver>
-		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
-		<username>postgres</username>
-		<password>55780029</password>
-	</db_source>
-	<db_source name="default">
+	<db_source name="jndi">
 		<jndi>java:test</jndi>
 	</db_source>
 </db-unifier>

@@ -21,7 +21,7 @@ import javax.sql.DataSource;
 
 import org.sosostudio.dbunifier.util.DbUnifierException;
 
-public class JndiDbSource implements DbSource {
+public class JndiDbSource extends DbSource {
 
 	private String jndi;
 
@@ -64,6 +64,11 @@ public class JndiDbSource implements DbSource {
 				throw new DbUnifierException(e);
 			}
 		}
+	}
+
+	@Override
+	public Connection getConnection(String username, String password) {
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

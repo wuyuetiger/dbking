@@ -12,10 +12,51 @@
 
 package org.sosostudio.dbunifier.dbsource;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.SQLException;
 
-public interface DbSource {
+import javax.sql.DataSource;
 
-	public Connection getConnection();
+public abstract class DbSource implements DataSource {
+
+	@Override
+	public PrintWriter getLogWriter() throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setLogWriter(PrintWriter out) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setLoginTimeout(int seconds) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getLoginTimeout() throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public abstract Connection getConnection() throws SQLException;
+
+	@Override
+	public Connection getConnection(String username, String password)
+			throws SQLException {
+		throw new UnsupportedOperationException();
+	}
 
 }

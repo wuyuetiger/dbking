@@ -52,6 +52,8 @@ import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbExporter {
 
+	private static final String CONFIG_NAME = "exporter";
+
 	public static void main(String[] args) {
 		long start = System.currentTimeMillis();
 		Connection con = null;
@@ -60,7 +62,7 @@ public class DbExporter {
 		Writer clobw = null;
 		OutputStream blobos = null;
 		try {
-			DbSource dbSource = XmlConfig.getDbSource("export");
+			DbSource dbSource = XmlConfig.getDbSource(CONFIG_NAME);
 			System.out.println("You will operate the following database:");
 			System.out.println(dbSource);
 			System.out

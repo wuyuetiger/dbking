@@ -81,13 +81,13 @@ public class ${table.definationName}Dao {
 		return unifier.executeUpdateSql(updateSql);
 	}
 	
-	public int delete${table.name}(ConditionClause conditionClause) {
+	public int delete${table.definationName}(ConditionClause conditionClause) {
 		DeleteSql deleteSql = new DeleteSql().setTableName(SysTest.${table.name})
 			.setConditionClause(conditionClause);
 		return unifier.executeDeleteSql(deleteSql);
 	}
 
-	public PaginationArrayList<${table.definationName}> query${table.name}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause, int pageSize, int pageNumber) {
+	public PaginationArrayList<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause, int pageSize, int pageNumber) {
 		SelectSql selectSql = new SelectSql().setTableName(SysTest.${table.name})
 			.setColumns("*")
 			.setConditionClause(conditionClause)
@@ -106,7 +106,7 @@ public class ${table.definationName}Dao {
 		return pal;
 	}
 
-	public List<${table.definationName}> query(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause) {
+	public List<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause) {
 		SelectSql selectSql = new SelectSql().setTableName(SysTest.${table.name})
 			.setColumns("*")
 			.setConditionClause(conditionClause)

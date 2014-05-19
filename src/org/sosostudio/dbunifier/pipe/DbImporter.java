@@ -51,6 +51,8 @@ import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbImporter {
 
+	private static final String CONFIG_NAME = "importer";
+
 	private static final String PARAM_IGNORE_ERROR = "ignore_error";
 
 	private static Map<String, PipeSql> pipeSqlMap = new HashMap<String, PipeSql>();
@@ -67,7 +69,7 @@ public class DbImporter {
 		Reader clobr = null;
 		InputStream blobis = null;
 		try {
-			DbSource dbSource = XmlConfig.getDbSource("import");
+			DbSource dbSource = XmlConfig.getDbSource(CONFIG_NAME);
 			System.out.println("You will operate the following database:");
 			System.out.println(dbSource);
 			System.out
