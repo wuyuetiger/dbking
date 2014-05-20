@@ -11,7 +11,7 @@
 		http://www.springframework.org/schema/jee/spring-jee.xsd"
 	default-lazy-init="true">
 
-	<bean id="dataSource"
+	<bean id="dataSourceTarget"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.postgresql.Driver" />
 		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
@@ -19,12 +19,9 @@
 		<property name="password" value="55780029" />
 	</bean>
 
-	<!-- JNDI -->
-	<!-- <jee:jndi-lookup id="dataSource" lookup-on-startup="true" jndi-name="java:test"/> -->
-
-	<bean id="dataSourceProxy"
+	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
-		<constructor-arg ref bean="dataSource" />
+		<constructor-arg ref bean="dataSourceTarget" />
 	</bean>
 
 	<bean id="transactionManager"

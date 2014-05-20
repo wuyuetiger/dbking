@@ -81,6 +81,15 @@ public class RowSet {
 		this.totalPageCount = totalPageCount;
 	}
 
+	public Object[] toBeans(Class<?> clazz) {
+		Object[] objs = new Object[rowList.size()];
+		for (int i = 0; i < rowList.size(); i++) {
+			Row row = rowList.get(i);
+			objs[i] = row.toBean(clazz);
+		}
+		return objs;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

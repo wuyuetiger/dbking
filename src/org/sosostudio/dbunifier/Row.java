@@ -12,11 +12,19 @@
 
 package org.sosostudio.dbunifier;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.persistence.Column;
+
+import org.sosostudio.dbunifier.util.DbUnifierException;
+import org.sosostudio.dbunifier.util.StringUtil;
 
 public class Row {
 
@@ -85,6 +93,46 @@ public class Row {
 
 	public byte[] getBlob(String columnName) {
 		return (byte[]) this.get(columnName);
+	}
+
+	public Object toBean(Class<?> clazz) {
+		try {
+			Object bean = clazz.newInstance();
+			Field[] fields = clazz.getDeclaredFields();
+			for (int i = 0; i < fields.length; i++) {
+				Column column = (Column) fields[i].getAnnotation(Column.class);
+				String fieldName = column.name();
+				Class<?> fieldTypeClass = fields[i].getType();
+				Object fieldValue;
+				if (String.class.equals(fieldTypeClass)) {
+					fieldValue = getString(fieldName);
+				} else if (BigDecimal.class.equals(fieldTypeClass)) {
+					fieldValue = getNumber(fieldName);
+				} else if (Timestamp.class.equals(fieldTypeClass)) {
+					fieldValue = getTimestamp(fieldName);
+				} else {
+					continue;
+				}
+				String setMethodName = "set"
+						+ StringUtil.getDefinationName(fieldName);
+				Method setMethod = clazz.getMethod(setMethodName,
+						fieldTypeClass);
+				setMethod.invoke(bean, fieldValue);
+			}
+			return bean;
+		} catch (SecurityException e) {
+			throw new DbUnifierException(e);
+		} catch (IllegalArgumentException e) {
+			throw new DbUnifierException(e);
+		} catch (InstantiationException e) {
+			throw new DbUnifierException(e);
+		} catch (IllegalAccessException e) {
+			throw new DbUnifierException(e);
+		} catch (NoSuchMethodException e) {
+			throw new DbUnifierException(e);
+		} catch (InvocationTargetException e) {
+			throw new DbUnifierException(e);
+		}
 	}
 
 	@Override
