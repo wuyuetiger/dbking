@@ -12,6 +12,8 @@
 
 package org.sosostudio.dbunifier;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,6 +81,46 @@ public class RowSet {
 
 	public void setTotalPageCount(int totalPageCount) {
 		this.totalPageCount = totalPageCount;
+	}
+
+	public String getOnlyString() {
+		if (rowList.size() > 0) {
+			return rowList.get(0).getString(1);
+		} else {
+			return null;
+		}
+	}
+
+	public BigDecimal getOnlyNumber() {
+		if (rowList.size() > 0) {
+			return rowList.get(0).getNumber(1);
+		} else {
+			return null;
+		}
+	}
+
+	public Timestamp getOnlyTimestamp() {
+		if (rowList.size() > 0) {
+			return rowList.get(0).getTimestamp(1);
+		} else {
+			return null;
+		}
+	}
+
+	public String getOnlyClob() {
+		if (rowList.size() > 0) {
+			return rowList.get(0).getClob(1);
+		} else {
+			return null;
+		}
+	}
+
+	public byte[] getOnlyBlob() {
+		if (rowList.size() > 0) {
+			return rowList.get(0).getBlob(1);
+		} else {
+			return null;
+		}
 	}
 
 	public Object[] toBeans(Class<?> clazz) {

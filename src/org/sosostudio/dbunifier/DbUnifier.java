@@ -96,10 +96,10 @@ public class DbUnifier {
 		}
 	}
 
-	private Column genColumn(ResultSet columnRs, Set<String> pkSet)
-			throws SQLException {
+	private Column genColumn(DbFeature dbFeature, ResultSet columnRs,
+			Set<String> pkSet) throws SQLException {
 		String columnName = columnRs.getString("COLUMN_NAME");
-		columnName = columnName.toUpperCase();
+		columnName = dbFeature.defaultCaps(columnName);
 		short dataType = columnRs.getShort("DATA_TYPE");
 		int size = columnRs.getInt("COLUMN_SIZE");
 		int scale = columnRs.getInt("DECIMAL_DIGITS");
@@ -112,7 +112,7 @@ public class DbUnifier {
 		column.setScale(scale);
 		column.setNullable(nullable != ResultSetMetaData.columnNoNulls);
 		if (pkSet != null) {
-			column.setIsPrimaryKey(pkSet.contains(columnName));
+			column.setPrimaryKey(pkSet.contains(columnName));
 		}
 		return column;
 	}
@@ -136,7 +136,7 @@ public class DbUnifier {
 				tableRs = dmd.getTables(null, schema, "%", types);
 				while (tableRs.next()) {
 					String tableName = tableRs.getString("TABLE_NAME");
-					tableName = tableName.toUpperCase();
+					tableName = dbFeature.defaultCaps(tableName);
 					if (tableName.startsWith("BIN$")) {
 						continue;
 					}
@@ -146,7 +146,7 @@ public class DbUnifier {
 						pkRs = dmd.getPrimaryKeys(null, schema, tableName);
 						while (pkRs.next()) {
 							String columnName = pkRs.getString("COLUMN_NAME");
-							columnName = columnName.toUpperCase();
+							columnName = dbFeature.defaultCaps(columnName);
 							pkSet.add(columnName);
 						}
 					} finally {
@@ -157,7 +157,8 @@ public class DbUnifier {
 					try {
 						columnRs = dmd.getColumns(null, schema, tableName, "%");
 						while (columnRs.next()) {
-							Column column = genColumn(columnRs, pkSet);
+							Column column = genColumn(dbFeature, columnRs,
+									pkSet);
 							columnList.add(column);
 						}
 					} finally {
@@ -179,7 +180,8 @@ public class DbUnifier {
 							while (fkRs.next()) {
 								String parentTableName = fkRs
 										.getString("PKTABLE_NAME");
-								parentTableName = parentTableName.toUpperCase();
+								parentTableName = dbFeature
+										.defaultCaps(parentTableName);
 								Table parentTable = tableMap
 										.get(parentTableName);
 								int seq = parentTable.getSeq() + step;
@@ -222,14 +224,14 @@ public class DbUnifier {
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
-			tableName = tableName.toUpperCase();
+			tableName = dbFeature.defaultCaps(tableName);
 			Set<String> pkSet = new HashSet<String>();
 			ResultSet pkRs = null;
 			try {
 				pkRs = dmd.getPrimaryKeys(null, schema, tableName);
 				while (pkRs.next()) {
 					String columnName = pkRs.getString("COLUMN_NAME");
-					columnName = columnName.toUpperCase();
+					columnName = dbFeature.defaultCaps(columnName);
 					pkSet.add(columnName);
 				}
 			} catch (Exception e) {
@@ -240,19 +242,10 @@ public class DbUnifier {
 			ResultSet columnRs = null;
 			try {
 				columnRs = dmd.getColumns(null, schema, tableName, "%");
-				if (!columnRs.next()) {
-					columnRs.close();
-					columnRs = dmd.getColumns(null, schema,
-							tableName.toLowerCase(), "%");
-					if (!columnRs.next()) {
-						columnRs.close();
-						return null;
-					}
-				}
-				do {
-					Column column = genColumn(columnRs, pkSet);
+				while (columnRs.next()) {
+					Column column = genColumn(dbFeature, columnRs, pkSet);
 					columnList.add(column);
-				} while (columnRs.next());
+				}
 			} finally {
 				DbUtil.closeResultSet(columnRs);
 			}
@@ -287,19 +280,20 @@ public class DbUnifier {
 				viewRs = dmd.getTables(null, schema, "%", types);
 				while (viewRs.next()) {
 					String viewName = viewRs.getString("TABLE_NAME");
-					viewName = viewName.toUpperCase();
+					viewName = dbFeature.defaultCaps(viewName);
 					List<Column> columnList = new ArrayList<Column>();
 					ResultSet columnRs = null;
 					try {
 						columnRs = dmd.getColumns(null, schema, viewName, "%");
 						while (columnRs.next()) {
-							Column column = genColumn(columnRs, null);
+							Column column = genColumn(dbFeature, columnRs, null);
 							columnList.add(column);
 						}
 					} finally {
 						DbUtil.closeResultSet(columnRs);
 					}
 					Table view = new Table();
+					view.setTable(false);
 					view.setName(viewName);
 					view.addColumnList(columnList);
 					viewList.add(view);
@@ -328,7 +322,7 @@ public class DbUnifier {
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
-			viewName = viewName.toUpperCase();
+			viewName = dbFeature.defaultCaps(viewName);
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnRs = null;
 			try {
@@ -343,13 +337,14 @@ public class DbUnifier {
 					}
 				}
 				do {
-					Column column = genColumn(columnRs, null);
+					Column column = genColumn(dbFeature, columnRs, null);
 					columnList.add(column);
 				} while (columnRs.next());
 			} finally {
 				DbUtil.closeResultSet(columnRs);
 			}
 			Table view = new Table();
+			view.setTable(false);
 			view.setName(viewName);
 			view.addColumnList(columnList);
 			return view;
@@ -378,7 +373,7 @@ public class DbUnifier {
 			List<Column> columnList = table.getColumnList();
 			for (int i = 0; i < columnList.size(); i++) {
 				Column column = (Column) columnList.get(i);
-				if (column.getIsPrimaryKey()) {
+				if (column.isPrimaryKey()) {
 					if (sbPk.length() > 0) {
 						sbPk.append(", ");
 					}
@@ -401,7 +396,7 @@ public class DbUnifier {
 				} else if (type == ColumnType.TYPE_BLOB) {
 					sb.append(dbFeature.getBlobDbType());
 				}
-				if (!column.getNullable()) {
+				if (!column.isNullable()) {
 					sb.append(" not null");
 				}
 			}

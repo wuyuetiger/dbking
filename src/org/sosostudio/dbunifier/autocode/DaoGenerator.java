@@ -64,6 +64,9 @@ public class DaoGenerator {
 		for (int i = 2; i < args.length; i++) {
 			Map<String, Object> root = new HashMap<String, Object>();
 			Table table = unifier.getTable(args[i]);
+			if (table == null) {
+				table = unifier.getView(args[i]);
+			}
 			root.put("package", packagePath);
 			root.put("table", table);
 			{

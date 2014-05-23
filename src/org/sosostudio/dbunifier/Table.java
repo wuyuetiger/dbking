@@ -25,6 +25,8 @@ public class Table implements Comparable<Table>, Serializable {
 	// it's used to sort tables with foreign key relations
 	private int seq = 0;
 
+	private boolean isTable = true;
+
 	private String name;
 
 	private List<Column> columnList = new ArrayList<Column>();
@@ -42,6 +44,15 @@ public class Table implements Comparable<Table>, Serializable {
 
 	public Table setSeq(int seq) {
 		this.seq = seq;
+		return this;
+	}
+
+	public boolean isTable() {
+		return isTable;
+	}
+
+	public Table setTable(boolean isTable) {
+		this.isTable = isTable;
 		return this;
 	}
 

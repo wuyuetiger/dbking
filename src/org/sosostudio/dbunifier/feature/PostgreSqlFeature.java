@@ -18,6 +18,11 @@ import java.sql.SQLException;
 public class PostgreSqlFeature extends DbFeature {
 
 	@Override
+	public String defaultCaps(String name) {
+		return name.toLowerCase();
+	}
+
+	@Override
 	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
 		return "public";
 	}

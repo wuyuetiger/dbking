@@ -53,6 +53,8 @@ public abstract class DbFeature {
 		}
 	}
 
+	public abstract String defaultCaps(String name);
+
 	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
 		return null;
 	}

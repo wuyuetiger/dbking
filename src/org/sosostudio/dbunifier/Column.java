@@ -30,18 +30,18 @@ public class Column implements Serializable {
 
 	private int scale = 2;
 
-	private boolean nullable;
+	private boolean isNullable;
 
 	private boolean isPrimaryKey;
 
 	public Column() {
 	}
 
-	public Column(String name, ColumnType type, boolean nullable,
+	public Column(String name, ColumnType type, boolean isNullable,
 			boolean isPrimaryKey) {
 		this.name = name;
 		this.type = type;
-		this.nullable = nullable;
+		this.isNullable = isNullable;
 		this.isPrimaryKey = isPrimaryKey;
 	}
 
@@ -98,20 +98,20 @@ public class Column implements Serializable {
 		return this;
 	}
 
-	public boolean getNullable() {
-		return nullable;
+	public boolean isNullable() {
+		return isNullable;
 	}
 
-	public Column setNullable(boolean nullable) {
-		this.nullable = nullable;
+	public Column setNullable(boolean isNullable) {
+		this.isNullable = isNullable;
 		return this;
 	}
 
-	public boolean getIsPrimaryKey() {
+	public boolean isPrimaryKey() {
 		return isPrimaryKey;
 	}
 
-	public Column setIsPrimaryKey(boolean isPrimaryKey) {
+	public Column setPrimaryKey(boolean isPrimaryKey) {
 		this.isPrimaryKey = isPrimaryKey;
 		return this;
 	}
@@ -123,7 +123,7 @@ public class Column implements Serializable {
 				.append("[size = ").append(size).append("]")
 				.append("[precision = ").append(precision).append("]")
 				.append("[scale = ").append(scale).append("]")
-				.append("[nullable = ").append(nullable).append("]")
+				.append("[nullable = ").append(isNullable).append("]")
 				.append("[isPrimaryKey = ").append(isPrimaryKey).append("]\n")
 				.toString();
 	}

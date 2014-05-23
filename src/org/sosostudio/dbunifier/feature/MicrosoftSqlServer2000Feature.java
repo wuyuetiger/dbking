@@ -15,6 +15,11 @@ package org.sosostudio.dbunifier.feature;
 public class MicrosoftSqlServer2000Feature extends DbFeature {
 
 	@Override
+	public String defaultCaps(String name) {
+		return name.toUpperCase();
+	}
+
+	@Override
 	public String getTimestampDbType() {
 		return "datetime";
 	}

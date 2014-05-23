@@ -18,6 +18,11 @@ import java.sql.SQLException;
 public class OracleFeature extends DbFeature {
 
 	@Override
+	public String defaultCaps(String name) {
+		return name.toUpperCase();
+	}
+	
+	@Override
 	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
 		return dmd.getUserName();
 	}

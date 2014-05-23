@@ -30,7 +30,7 @@ public class ${table.definationName} implements Serializable {
 	<#list table.columnList as column>
 		<#if column.type == "TYPE_STRING" || column.type == "TYPE_NUMBER" || column.type == "TYPE_TIMESTAMP">
 
-			<#if column.isPrimaryKey>
+			<#if column.primaryKey>
 	@Id
 			</#if>
 	@Column(name = "${column.name}")

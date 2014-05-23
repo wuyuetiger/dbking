@@ -1,6 +1,6 @@
 <#assign hasPrimaryKey = false />
 <#list table.columnList as column>
-	<#if column.isPrimaryKey>
+	<#if column.primaryKey>
 		<#assign hasPrimaryKey = true>
 		<#break>
 	</#if>
@@ -43,6 +43,7 @@ public class ${table.definationName}Dao {
 		this.unifier = unifier;
 	}
 
+	<#if table.table>
 	public int add${table.definationName}(${table.definationName} ${table.variableName}) {
 		InsertSql insertSql = new InsertSql().setTableName(SysTest.${table.name})
 			.setInsertKeyValueClause(
@@ -65,7 +66,7 @@ public class ${table.definationName}Dao {
 			).setConditionClause(
 				new ConditionClause(LogicalOp.AND)
 		<#list table.columnList as column>
-			<#if column.isPrimaryKey>
+			<#if column.primaryKey>
 				.add${column.type.getName()}Clause(SysTest.${column.name}, RelationOp.EQUAL, ${table.variableName}.get${column.definationName}())
 			</#if>
 		</#list>	
@@ -86,6 +87,7 @@ public class ${table.definationName}Dao {
 			.setConditionClause(conditionClause);
 		return unifier.executeDeleteSql(deleteSql);
 	}
+	</#if>
 
 	public PaginationArrayList<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause, int pageSize, int pageNumber) {
 		SelectSql selectSql = new SelectSql().setTableName(SysTest.${table.name})
