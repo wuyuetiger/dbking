@@ -278,20 +278,52 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testGetTableInfo() {
+	public void testGetTableList() {
 		try {
 			unifier.executeOtherSql("create table " + tableName + " ("
 					+ columnName + " varchar(50))", null);
 			boolean success = false;
+			String tableName2 = null;
 			List<Table> tableList = unifier.getTableList();
 			for (Table table : tableList) {
-				if (tableName.equals(table.getName())) {
+				if (tableName.equalsIgnoreCase(table.getName())) {
 					success = true;
+					tableName2 = table.getName();
 				}
 			}
 			assertTrue(success);
+			Table table2 = unifier.getTable(tableName2);
+			assertEquals(tableName2, table2.getName());
+		} finally {
+			unifier.executeOtherSql("drop table " + tableName, null);
+		}
+	}
+
+	@Test
+	public void testGetTable() {
+		try {
+			unifier.createTable(new Table()
+					.setName(tableName)
+					.addColumn(
+							new Column("ST_VALUE", ColumnType.TYPE_STRING,
+									false, true))
+					.addColumn(
+							new Column("NM_VALUE", ColumnType.TYPE_NUMBER,
+									false, false))
+					.addColumn(
+							new Column("DT_VALUE", ColumnType.TYPE_TIMESTAMP,
+									false, false))
+					.addColumn(
+							new Column("CL_VALUE", ColumnType.TYPE_CLOB, false,
+									false))
+					.addColumn(
+							new Column("BL_VALUE", ColumnType.TYPE_BLOB, false,
+									false)));
 			Table table = unifier.getTable(tableName);
-			assertEquals(tableName, table.getName());
+			List<Column> columnList = table.getColumnList();
+			assertEquals(columnList.size(), 5);
+			Column column = columnList.get(0);
+			assertEquals(column.isPrimaryKey(), true);
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
