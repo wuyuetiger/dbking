@@ -76,53 +76,59 @@ public class DbUtil {
 
 	public static ColumnType getColumnType(int dataType) {
 		if (dataType == Types.VARCHAR) {
-			return ColumnType.TYPE_STRING;
-		} else if (dataType == Types.LONGVARCHAR) {
-			return ColumnType.TYPE_STRING;
+			return ColumnType.STRING;
 		} else if (dataType == Types.NVARCHAR) {
-			return ColumnType.TYPE_STRING;
+			return ColumnType.STRING;
+		} else if (dataType == Types.LONGVARCHAR) {
+			return ColumnType.STRING;
+		} else if (dataType == Types.LONGNVARCHAR) {
+			return ColumnType.STRING;
 		} else if (dataType == Types.CHAR) {
-			return ColumnType.TYPE_STRING;
+			return ColumnType.STRING;
+		} else if (dataType == Types.NCHAR) {
+			return ColumnType.STRING;
 		} else if (dataType == Types.INTEGER) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.BIGINT) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.SMALLINT) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.TINYINT) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.FLOAT) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.DOUBLE) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.DECIMAL) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.REAL) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.NUMERIC) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.BIT) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.BOOLEAN) {
-			return ColumnType.TYPE_NUMBER;
+			return ColumnType.NUMBER;
 		} else if (dataType == Types.TIMESTAMP) {
-			return ColumnType.TYPE_TIMESTAMP;
+			return ColumnType.TIMESTAMP;
 		} else if (dataType == Types.DATE) {
-			return ColumnType.TYPE_TIMESTAMP;
+			return ColumnType.TIMESTAMP;
 		} else if (dataType == Types.TIME) {
-			return ColumnType.TYPE_TIMESTAMP;
+			return ColumnType.TIMESTAMP;
 		} else if (dataType == Types.BLOB) {
-			return ColumnType.TYPE_BLOB;
+			return ColumnType.BLOB;
 		} else if (dataType == Types.BINARY) {
-			return ColumnType.TYPE_BLOB;
+			return ColumnType.BLOB;
 		} else if (dataType == Types.VARBINARY) {
-			return ColumnType.TYPE_BLOB;
+			return ColumnType.BLOB;
 		} else if (dataType == Types.LONGVARBINARY) {
-			return ColumnType.TYPE_BLOB;
+			return ColumnType.BLOB;
 		} else if (dataType == Types.CLOB) {
-			return ColumnType.TYPE_CLOB;
+			return ColumnType.CLOB;
+		} else if (dataType == Types.NCLOB) {
+			return ColumnType.CLOB;
 		} else {
-			return ColumnType.TYPE_UNKNOWN;
+			return ColumnType.UNKNOWN;
 		}
 	}
 
@@ -135,15 +141,15 @@ public class DbUtil {
 			if (value instanceof NullValue) {
 				NullValue nullValue = (NullValue) value;
 				ColumnType type = nullValue.getType();
-				if (type == ColumnType.TYPE_STRING) {
+				if (type == ColumnType.STRING) {
 					ps.setString(pos, null);
-				} else if (type == ColumnType.TYPE_NUMBER) {
+				} else if (type == ColumnType.NUMBER) {
 					ps.setBigDecimal(pos, null);
-				} else if (type == ColumnType.TYPE_TIMESTAMP) {
+				} else if (type == ColumnType.TIMESTAMP) {
 					ps.setTimestamp(pos, null);
-				} else if (type == ColumnType.TYPE_CLOB) {
+				} else if (type == ColumnType.CLOB) {
 					ps.setCharacterStream(pos, null, 0);
-				} else if (type == ColumnType.TYPE_BLOB) {
+				} else if (type == ColumnType.BLOB) {
 					ps.setBinaryStream(pos, null, 0);
 				}
 			} else if (value instanceof String) {

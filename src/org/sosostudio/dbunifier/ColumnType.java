@@ -15,9 +15,9 @@ package org.sosostudio.dbunifier;
 
 public enum ColumnType {
 
-	TYPE_STRING("String", "String"), TYPE_NUMBER("Number", "BigDecimal"), TYPE_TIMESTAMP(
-			"Timestamp", "Timestamp"), TYPE_CLOB("Clob", "char[]"), TYPE_BLOB(
-			"Blob", "byte[]"), TYPE_UNKNOWN("", "");
+	STRING("String", "String"), NUMBER("Number", "BigDecimal"), TIMESTAMP(
+			"Timestamp", "Timestamp"), CLOB("Clob", "char[]"), BLOB("Blob",
+			"byte[]"), UNKNOWN("", "");
 
 	private final String name;
 

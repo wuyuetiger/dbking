@@ -34,7 +34,7 @@ public class Values {
 
 	public Values addStringValue(String stringValue) {
 		if (stringValue == null) {
-			return addNullValue(ColumnType.TYPE_STRING);
+			return addNullValue(ColumnType.STRING);
 		} else {
 			valueList.add(stringValue);
 			return this;
@@ -43,7 +43,7 @@ public class Values {
 
 	public Values addNumberValue(BigDecimal numberValue) {
 		if (numberValue == null) {
-			return addNullValue(ColumnType.TYPE_NUMBER);
+			return addNullValue(ColumnType.NUMBER);
 		} else {
 			valueList.add(numberValue);
 			return this;
@@ -52,7 +52,7 @@ public class Values {
 
 	public Values addTimestampValue(Timestamp timestampValue) {
 		if (timestampValue == null) {
-			return addNullValue(ColumnType.TYPE_TIMESTAMP);
+			return addNullValue(ColumnType.TIMESTAMP);
 		} else {
 			valueList.add(timestampValue);
 			return this;
@@ -61,7 +61,7 @@ public class Values {
 
 	public Values addClobValue(String clobValue) {
 		if (clobValue == null) {
-			return addNullValue(ColumnType.TYPE_CLOB);
+			return addNullValue(ColumnType.CLOB);
 		} else {
 			valueList.add(clobValue.toCharArray());
 			return this;
@@ -70,7 +70,7 @@ public class Values {
 
 	public Values addBlobValue(byte[] blobValue) {
 		if (blobValue == null) {
-			return addNullValue(ColumnType.TYPE_BLOB);
+			return addNullValue(ColumnType.BLOB);
 		} else {
 			valueList.add(blobValue);
 			return this;

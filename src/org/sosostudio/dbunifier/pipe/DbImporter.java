@@ -181,23 +181,23 @@ public class DbImporter {
 									String columnName = nameType.getName();
 									String sValue = valueMap.get(columnName);
 									ColumnType type = nameType.getType();
-									if (type == ColumnType.TYPE_STRING) {
+									if (type == ColumnType.STRING) {
 										ps.setString(i, sValue);
-									} else if (type == ColumnType.TYPE_NUMBER) {
+									} else if (type == ColumnType.NUMBER) {
 										if (sValue == null) {
 											ps.setBigDecimal(i, null);
 										} else {
 											ps.setBigDecimal(i, new BigDecimal(
 													sValue));
 										}
-									} else if (type == ColumnType.TYPE_TIMESTAMP) {
+									} else if (type == ColumnType.TIMESTAMP) {
 										if (sValue == null) {
 											ps.setTimestamp(i, null);
 										} else {
 											ps.setTimestamp(i, new Timestamp(
 													Long.parseLong(sValue)));
 										}
-									} else if (type == ColumnType.TYPE_CLOB) {
+									} else if (type == ColumnType.CLOB) {
 										if (sValue == null) {
 											ps.setCharacterStream(i, null, 0);
 										} else {
@@ -212,7 +212,7 @@ public class DbImporter {
 													length);
 											clobStartPos += length;
 										}
-									} else if (type == ColumnType.TYPE_BLOB) {
+									} else if (type == ColumnType.BLOB) {
 										if (sValue == null) {
 											ps.setBinaryStream(i, null, 0);
 										} else {

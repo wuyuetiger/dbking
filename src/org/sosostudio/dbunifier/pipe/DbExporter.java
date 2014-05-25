@@ -197,23 +197,23 @@ public class DbExporter {
 							xmlw.writeAttribute("s", map.get(columnName));
 							int dataType = rsmd.getColumnType(i);
 							ColumnType type = DbUtil.getColumnType(dataType);
-							if (type == ColumnType.TYPE_STRING) {
+							if (type == ColumnType.STRING) {
 								String value = rs.getString(i);
 								if (value != null) {
 									xmlw.writeAttribute("v", value);
 								}
-							} else if (type == ColumnType.TYPE_NUMBER) {
+							} else if (type == ColumnType.NUMBER) {
 								BigDecimal value = rs.getBigDecimal(i);
 								if (value != null) {
 									xmlw.writeAttribute("v", value.toString());
 								}
-							} else if (type == ColumnType.TYPE_TIMESTAMP) {
+							} else if (type == ColumnType.TIMESTAMP) {
 								Timestamp value = rs.getTimestamp(i);
 								if (value != null) {
 									xmlw.writeAttribute("v", value.getTime()
 											+ "");
 								}
-							} else if (type == ColumnType.TYPE_CLOB) {
+							} else if (type == ColumnType.CLOB) {
 								Reader reader = rs.getCharacterStream(i);
 								if (reader != null) {
 									reader = new BufferedReader(reader);
@@ -228,7 +228,7 @@ public class DbExporter {
 											+ count);
 									clobStartPos += count;
 								}
-							} else if (type == ColumnType.TYPE_BLOB) {
+							} else if (type == ColumnType.BLOB) {
 								InputStream is = rs.getBinaryStream(i);
 								if (is != null) {
 									is = new BufferedInputStream(is);

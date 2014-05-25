@@ -13,6 +13,10 @@
 
 package org.sosostudio.dbunifier.util;
 
+import java.io.UnsupportedEncodingException;
+
+import org.sosostudio.dbunifier.Encoding;
+
 public class StringUtil {
 
 	private static String getName(String name, boolean first) {
@@ -39,6 +43,61 @@ public class StringUtil {
 
 	public static String getVariableName(String name) {
 		return getName(name, false);
+	}
+
+	public static String substring(String s, int maxLength, Encoding encoding) {
+		if (s == null) {
+			return null;
+		}
+		if (encoding == Encoding.UTF8) {
+			try {
+				byte[] bytes = s.getBytes("UTF-8");
+				if (bytes.length <= maxLength) {
+					return s;
+				} else {
+					StringBuilder sb = new StringBuilder();
+					int length = 0;
+					for (int i = 0; i < s.length(); i++) {
+						String ch = s.substring(i, i + 1);
+						length += ch.getBytes("UTF-8").length;
+						if (length > maxLength) {
+							break;
+						}
+						sb.append(ch);
+					}
+					return sb.toString();
+				}
+			} catch (UnsupportedEncodingException e) {
+				throw new DbUnifierException(e);
+			}
+		} else if (encoding == Encoding.GBK) {
+			try {
+				byte[] bytes = s.getBytes("GBK");
+				if (bytes.length <= maxLength) {
+					return s;
+				} else {
+					StringBuilder sb = new StringBuilder();
+					int length = 0;
+					for (int i = 0; i < s.length(); i++) {
+						String ch = s.substring(i, i + 1);
+						length += ch.getBytes("GBK").length;
+						if (length > maxLength) {
+							break;
+						}
+						sb.append(ch);
+					}
+					return sb.toString();
+				}
+			} catch (UnsupportedEncodingException e) {
+				throw new DbUnifierException(e);
+			}
+		} else {
+			if (s.length() <= maxLength) {
+				return s;
+			} else {
+				return s.substring(0, maxLength);
+			}
+		}
 	}
 
 }

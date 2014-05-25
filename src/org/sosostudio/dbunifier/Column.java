@@ -25,6 +25,8 @@ public class Column implements Serializable {
 
 	private ColumnType type;
 
+	private String dbType;
+
 	private int size = 50;
 
 	private int precision = 10;
@@ -69,6 +71,15 @@ public class Column implements Serializable {
 
 	public Column setType(ColumnType type) {
 		this.type = type;
+		return this;
+	}
+
+	public String getDbType() {
+		return dbType;
+	}
+
+	public Column setDbType(String dbType) {
+		this.dbType = dbType;
 		return this;
 	}
 
@@ -121,6 +132,7 @@ public class Column implements Serializable {
 	public String toString() {
 		return new StringBuilder().append("\t[name = ").append(name)
 				.append("]").append("[type = ").append(type).append("]")
+				.append("[dbtype = ").append(dbType).append("]")
 				.append("[size = ").append(size).append("]")
 				.append("[precision = ").append(precision).append("]")
 				.append("[scale = ").append(scale).append("]")

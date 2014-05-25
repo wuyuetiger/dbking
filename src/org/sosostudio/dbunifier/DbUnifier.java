@@ -64,6 +64,8 @@ public class DbUnifier {
 
 	private Connection con;
 
+	private Encoding encoding = Encoding.UTF8;
+
 	public DbUnifier() {
 		dataSource = XmlConfig.getDbSource("");
 	}
@@ -78,6 +80,15 @@ public class DbUnifier {
 
 	public DbUnifier(Connection con) {
 		this.con = con;
+	}
+
+	public Encoding getEncoding() {
+		return encoding;
+	}
+
+	public DbUnifier setEncoding(Encoding encoding) {
+		this.encoding = encoding;
+		return this;
 	}
 
 	public String getDatabaseName() {
@@ -104,12 +115,14 @@ public class DbUnifier {
 		String columnName = columnRs.getString("COLUMN_NAME");
 		columnName = dbFeature.defaultCaps(columnName);
 		short dataType = columnRs.getShort("DATA_TYPE");
+		String dbType = columnRs.getString("TYPE_NAME");
 		int size = columnRs.getInt("COLUMN_SIZE");
 		int scale = columnRs.getInt("DECIMAL_DIGITS");
 		int nullable = columnRs.getInt("NULLABLE");
 		Column column = new Column();
 		column.setName(columnName);
 		column.setType(DbUtil.getColumnType(dataType));
+		column.setDbType(dbType);
 		column.setSize(size);
 		column.setPrecision(size);
 		column.setScale(scale);
@@ -378,16 +391,16 @@ public class DbUnifier {
 				}
 				sb.append(column.getName()).append(" ");
 				ColumnType type = column.getType();
-				if (type == ColumnType.TYPE_STRING) {
+				if (type == ColumnType.STRING) {
 					sb.append(dbFeature.getStringDbType(column.getSize()));
-				} else if (type == ColumnType.TYPE_NUMBER) {
+				} else if (type == ColumnType.NUMBER) {
 					sb.append(dbFeature.getNumberDbType(column.getPrecision(),
 							column.getScale()));
-				} else if (type == ColumnType.TYPE_TIMESTAMP) {
+				} else if (type == ColumnType.TIMESTAMP) {
 					sb.append(dbFeature.getTimestampDbType());
-				} else if (type == ColumnType.TYPE_CLOB) {
+				} else if (type == ColumnType.CLOB) {
 					sb.append(dbFeature.getClobDbType());
-				} else if (type == ColumnType.TYPE_BLOB) {
+				} else if (type == ColumnType.BLOB) {
 					sb.append(dbFeature.getBlobDbType());
 				}
 				if (!column.isNullable()) {
@@ -506,13 +519,13 @@ public class DbUnifier {
 					int dataType = rsmd.getColumnType(i + 1);
 					ColumnType type = DbUtil.getColumnType(dataType);
 					Object value = null;
-					if (type == ColumnType.TYPE_STRING) {
+					if (type == ColumnType.STRING) {
 						value = rs.getString(i + 1);
-					} else if (type == ColumnType.TYPE_NUMBER) {
+					} else if (type == ColumnType.NUMBER) {
 						value = rs.getBigDecimal(i + 1);
-					} else if (type == ColumnType.TYPE_TIMESTAMP) {
+					} else if (type == ColumnType.TIMESTAMP) {
 						value = rs.getTimestamp(i + 1);
-					} else if (type == ColumnType.TYPE_CLOB) {
+					} else if (type == ColumnType.CLOB) {
 						if (containsLob) {
 							Reader reader = rs.getCharacterStream(i + 1);
 							if (reader != null) {
@@ -525,7 +538,7 @@ public class DbUnifier {
 								}
 							}
 						}
-					} else if (type == ColumnType.TYPE_BLOB) {
+					} else if (type == ColumnType.BLOB) {
 						if (containsLob) {
 							InputStream is = rs.getBinaryStream(i + 1);
 							if (is != null) {
@@ -602,13 +615,13 @@ public class DbUnifier {
 					int dataType = rsmd.getColumnType(i + 1);
 					ColumnType type = DbUtil.getColumnType(dataType);
 					Object value = null;
-					if (type == ColumnType.TYPE_STRING) {
+					if (type == ColumnType.STRING) {
 						value = rs.getString(i + 1);
-					} else if (type == ColumnType.TYPE_NUMBER) {
+					} else if (type == ColumnType.NUMBER) {
 						value = rs.getBigDecimal(i + 1);
-					} else if (type == ColumnType.TYPE_TIMESTAMP) {
+					} else if (type == ColumnType.TIMESTAMP) {
 						value = rs.getTimestamp(i + 1);
-					} else if (type == ColumnType.TYPE_CLOB) {
+					} else if (type == ColumnType.CLOB) {
 						if (containsLob) {
 							Reader reader = rs.getCharacterStream(i + 1);
 							if (reader != null) {
@@ -621,7 +634,7 @@ public class DbUnifier {
 								}
 							}
 						}
-					} else if (type == ColumnType.TYPE_BLOB) {
+					} else if (type == ColumnType.BLOB) {
 						if (containsLob) {
 							InputStream is = rs.getBinaryStream(i + 1);
 							if (is != null) {
@@ -953,9 +966,9 @@ public class DbUnifier {
 				Table table = getTable("SYS_SEQ");
 				if (table == null) {
 					table = new Table("SYS_SEQ").addColumn(
-							new Column("ST_SEQ_NAME", ColumnType.TYPE_STRING,
-									false, true)).addColumn(
-							new Column("NM_SEQ_VALUE", ColumnType.TYPE_NUMBER,
+							new Column("ST_SEQ_NAME", ColumnType.STRING, false,
+									true)).addColumn(
+							new Column("NM_SEQ_VALUE", ColumnType.NUMBER,
 									false, false));
 					createTable(table);
 					existsSequenceTable = true;
