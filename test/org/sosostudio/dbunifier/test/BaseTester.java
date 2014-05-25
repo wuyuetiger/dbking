@@ -10,7 +10,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.sosostudio.dbunifier.Column;
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.DbUnifier;
@@ -30,7 +32,8 @@ import org.sosostudio.dbunifier.oom.UpdateSql;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.IoUtil;
 
-public abstract class BaseTester extends TestCase {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class BaseTester extends TestCase {
 
 	protected String tableName = "SYS_TEST";
 
@@ -41,10 +44,8 @@ public abstract class BaseTester extends TestCase {
 	protected DbUnifier unifier;
 
 	public BaseTester() {
-		init();
+		unifier = new DbUnifier();
 	}
-
-	public abstract void init();
 
 	private byte[] getFile(String filename) {
 		InputStream is = BaseTester.class.getResourceAsStream(filename);
@@ -58,9 +59,9 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	public void testString(String typeName) {
+		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+				+ " " + typeName + ")", null);
 		try {
-			unifier.executeOtherSql("create table " + tableName + " ("
-					+ columnName + " " + typeName + ")", null);
 			String value = new String("abcdefghij");
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
@@ -88,15 +89,17 @@ public abstract class BaseTester extends TestCase {
 			row = rowSet.getRow(0);
 			String value3 = row.getString(columnName);
 			assertNull(value3);
+		} catch (Exception e) {
+			fail(e.toString());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
 	}
 
 	private void testNumber(String typeName, BigDecimal value) {
+		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+				+ " " + typeName + ")", null);
 		try {
-			unifier.executeOtherSql("create table " + tableName + " ("
-					+ columnName + " " + typeName + ")", null);
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addNumberClause(
@@ -123,6 +126,8 @@ public abstract class BaseTester extends TestCase {
 			row = rowSet.getRow(0);
 			BigDecimal value3 = row.getNumber(columnName);
 			assertNull(value3);
+		} catch (Exception e) {
+			fail(e.toString());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -134,6 +139,10 @@ public abstract class BaseTester extends TestCase {
 
 	public void testSmallInteger(String typeName) {
 		testNumber(typeName, new BigDecimal("1"));
+	}
+
+	public void testHighPrecisionDecimal(String typeName) {
+		testNumber(typeName, new BigDecimal("1234567.8901234567"));
 	}
 
 	public void testDecimal(String typeName) {
@@ -149,9 +158,9 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	private void testTimestamp(String typeName, String format) {
+		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+				+ " " + typeName + ")", null);
 		try {
-			unifier.executeOtherSql("create table " + tableName + " ("
-					+ columnName + " " + typeName + ")", null);
 			SimpleDateFormat sdf = new SimpleDateFormat(format);
 			Timestamp value = new Timestamp(System.currentTimeMillis());
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
@@ -176,6 +185,8 @@ public abstract class BaseTester extends TestCase {
 			row = rowSet.getRow(0);
 			Timestamp value3 = row.getTimestamp(columnName);
 			assertNull(value3);
+		} catch (Exception e) {
+			fail(e.toString());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -194,9 +205,9 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	private void testClob(String typeName, String value) {
+		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+				+ " " + typeName + ")", null);
 		try {
-			unifier.executeOtherSql("create table " + tableName + " ("
-					+ columnName + " " + typeName + ")", null);
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addClobClause(
@@ -219,6 +230,8 @@ public abstract class BaseTester extends TestCase {
 			row = rowSet.getRow(0);
 			String value3 = row.getClob(columnName);
 			assertNull(value3);
+		} catch (Exception e) {
+			fail(e.toString());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -236,9 +249,9 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	private void testBlob(String typeName, byte[] value) {
+		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+				+ " " + typeName + ")", null);
 		try {
-			unifier.executeOtherSql("create table " + tableName + " ("
-					+ columnName + " " + typeName + ")", null);
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addBlobClause(
@@ -264,6 +277,8 @@ public abstract class BaseTester extends TestCase {
 			row = rowSet.getRow(0);
 			byte[] value3 = row.getBlob(columnName);
 			assertNull(value3);
+		} catch (Exception e) {
+			fail(e.toString());
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
@@ -305,19 +320,19 @@ public abstract class BaseTester extends TestCase {
 			unifier.createTable(new Table()
 					.setName(tableName)
 					.addColumn(
-							new Column("ST_VALUE", ColumnType.TYPE_STRING,
+							new Column("ST_VALUE", ColumnType.STRING,
 									false, true))
 					.addColumn(
-							new Column("NM_VALUE", ColumnType.TYPE_NUMBER,
+							new Column("NM_VALUE", ColumnType.NUMBER,
 									false, false))
 					.addColumn(
-							new Column("DT_VALUE", ColumnType.TYPE_TIMESTAMP,
+							new Column("DT_VALUE", ColumnType.TIMESTAMP,
 									false, false))
 					.addColumn(
-							new Column("CL_VALUE", ColumnType.TYPE_CLOB, false,
+							new Column("CL_VALUE", ColumnType.CLOB, false,
 									false))
 					.addColumn(
-							new Column("BL_VALUE", ColumnType.TYPE_BLOB, false,
+							new Column("BL_VALUE", ColumnType.BLOB, false,
 									false)));
 			Table table = unifier.getTable(tableName);
 			List<Column> columnList = table.getColumnList();
@@ -330,10 +345,10 @@ public abstract class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testPageSelect() {
+	public void testGetPage() {
 		try {
 			unifier.createTable(new Table().setName(tableName).addColumn(
-					new Column(columnName, ColumnType.TYPE_STRING, true, true)));
+					new Column(columnName, ColumnType.STRING, true, true)));
 			for (int i = 0; i < 10; i++) {
 				unifier.executeInsertSql(new InsertSql()
 						.setTableName(tableName).setInsertKeyValueClause(
@@ -390,6 +405,378 @@ public abstract class BaseTester extends TestCase {
 		value++;
 		long value2 = unifier.getSequenceNextValue(sequenceName);
 		assertEquals(value, value2);
+	}
+
+	@Test
+	public void testBigInt() {
+		String typeName = "bigint";
+		testInteger(typeName);
+	}
+
+	@Test
+	public void testBinaryVarying() {
+		String typeName = "binary varying(4000)";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testBinary() {
+		String typeName = "binary(200)";
+		testSmallBlob(typeName);
+	}
+
+	@Test
+	public void testBit() {
+		String typeName = "bit";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testBlob() {
+		String typeName = "blob";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testBool() {
+		String typeName = "bool";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testBoolean() {
+		String typeName = "boolean";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testBytea() {
+		String typeName = "bytea";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testChar() {
+		String typeName = "char(10)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testCharBinary() {
+		String typeName = "char(50) binary";
+		testString(typeName);
+	}
+
+	@Test
+	public void testCharVarying() {
+		String typeName = "char varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testCharacter() {
+		String typeName = "character(10)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testCharacterVarying() {
+		String typeName = "character varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testClob() {
+		String typeName = "clob";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testDate() {
+		String typeName = "date";
+		testDate(typeName);
+	}
+
+	@Test
+	public void testDatetime() {
+		String typeName = "datetime";
+		testTimestamp(typeName);
+	}
+
+	@Test
+	public void testDatetime2() {
+		String typeName = "datetime2";
+		testTimestamp(typeName);
+	}
+
+	@Test
+	public void testDec() {
+		String typeName = "dec(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testDecimal() {
+		String typeName = "decimal(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testDouble() {
+		String typeName = "double";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testDoublePrecision() {
+		String typeName = "double precision";
+		testHighPrecisionDecimal(typeName);
+	}
+
+	@Test
+	public void testEnum() {
+		String typeName = "enum('abcdefghij')";
+		testString(typeName);
+	}
+
+	@Test
+	public void testFixed() {
+		String typeName = "fixed(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testFloat() {
+		String typeName = "float";
+		testSmallDecimal(typeName);
+	}
+
+	@Test
+	public void testImage() {
+		String typeName = "image";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testInt() {
+		String typeName = "int";
+		testInteger(typeName);
+	}
+
+	@Test
+	public void testInteger() {
+		String typeName = "integer";
+		testInteger(typeName);
+	}
+
+	@Test
+	public void testLongBlob() {
+		String typeName = "longblob";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testLong() {
+		String typeName = "long";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testLongRaw() {
+		String typeName = "long raw";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testLongText() {
+		String typeName = "longtext";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testLongVarchar() {
+		String typeName = "long varchar";
+		testString(typeName);
+	}
+
+	@Test
+	public void testMediumBlob() {
+		String typeName = "mediumblob";
+		testBlob(typeName);
+	}
+
+	@Test
+	public void testMediumInt() {
+		String typeName = "mediumint";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testMediumText() {
+		String typeName = "mediumtext";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testMoney() {
+		String typeName = "money";
+		testMoney(typeName);
+	}
+
+	@Test
+	public void testNationalChar() {
+		String typeName = "national char(10)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNationalCharacter() {
+		String typeName = "national character(10)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNationalCharVarying() {
+		String typeName = "national char varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNationalCharacterVarying() {
+		String typeName = "national character varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNchar() {
+		String typeName = "nchar(10)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNcharVarying() {
+		String typeName = "nchar varying(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNclob() {
+		String typeName = "nclob";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testNumber() {
+		String typeName = "number(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testNumeric() {
+		String typeName = "numeric(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testNvarchar() {
+		String typeName = "nvarchar(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testNvarchar2() {
+		String typeName = "nvarchar2(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testRaw() {
+		String typeName = "raw(200)";
+		testSmallBlob(typeName);
+	}
+
+	@Test
+	public void testSmallDatetime() {
+		String typeName = "smalldatetime";
+		testDate(typeName);
+	}
+
+	@Test
+	public void testSmallInt() {
+		String typeName = "smallint";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testSmallMoney() {
+		String typeName = "smallmoney";
+		testMoney(typeName);
+	}
+
+	@Test
+	public void testReal() {
+		String typeName = "real";
+		testDecimal(typeName);
+	}
+
+	@Test
+	public void testSet() {
+		String typeName = "set('abcdefghij')";
+		testString(typeName);
+	}
+
+	@Test
+	public void testText() {
+		String typeName = "text";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testTime() {
+		String typeName = "time";
+		testTime(typeName);
+	}
+
+	@Test
+	public void testTimestamp() {
+		String typeName = "timestamp null";
+		testTimestamp(typeName);
+	}
+
+	@Test
+	public void testTinyBlob() {
+		String typeName = "tinyblob";
+		testSmallBlob(typeName);
+	}
+
+	@Test
+	public void testTinyInt() {
+		String typeName = "tinyint";
+		testSmallInteger(typeName);
+	}
+
+	@Test
+	public void testTinyText() {
+		String typeName = "tinytext";
+		testSmallClob(typeName);
+	}
+
+	@Test
+	public void testVarBinary() {
+		String typeName = "varbinary(200)";
+		testSmallBlob(typeName);
+	}
+
+	@Test
+	public void testVarchar() {
+		String typeName = "varchar(50)";
+		testString(typeName);
+	}
+
+	@Test
+	public void testVarchar2() {
+		String typeName = "varchar2(50)";
+		testString(typeName);
 	}
 
 }

@@ -21,13 +21,13 @@ public class AutoCodeTester {
 			unifier.createTable(new Table()
 					.setName(tableName)
 					.addColumn(
-							new Column("ST_VALUE", ColumnType.TYPE_STRING,
+							new Column("ST_VALUE", ColumnType.STRING,
 									false, true))
 					.addColumn(
-							new Column("NM_VALUE", ColumnType.TYPE_NUMBER,
+							new Column("NM_VALUE", ColumnType.NUMBER,
 									false, false))
 					.addColumn(
-							new Column("DT_VALUE", ColumnType.TYPE_TIMESTAMP,
+							new Column("DT_VALUE", ColumnType.TIMESTAMP,
 									false, false)));
 			DaoGenerator.main(new String[] { "test", "org.sosostudio.dbunifier.test.dao",
 					tableName });
