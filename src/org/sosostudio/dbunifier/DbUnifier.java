@@ -56,8 +56,6 @@ import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbUnifier {
 
-	private static final int MAX_TABLE_COUNT = 100000;
-
 	private static Boolean existsSequenceTable = false;
 
 	private DataSource dataSource;
@@ -133,6 +131,22 @@ public class DbUnifier {
 		return column;
 	}
 
+	private int getDepth(Table table, Set<String> tableNameSet) {
+		String tableName = table.getName();
+		tableNameSet.add(tableName);
+		List<Table> parentTableList = table.getParentTableList();
+		int depth = 0;
+		for (Table parentTable : parentTableList) {
+			String parentTableName = parentTable.getName();
+			if (tableNameSet.contains(parentTableName)) {
+				continue;
+			}
+			depth = Math.max(depth, getDepth(parentTable, tableNameSet));
+		}
+		tableNameSet.remove(tableName);
+		return depth + 1;
+	}
+
 	public List<Table> getTableList(boolean sortByFk) {
 		Connection con;
 		if (this.con == null) {
@@ -187,7 +201,6 @@ public class DbUnifier {
 					tableMap.put(tableName, table);
 				}
 				if (sortByFk) {
-					int step = MAX_TABLE_COUNT;
 					for (Table table : tableList) {
 						String tableName = table.getName();
 						ResultSet fkRs = null;
@@ -200,15 +213,15 @@ public class DbUnifier {
 										.defaultCaps(parentTableName);
 								Table parentTable = tableMap
 										.get(parentTableName);
-								int seq = parentTable.getSeq() + step;
-								if (seq > table.getSeq()) {
-									table.setSeq(seq);
-								}
+								table.addParentTable(parentTable);
 							}
 						} finally {
 							DbUtil.closeResultSet(fkRs);
 						}
-						step--;
+					}
+					for (Table table : tableList) {
+						int depth = getDepth(table, new HashSet<String>());
+						table.setDepth(depth);
 					}
 					Collections.sort(tableList);
 				}

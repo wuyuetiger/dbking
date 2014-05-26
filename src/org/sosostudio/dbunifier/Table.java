@@ -24,7 +24,9 @@ public class Table implements Comparable<Table>, Serializable {
 	private static final long serialVersionUID = 7642707849725992210L;
 
 	// it's used to sort tables with foreign key relations
-	private int seq = 0;
+	private int depth = 0;
+
+	private List<Table> parentTableList = new ArrayList<Table>();
 
 	private boolean isTable = true;
 
@@ -39,12 +41,21 @@ public class Table implements Comparable<Table>, Serializable {
 		this.name = name;
 	}
 
-	public int getSeq() {
-		return seq;
+	protected int getDepth() {
+		return depth;
 	}
 
-	public Table setSeq(int seq) {
-		this.seq = seq;
+	protected Table setDepth(int depth) {
+		this.depth = depth;
+		return this;
+	}
+
+	protected List<Table> getParentTableList() {
+		return parentTableList;
+	}
+
+	public Table addParentTable(Table table) {
+		parentTableList.add(table);
 		return this;
 	}
 
@@ -75,11 +86,11 @@ public class Table implements Comparable<Table>, Serializable {
 	}
 
 	public List<Column> getColumnList() {
-		return this.columnList;
+		return columnList;
 	}
 
 	public Table addColumn(Column column) {
-		this.columnList.add(column);
+		columnList.add(column);
 		return this;
 	}
 
@@ -90,7 +101,7 @@ public class Table implements Comparable<Table>, Serializable {
 
 	@Override
 	public int compareTo(Table table) {
-		return seq - table.getSeq();
+		return depth - table.getDepth();
 	}
 
 	@Override
