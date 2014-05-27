@@ -317,23 +317,14 @@ public class BaseTester extends TestCase {
 	@Test
 	public void testGetTable() {
 		try {
-			unifier.createTable(new Table()
-					.setName(tableName)
+			unifier.createTable(new Table(tableName)
 					.addColumn(
-							new Column("ST_VALUE", ColumnType.STRING,
-									false, true))
-					.addColumn(
-							new Column("NM_VALUE", ColumnType.NUMBER,
-									false, false))
-					.addColumn(
-							new Column("DT_VALUE", ColumnType.TIMESTAMP,
-									false, false))
-					.addColumn(
-							new Column("CL_VALUE", ColumnType.CLOB, false,
-									false))
-					.addColumn(
-							new Column("BL_VALUE", ColumnType.BLOB, false,
-									false)));
+							new Column("ST_VALUE", ColumnType.STRING)
+									.setPrimaryKey(true))
+					.addColumn(new Column("NM_VALUE", ColumnType.NUMBER))
+					.addColumn(new Column("DT_VALUE", ColumnType.TIMESTAMP))
+					.addColumn(new Column("CL_VALUE", ColumnType.CLOB))
+					.addColumn(new Column("BL_VALUE", ColumnType.BLOB)));
 			Table table = unifier.getTable(tableName);
 			List<Column> columnList = table.getColumnList();
 			assertEquals(columnList.size(), 5);
@@ -347,8 +338,8 @@ public class BaseTester extends TestCase {
 	@Test
 	public void testGetPage() {
 		try {
-			unifier.createTable(new Table().setName(tableName).addColumn(
-					new Column(columnName, ColumnType.STRING, true, true)));
+			unifier.createTable(new Table(tableName).addColumn(new Column(
+					columnName, ColumnType.STRING).setPrimaryKey(true)));
 			for (int i = 0; i < 10; i++) {
 				unifier.executeInsertSql(new InsertSql()
 						.setTableName(tableName).setInsertKeyValueClause(

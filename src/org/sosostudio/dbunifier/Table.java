@@ -34,9 +34,6 @@ public class Table implements Comparable<Table>, Serializable {
 
 	private List<Column> columnList = new ArrayList<Column>();
 
-	public Table() {
-	}
-
 	public Table(String name) {
 		this.name = name;
 	}

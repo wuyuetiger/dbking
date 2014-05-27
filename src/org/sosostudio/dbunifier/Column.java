@@ -25,7 +25,7 @@ public class Column implements Serializable {
 
 	private ColumnType type;
 
-	private String dbType;
+	private boolean isNationalString = true;
 
 	private int size = 50;
 
@@ -33,19 +33,16 @@ public class Column implements Serializable {
 
 	private int scale = 2;
 
-	private boolean isNullable;
+	private boolean isNullable = true;
 
-	private boolean isPrimaryKey;
+	private boolean isPrimaryKey = false;
 
 	public Column() {
 	}
 
-	public Column(String name, ColumnType type, boolean isNullable,
-			boolean isPrimaryKey) {
+	public Column(String name, ColumnType type) {
 		this.name = name;
 		this.type = type;
-		this.isNullable = isNullable;
-		this.isPrimaryKey = isPrimaryKey;
 	}
 
 	public String getName() {
@@ -74,13 +71,12 @@ public class Column implements Serializable {
 		return this;
 	}
 
-	public String getDbType() {
-		return dbType;
+	public boolean isNationalString() {
+		return isNationalString;
 	}
 
-	public Column setDbType(String dbType) {
-		this.dbType = dbType;
-		return this;
+	public void setNationalString(boolean isNationalString) {
+		this.isNationalString = isNationalString;
 	}
 
 	public int getSize() {
@@ -132,8 +128,8 @@ public class Column implements Serializable {
 	public String toString() {
 		return new StringBuilder().append("\t[name = ").append(name)
 				.append("]").append("[type = ").append(type).append("]")
-				.append("[dbtype = ").append(dbType).append("]")
-				.append("[size = ").append(size).append("]")
+				.append("[isNationalString = ").append(isNationalString)
+				.append("]").append("[size = ").append(size).append("]")
 				.append("[precision = ").append(precision).append("]")
 				.append("[scale = ").append(scale).append("]")
 				.append("[nullable = ").append(isNullable).append("]")

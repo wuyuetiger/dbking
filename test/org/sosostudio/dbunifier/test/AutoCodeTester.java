@@ -1,4 +1,5 @@
 package org.sosostudio.dbunifier.test;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
@@ -18,19 +19,14 @@ public class AutoCodeTester {
 			TemplateException, IOException {
 		DbUnifier unifier = new DbUnifier();
 		try {
-			unifier.createTable(new Table()
-					.setName(tableName)
+			unifier.createTable(new Table(tableName)
 					.addColumn(
-							new Column("ST_VALUE", ColumnType.STRING,
-									false, true))
-					.addColumn(
-							new Column("NM_VALUE", ColumnType.NUMBER,
-									false, false))
-					.addColumn(
-							new Column("DT_VALUE", ColumnType.TIMESTAMP,
-									false, false)));
-			DaoGenerator.main(new String[] { "test", "org.sosostudio.dbunifier.test.dao",
-					tableName });
+							new Column("ST_VALUE", ColumnType.STRING)
+									.setPrimaryKey(true))
+					.addColumn(new Column("NM_VALUE", ColumnType.NUMBER))
+					.addColumn(new Column("DT_VALUE", ColumnType.TIMESTAMP)));
+			DaoGenerator.main(new String[] { "test",
+					"org.sosostudio.dbunifier.test.dao", tableName });
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}

@@ -21,6 +21,16 @@ public class MicrosoftSqlServer2000Feature extends DbFeature {
 	}
 
 	@Override
+	public String getStringDbType(int size, boolean isNationalString) {
+		size = Math.max(0, Math.min(size, 2000));
+		if (isNationalString) {
+			return "nvarchar(" + size + ")";
+		} else {
+			return "varchar(" + size + ")";
+		}
+	}
+	
+	@Override
 	public String getTimestampDbType() {
 		return "datetime";
 	}

@@ -111,16 +111,13 @@ public class DbUnifier {
 	private Column getColumn(DbFeature dbFeature, ResultSet columnRs,
 			Set<String> pkSet) throws SQLException {
 		String columnName = columnRs.getString("COLUMN_NAME");
-		columnName = dbFeature.defaultCaps(columnName);
 		short dataType = columnRs.getShort("DATA_TYPE");
 		String dbType = columnRs.getString("TYPE_NAME");
 		int size = columnRs.getInt("COLUMN_SIZE");
 		int scale = columnRs.getInt("DECIMAL_DIGITS");
 		int nullable = columnRs.getInt("NULLABLE");
-		Column column = new Column();
-		column.setName(columnName);
-		column.setType(DbUtil.getColumnType(dataType));
-		column.setDbType(dbType);
+		Column column = new Column(columnName, DbUtil.getColumnType(dataType));
+		column.setNationalString(DbUtil.isNationalString(dbType));
 		column.setSize(size);
 		column.setPrecision(size);
 		column.setScale(scale);
@@ -166,7 +163,6 @@ public class DbUnifier {
 				tableRs = dmd.getTables(null, schema, "%", types);
 				while (tableRs.next()) {
 					String tableName = tableRs.getString("TABLE_NAME");
-					tableName = dbFeature.defaultCaps(tableName);
 					if (tableName.startsWith("BIN$")) {
 						continue;
 					}
@@ -176,7 +172,6 @@ public class DbUnifier {
 						pkRs = dmd.getPrimaryKeys(null, schema, tableName);
 						while (pkRs.next()) {
 							String columnName = pkRs.getString("COLUMN_NAME");
-							columnName = dbFeature.defaultCaps(columnName);
 							pkSet.add(columnName);
 						}
 					} finally {
@@ -194,8 +189,7 @@ public class DbUnifier {
 					} finally {
 						DbUtil.closeResultSet(columnRs);
 					}
-					Table table = new Table();
-					table.setName(tableName);
+					Table table = new Table(tableName);
 					table.addColumnList(columnList);
 					tableList.add(table);
 					tableMap.put(tableName, table);
@@ -209,8 +203,6 @@ public class DbUnifier {
 							while (fkRs.next()) {
 								String parentTableName = fkRs
 										.getString("PKTABLE_NAME");
-								parentTableName = dbFeature
-										.defaultCaps(parentTableName);
 								Table parentTable = tableMap
 										.get(parentTableName);
 								table.addParentTable(parentTable);
@@ -227,6 +219,12 @@ public class DbUnifier {
 				}
 			} finally {
 				DbUtil.closeResultSet(tableRs);
+			}
+			for (Table table : tableList) {
+				table.setName(table.getName().toUpperCase());
+				for (Column column : table.getColumnList()) {
+					column.setName(column.getName().toUpperCase());
+				}
 			}
 			return tableList;
 		} catch (SQLException e) {
@@ -260,7 +258,6 @@ public class DbUnifier {
 				pkRs = dmd.getPrimaryKeys(null, schema, tableName);
 				while (pkRs.next()) {
 					String columnName = pkRs.getString("COLUMN_NAME");
-					columnName = dbFeature.defaultCaps(columnName);
 					pkSet.add(columnName);
 				}
 			} catch (Exception e) {
@@ -278,8 +275,7 @@ public class DbUnifier {
 			} finally {
 				DbUtil.closeResultSet(columnRs);
 			}
-			Table table = new Table();
-			table.setName(tableName);
+			Table table = new Table(tableName.toUpperCase());
 			table.addColumnList(columnList);
 			return table;
 		} catch (SQLException e) {
@@ -309,7 +305,6 @@ public class DbUnifier {
 				viewRs = dmd.getTables(null, schema, "%", types);
 				while (viewRs.next()) {
 					String viewName = viewRs.getString("TABLE_NAME");
-					viewName = dbFeature.defaultCaps(viewName);
 					List<Column> columnList = new ArrayList<Column>();
 					ResultSet columnRs = null;
 					try {
@@ -321,14 +316,19 @@ public class DbUnifier {
 					} finally {
 						DbUtil.closeResultSet(columnRs);
 					}
-					Table view = new Table();
+					Table view = new Table(viewName);
 					view.setTable(false);
-					view.setName(viewName);
 					view.addColumnList(columnList);
 					viewList.add(view);
 				}
 			} finally {
 				DbUtil.closeResultSet(viewRs);
+			}
+			for (Table view : viewList) {
+				view.setName(view.getName().toUpperCase());
+				for (Column column : view.getColumnList()) {
+					column.setName(column.getName().toUpperCase());
+				}
 			}
 			return viewList;
 		} catch (SQLException e) {
@@ -363,9 +363,8 @@ public class DbUnifier {
 			} finally {
 				DbUtil.closeResultSet(columnRs);
 			}
-			Table view = new Table();
+			Table view = new Table(viewName.toUpperCase());
 			view.setTable(false);
-			view.setName(viewName);
 			view.addColumnList(columnList);
 			return view;
 		} catch (SQLException e) {
@@ -405,7 +404,8 @@ public class DbUnifier {
 				sb.append(column.getName()).append(" ");
 				ColumnType type = column.getType();
 				if (type == ColumnType.STRING) {
-					sb.append(dbFeature.getStringDbType(column.getSize()));
+					sb.append(dbFeature.getStringDbType(column.getSize(),
+							column.isNationalString()));
 				} else if (type == ColumnType.NUMBER) {
 					sb.append(dbFeature.getNumberDbType(column.getPrecision(),
 							column.getScale()));
@@ -979,10 +979,9 @@ public class DbUnifier {
 				Table table = getTable("SYS_SEQ");
 				if (table == null) {
 					table = new Table("SYS_SEQ").addColumn(
-							new Column("ST_SEQ_NAME", ColumnType.STRING, false,
-									true)).addColumn(
-							new Column("NM_SEQ_VALUE", ColumnType.NUMBER,
-									false, false));
+							new Column("ST_SEQ_NAME", ColumnType.STRING)
+									.setPrimaryKey(true)).addColumn(
+							new Column("NM_SEQ_VALUE", ColumnType.NUMBER));
 					createTable(table);
 					existsSequenceTable = true;
 				}

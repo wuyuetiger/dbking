@@ -45,11 +45,11 @@ public class ${table.definationName}Dao {
 
 	<#if table.table>
 	public int add${table.definationName}(${table.definationName} ${table.variableName}) {
-		InsertSql insertSql = new InsertSql().setTableName(SysTest.${table.name})
+		InsertSql insertSql = new InsertSql().setTableName(${table.definationName}.${table.name})
 			.setInsertKeyValueClause(
 				new InsertKeyValueClause()
 		<#list table.columnList as column>
-					.add${column.type.getName()}Clause(SysTest.${column.name}, ${table.variableName}.get${column.definationName}())
+					.add${column.type.getName()}Clause(${table.definationName}.${column.name}, ${table.variableName}.get${column.definationName}())
 		</#list>
 		);
 		return unifier.executeInsertSql(insertSql);
@@ -57,17 +57,17 @@ public class ${table.definationName}Dao {
 
 	<#if hasPrimaryKey>
 	public int update${table.definationName}(${table.definationName} ${table.variableName}) {
-		UpdateSql updateSql = new UpdateSql().setTableName(SysTest.${table.name})
+		UpdateSql updateSql = new UpdateSql().setTableName(${table.definationName}.${table.name})
 			.setUpdateKeyValueClause(
 				new UpdateKeyValueClause()
 		<#list table.columnList as column>
-					.add${column.type.getName()}Clause(SysTest.${column.name}, ${table.variableName}.get${column.definationName}())
+					.add${column.type.getName()}Clause(${table.definationName}.${column.name}, ${table.variableName}.get${column.definationName}())
 		</#list>
 			).setConditionClause(
 				new ConditionClause(LogicalOp.AND)
 		<#list table.columnList as column>
 			<#if column.primaryKey>
-				.add${column.type.getName()}Clause(SysTest.${column.name}, RelationOp.EQUAL, ${table.variableName}.get${column.definationName}())
+				.add${column.type.getName()}Clause(${table.definationName}.${column.name}, RelationOp.EQUAL, ${table.variableName}.get${column.definationName}())
 			</#if>
 		</#list>	
 			);
@@ -76,21 +76,21 @@ public class ${table.definationName}Dao {
 	</#if>
 
 	public int update${table.definationName}(UpdateKeyValueClause updateKeyValueClause, ConditionClause conditionClause) {
-		UpdateSql updateSql = new UpdateSql().setTableName(SysTest.${table.name})
+		UpdateSql updateSql = new UpdateSql().setTableName(${table.definationName}.${table.name})
 			.setUpdateKeyValueClause(updateKeyValueClause)
 			.setConditionClause(conditionClause);
 		return unifier.executeUpdateSql(updateSql);
 	}
 	
 	public int delete${table.definationName}(ConditionClause conditionClause) {
-		DeleteSql deleteSql = new DeleteSql().setTableName(SysTest.${table.name})
+		DeleteSql deleteSql = new DeleteSql().setTableName(${table.definationName}.${table.name})
 			.setConditionClause(conditionClause);
 		return unifier.executeDeleteSql(deleteSql);
 	}
 	</#if>
 
 	public PaginationArrayList<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause, int pageSize, int pageNumber) {
-		SelectSql selectSql = new SelectSql().setTableName(SysTest.${table.name})
+		SelectSql selectSql = new SelectSql().setTableName(${table.definationName}.${table.name})
 			.setColumns("*")
 			.setConditionClause(conditionClause)
 			.setExtraClause(extraClause)
@@ -99,9 +99,9 @@ public class ${table.definationName}Dao {
 		PaginationArrayList<${table.definationName}> pal = new PaginationArrayList<${table.definationName}>(rowSet.getPageSize(), rowSet.getPageNumber(), rowSet.getTotalRowCount());
 		for (int i = 0; i < rowSet.size(); i++) {
 			Row row = rowSet.getRow(i);
-			${table.definationName} ${table.variableName} = new ${table.definationName}();
+			${table.definationName} ${table.variableName} = new ${table.definationName}(unifier.getEncoding());
 			<#list table.columnList as column>
-			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(SysTest.${column.name}));
+			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
 			</#list>
 			pal.add(${table.variableName});
 		}
@@ -109,7 +109,7 @@ public class ${table.definationName}Dao {
 	}
 
 	public List<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause) {
-		SelectSql selectSql = new SelectSql().setTableName(SysTest.${table.name})
+		SelectSql selectSql = new SelectSql().setTableName(${table.definationName}.${table.name})
 			.setColumns("*")
 			.setConditionClause(conditionClause)
 			.setExtraClause(extraClause)
@@ -118,9 +118,9 @@ public class ${table.definationName}Dao {
 		ArrayList<${table.definationName}> al = new ArrayList<${table.definationName}>();
 		for (int i = 0; i < rowSet.size(); i++) {
 			Row row = rowSet.getRow(i);
-			${table.definationName} ${table.variableName} = new ${table.definationName}();
+			${table.definationName} ${table.variableName} = new ${table.definationName}(unifier.getEncoding());
 			<#list table.columnList as column>
-			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(SysTest.${column.name}));
+			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
 			</#list>
 			al.add(${table.variableName});
 		}

@@ -65,20 +65,30 @@ public abstract class DbFeature {
 		return null;
 	}
 
-	public String getStringDbType(int size) {
+	public String getStringDbType(int size, boolean isNationalString) {
 		size = Math.max(0, Math.min(size, 2000));
-		return "varchar(" + size + ")";
+		if (isNationalString) {
+			return "nvarchar(" + size + ")";
+		} else {
+			return "varchar(" + size + ")";
+		}
 	}
 
 	public String getNumberDbType(int precision, int scale) {
 		return "numeric(" + precision + "," + scale + ")";
 	}
 
-	public abstract String getTimestampDbType();
+	public String getTimestampDbType() {
+		return "timestamp";
+	}
 
-	public abstract String getClobDbType();
+	public String getClobDbType() {
+		return "clob";
+	}
 
-	public abstract String getBlobDbType();
+	public String getBlobDbType() {
+		return "blob";
+	}
 
 	public int getTotalRowCount(Connection con, String mainSubSql, Values values) {
 		String countSql = "select count(*) from (" + mainSubSql + ") t";

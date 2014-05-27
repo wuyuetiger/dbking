@@ -197,4 +197,10 @@ public class DbUtil {
 		}
 	}
 
+	public static boolean isNationalString(String dbType) {
+		dbType = dbType.toUpperCase();
+		return dbType.startsWith("NATIONAL") || dbType.startsWith("NCHAR")
+				|| dbType.startsWith("NVARCHAR");
+	}
+
 }
