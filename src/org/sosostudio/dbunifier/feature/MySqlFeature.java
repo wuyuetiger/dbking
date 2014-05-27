@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
+import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
@@ -41,15 +42,11 @@ public class MySqlFeature extends DbFeature {
 	}
 
 	@Override
-	public String getStringDbType(int size, boolean isNationalString) {
-		size = Math.max(0, Math.min(size, 2000));
-		if (isNationalString) {
-			return "nvarchar(" + size + ")";
-		} else {
-			return "varchar(" + size + ")";
-		}
+	public String getNStringDbType(int size) {
+		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
+		return "nvarchar(" + size + ")";
 	}
-	
+
 	@Override
 	public String getTimestampDbType() {
 		return "datetime";

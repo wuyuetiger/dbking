@@ -132,6 +132,12 @@ public class DbUtil {
 		}
 	}
 
+	public static boolean isNationalString(String dbType) {
+		dbType = dbType.toUpperCase();
+		return dbType.startsWith("NATIONAL") || dbType.startsWith("NCHAR")
+				|| dbType.startsWith("NVARCHAR");
+	}
+
 	public static void setColumnValue(PreparedStatement ps, int startPos,
 			Values values) throws SQLException {
 		List<Object> valueList = values.getValueList();
@@ -195,12 +201,6 @@ public class DbUtil {
 		if (XmlConfig.needsShowSql()) {
 			System.out.println(sb.toString());
 		}
-	}
-
-	public static boolean isNationalString(String dbType) {
-		dbType = dbType.toUpperCase();
-		return dbType.startsWith("NATIONAL") || dbType.startsWith("NCHAR")
-				|| dbType.startsWith("NVARCHAR");
 	}
 
 }

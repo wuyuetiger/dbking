@@ -38,6 +38,7 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.sosostudio.dbunifier.config.XmlConfig;
+import org.sosostudio.dbunifier.dbsource.DbSource;
 import org.sosostudio.dbunifier.feature.DbFeature;
 import org.sosostudio.dbunifier.oom.ConditionClause;
 import org.sosostudio.dbunifier.oom.DeleteSql;
@@ -65,28 +66,34 @@ public class DbUnifier {
 	private Encoding encoding = Encoding.UTF8;
 
 	public DbUnifier() {
-		dataSource = XmlConfig.getDbSource("");
+		DbSource dbSource = XmlConfig.getDbSource("");
+		dataSource = dbSource;
+		encoding = dbSource.getEncoding();
 	}
 
 	public DbUnifier(String dbSourceName) {
-		dataSource = XmlConfig.getDbSource(dbSourceName);
+		DbSource dbSource = XmlConfig.getDbSource(dbSourceName);
+		dataSource = dbSource;
+		encoding = dbSource.getEncoding();
 	}
 
-	public DbUnifier(DataSource dataSource) {
+	public DbUnifier(DbSource dbSource) {
+		dataSource = dbSource;
+		encoding = dbSource.getEncoding();
+	}
+
+	public DbUnifier(DataSource dataSource, Encoding encoding) {
 		this.dataSource = dataSource;
+		this.encoding = encoding;
 	}
 
-	public DbUnifier(Connection con) {
+	public DbUnifier(Connection con, Encoding encoding) {
 		this.con = con;
+		this.encoding = encoding;
 	}
 
 	public Encoding getEncoding() {
 		return encoding;
-	}
-
-	public DbUnifier setEncoding(Encoding encoding) {
-		this.encoding = encoding;
-		return this;
 	}
 
 	public String getDatabaseName() {
@@ -404,8 +411,11 @@ public class DbUnifier {
 				sb.append(column.getName()).append(" ");
 				ColumnType type = column.getType();
 				if (type == ColumnType.STRING) {
-					sb.append(dbFeature.getStringDbType(column.getSize(),
-							column.isNationalString()));
+					if (column.isNationalString()) {
+						sb.append(dbFeature.getNStringDbType(column.getSize()));
+					} else {
+						sb.append(dbFeature.getStringDbType(column.getSize()));
+					}
 				} else if (type == ColumnType.NUMBER) {
 					sb.append(dbFeature.getNumberDbType(column.getPrecision(),
 							column.getScale()));

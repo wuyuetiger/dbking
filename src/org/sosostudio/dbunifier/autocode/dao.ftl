@@ -45,6 +45,7 @@ public class ${table.definationName}Dao {
 
 	<#if table.table>
 	public int add${table.definationName}(${table.definationName} ${table.variableName}) {
+		${table.variableName}.validateString(unifier.getEncoding());
 		InsertSql insertSql = new InsertSql().setTableName(${table.definationName}.${table.name})
 			.setInsertKeyValueClause(
 				new InsertKeyValueClause()
@@ -57,6 +58,7 @@ public class ${table.definationName}Dao {
 
 	<#if hasPrimaryKey>
 	public int update${table.definationName}(${table.definationName} ${table.variableName}) {
+		${table.variableName}.validateString(unifier.getEncoding());
 		UpdateSql updateSql = new UpdateSql().setTableName(${table.definationName}.${table.name})
 			.setUpdateKeyValueClause(
 				new UpdateKeyValueClause()
@@ -99,7 +101,7 @@ public class ${table.definationName}Dao {
 		PaginationArrayList<${table.definationName}> pal = new PaginationArrayList<${table.definationName}>(rowSet.getPageSize(), rowSet.getPageNumber(), rowSet.getTotalRowCount());
 		for (int i = 0; i < rowSet.size(); i++) {
 			Row row = rowSet.getRow(i);
-			${table.definationName} ${table.variableName} = new ${table.definationName}(unifier.getEncoding());
+			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
 			</#list>
@@ -118,7 +120,7 @@ public class ${table.definationName}Dao {
 		ArrayList<${table.definationName}> al = new ArrayList<${table.definationName}>();
 		for (int i = 0; i < rowSet.size(); i++) {
 			Row row = rowSet.getRow(i);
-			${table.definationName} ${table.variableName} = new ${table.definationName}(unifier.getEncoding());
+			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
 			</#list>

@@ -29,8 +29,6 @@ public class ${table.definationName} implements Serializable {
 
 	public static final String ${column.name} = "${column.name}";
 	</#list>
-	
-	private Encoding encoding;
 	<#list table.columnList as column>
 		<#if column.type == "STRING" || column.type == "NUMBER" || column.type == "TIMESTAMP">
 
@@ -42,9 +40,6 @@ public class ${table.definationName} implements Serializable {
 		</#if>
 	</#list>
 	
-	public ${table.definationName}(Encoding encoding) {
-		this.encoding = encoding;
-	}
 	<#list table.columnList as column>
 		<#if column.type == "STRING" || column.type == "NUMBER" || column.type == "TIMESTAMP">
 
@@ -56,17 +51,19 @@ public class ${table.definationName} implements Serializable {
 	}
 
 	public void set${column.definationName}(${column.type.type} ${column.variableName}) {
-			<#if column.type == "STRING">
-				<#if column.nationalString>
 		this.${column.variableName} = ${column.variableName};
-				<#else>
-		this.${column.variableName} = StringUtil.substring(${column.variableName}, ${column.size}, encoding);
-				</#if>
-			<#else>
-		this.${column.variableName} = ${column.variableName};
-			</#if>
 	}
 		</#if>
 	</#list>
+	
+	public void validateString(Encoding encoding) {
+	<#list table.columnList as column>
+		<#if column.type == "STRING">
+			<#if !column.nationalString>
+		${column.variableName} = StringUtil.substring(${column.variableName}, ${column.size}, encoding);
+			</#if>
+		</#if>
+	</#list>
+	}
 
 }

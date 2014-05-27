@@ -15,6 +15,7 @@ package org.sosostudio.dbunifier.util;
 
 import java.io.UnsupportedEncodingException;
 
+import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.Encoding;
 
 public class StringUtil {
@@ -45,27 +46,31 @@ public class StringUtil {
 		return getName(name, false);
 	}
 
-	public static String substring(String s, int maxLength, Encoding encoding) {
+	public static String substring(String s, int maxSize, Encoding encoding) {
 		if (s == null) {
 			return null;
 		}
 		if (encoding == Encoding.UTF8) {
 			try {
 				byte[] bytes = s.getBytes("UTF-8");
-				if (bytes.length <= maxLength) {
+				if (bytes.length <= maxSize) {
 					return s;
 				} else {
-					StringBuilder sb = new StringBuilder();
-					int length = 0;
-					for (int i = 0; i < s.length(); i++) {
-						String ch = s.substring(i, i + 1);
-						length += ch.getBytes("UTF-8").length;
-						if (length > maxLength) {
-							break;
+					if (maxSize >= ColumnType.MAX_STRING_SIZE) {
+						StringBuilder sb = new StringBuilder();
+						int length = 0;
+						for (int i = 0; i < s.length(); i++) {
+							String ch = s.substring(i, i + 1);
+							length += ch.getBytes("UTF-8").length;
+							if (length > maxSize) {
+								break;
+							}
+							sb.append(ch);
 						}
-						sb.append(ch);
+						return sb.toString();
+					} else {
+						throw new DbUnifierException("string is too long");
 					}
-					return sb.toString();
 				}
 			} catch (UnsupportedEncodingException e) {
 				throw new DbUnifierException(e);
@@ -73,29 +78,37 @@ public class StringUtil {
 		} else if (encoding == Encoding.GBK) {
 			try {
 				byte[] bytes = s.getBytes("GBK");
-				if (bytes.length <= maxLength) {
+				if (bytes.length <= maxSize) {
 					return s;
 				} else {
-					StringBuilder sb = new StringBuilder();
-					int length = 0;
-					for (int i = 0; i < s.length(); i++) {
-						String ch = s.substring(i, i + 1);
-						length += ch.getBytes("GBK").length;
-						if (length > maxLength) {
-							break;
+					if (maxSize >= ColumnType.MAX_STRING_SIZE) {
+						StringBuilder sb = new StringBuilder();
+						int length = 0;
+						for (int i = 0; i < s.length(); i++) {
+							String ch = s.substring(i, i + 1);
+							length += ch.getBytes("GBK").length;
+							if (length > maxSize) {
+								break;
+							}
+							sb.append(ch);
 						}
-						sb.append(ch);
+						return sb.toString();
+					} else {
+						throw new DbUnifierException("string is too long");
 					}
-					return sb.toString();
 				}
 			} catch (UnsupportedEncodingException e) {
 				throw new DbUnifierException(e);
 			}
 		} else {
-			if (s.length() <= maxLength) {
+			if (s.length() <= maxSize) {
 				return s;
 			} else {
-				return s.substring(0, maxLength);
+				if (maxSize >= ColumnType.MAX_STRING_SIZE) {
+					return s.substring(0, maxSize);
+				} else {
+					throw new DbUnifierException("string is too long");
+				}
 			}
 		}
 	}

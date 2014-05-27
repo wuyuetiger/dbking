@@ -16,13 +16,15 @@ package org.sosostudio.dbunifier.feature;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
+import org.sosostudio.dbunifier.ColumnType;
+
 public class OracleFeature extends DbFeature {
 
 	@Override
 	public String defaultCaps(String name) {
 		return name.toUpperCase();
 	}
-	
+
 	@Override
 	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
 		return dmd.getUserName();
@@ -40,13 +42,9 @@ public class OracleFeature extends DbFeature {
 	}
 
 	@Override
-	public String getStringDbType(int size, boolean isNationalString) {
-		size = Math.max(0, Math.min(size, 2000));
-		if (isNationalString) {
-			return "nvarchar(" + size + ")";
-		} else {
-			return "varchar2(" + size + ")";
-		}
+	public String getStringDbType(int size) {
+		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
+		return "varchar2(" + size + ")";
 	}
 
 }

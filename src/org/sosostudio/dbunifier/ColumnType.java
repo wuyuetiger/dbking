@@ -19,6 +19,8 @@ public enum ColumnType {
 			"Timestamp", "Timestamp"), CLOB("Clob", "char[]"), BLOB("Blob",
 			"byte[]"), UNKNOWN("", "");
 
+	public static final int MAX_STRING_SIZE = 2000;
+
 	private final String name;
 
 	private final String type;
