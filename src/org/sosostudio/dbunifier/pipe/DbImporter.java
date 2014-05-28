@@ -43,7 +43,6 @@ import javax.xml.stream.events.XMLEvent;
 import org.sosostudio.dbunifier.Column;
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.DbUnifier;
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.config.XmlConfig;
 import org.sosostudio.dbunifier.dbsource.DbSource;
@@ -85,8 +84,7 @@ public class DbImporter {
 				}
 			}
 			con = dbSource.getConnection();
-			Encoding encoding = dbSource.getEncoding();
-			DbUnifier unifier = new DbUnifier(con, encoding);
+			DbUnifier unifier = new DbUnifier(con);
 			// produce name mapping
 			Map<String, String> map = new HashMap<String, String>();
 			Map<String, Table> tableMap = new HashMap<String, Table>();

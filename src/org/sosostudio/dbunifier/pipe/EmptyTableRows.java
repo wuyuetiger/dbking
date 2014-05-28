@@ -19,7 +19,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import org.sosostudio.dbunifier.DbUnifier;
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.Table;
 import org.sosostudio.dbunifier.config.XmlConfig;
 import org.sosostudio.dbunifier.dbsource.DbSource;
@@ -48,8 +47,7 @@ public class EmptyTableRows {
 				}
 			}
 			con = dbSource.getConnection();
-			Encoding encoding = dbSource.getEncoding();
-			DbUnifier unifier = new DbUnifier(con, encoding);
+			DbUnifier unifier = new DbUnifier(con);
 			List<Table> tableList = unifier.getTableList(true);
 			for (int i = tableList.size() - 1; i >= 0; i--) {
 				Table table = tableList.get(i);

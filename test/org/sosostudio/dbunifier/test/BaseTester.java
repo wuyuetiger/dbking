@@ -58,11 +58,10 @@ public class BaseTester extends TestCase {
 		}
 	}
 
-	public void testString(String typeName) {
+	private void testString(String typeName, String value) {
 		unifier.executeOtherSql("create table " + tableName + " (" + columnName
 				+ " " + typeName + ")", null);
 		try {
-			String value = new String("abcdefghij");
 			InsertSql insertSql = new InsertSql().setTableName(tableName)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addStringClause(
@@ -94,6 +93,22 @@ public class BaseTester extends TestCase {
 		} finally {
 			unifier.executeOtherSql("drop table " + tableName, null);
 		}
+	}
+
+	public void testString(String typeName) {
+		testString(typeName, "abcdefghij");
+	}
+
+	public void testChineseString4(String typeName) {
+		testString(typeName, "一二三四");
+	}
+
+	public void testChineseString6(String typeName) {
+		testString(typeName, "一二三四五六");
+	}
+
+	public void testChineseString12(String typeName) {
+		testString(typeName, "一二三四五六七八九十百千");
 	}
 
 	private void testNumber(String typeName, BigDecimal value) {
@@ -616,38 +631,38 @@ public class BaseTester extends TestCase {
 
 	@Test
 	public void testNationalChar() {
-		String typeName = "national char(10)";
-		testString(typeName);
+		String typeName = "national char(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
 	public void testNationalCharacter() {
-		String typeName = "national character(10)";
-		testString(typeName);
+		String typeName = "national character(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
 	public void testNationalCharVarying() {
-		String typeName = "national char varying(50)";
-		testString(typeName);
+		String typeName = "national char varying(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
 	public void testNationalCharacterVarying() {
-		String typeName = "national character varying(50)";
-		testString(typeName);
+		String typeName = "national character varying(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
 	public void testNchar() {
-		String typeName = "nchar(10)";
-		testString(typeName);
+		String typeName = "nchar(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
 	public void testNcharVarying() {
-		String typeName = "nchar varying(50)";
-		testString(typeName);
+		String typeName = "nchar varying(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
@@ -670,14 +685,14 @@ public class BaseTester extends TestCase {
 
 	@Test
 	public void testNvarchar() {
-		String typeName = "nvarchar(50)";
-		testString(typeName);
+		String typeName = "nvarchar(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
 	public void testNvarchar2() {
-		String typeName = "nvarchar2(50)";
-		testString(typeName);
+		String typeName = "nvarchar2(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test
@@ -768,6 +783,24 @@ public class BaseTester extends TestCase {
 	public void testVarchar2() {
 		String typeName = "varchar2(50)";
 		testString(typeName);
+	}
+
+	@Test
+	public void testVarcharByUTF8() {
+		String typeName = "varchar(12)";
+		testChineseString4(typeName);
+	}
+
+	@Test
+	public void testVarcharByGBK() {
+		String typeName = "varchar(12)";
+		testChineseString6(typeName);
+	}
+
+	@Test
+	public void testVarcharByUnicode() {
+		String typeName = "varchar(12)";
+		testChineseString12(typeName);
 	}
 
 }

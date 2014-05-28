@@ -19,11 +19,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.sosostudio.dbunifier.Encoding;
-
 public abstract class DbSource implements DataSource {
-
-	public abstract Encoding getEncoding();
 
 	@Override
 	public PrintWriter getLogWriter() throws SQLException {

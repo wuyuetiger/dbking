@@ -63,37 +63,46 @@ public class DbUnifier {
 
 	private Connection con;
 
-	private Encoding encoding = Encoding.UTF8;
-
 	public DbUnifier() {
 		DbSource dbSource = XmlConfig.getDbSource("");
 		dataSource = dbSource;
-		encoding = dbSource.getEncoding();
 	}
 
 	public DbUnifier(String dbSourceName) {
 		DbSource dbSource = XmlConfig.getDbSource(dbSourceName);
 		dataSource = dbSource;
-		encoding = dbSource.getEncoding();
 	}
 
 	public DbUnifier(DbSource dbSource) {
 		dataSource = dbSource;
-		encoding = dbSource.getEncoding();
 	}
 
-	public DbUnifier(DataSource dataSource, Encoding encoding) {
+	public DbUnifier(DataSource dataSource) {
 		this.dataSource = dataSource;
-		this.encoding = encoding;
 	}
 
-	public DbUnifier(Connection con, Encoding encoding) {
+	public DbUnifier(Connection con) {
 		this.con = con;
-		this.encoding = encoding;
 	}
 
 	public Encoding getEncoding() {
-		return encoding;
+		Connection con;
+		if (this.con == null) {
+			con = DbUtil.getConnection(dataSource);
+		} else {
+			con = this.con;
+		}
+		try {
+			DatabaseMetaData dmd = con.getMetaData();
+			DbFeature dbFeature = DbFeature.getInstance(dmd);
+			return dbFeature.getEncoding(con);
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			if (this.con == null) {
+				DbUtil.closeConnection(con);
+			}
+		}
 	}
 
 	public String getDatabaseName() {

@@ -13,7 +13,10 @@
 
 package org.sosostudio.dbunifier.feature;
 
+import java.sql.Connection;
+
 import org.sosostudio.dbunifier.ColumnType;
+import org.sosostudio.dbunifier.Encoding;
 
 public class MicrosoftSqlServer2000Feature extends DbFeature {
 
@@ -41,6 +44,11 @@ public class MicrosoftSqlServer2000Feature extends DbFeature {
 	@Override
 	public String getBlobDbType() {
 		return "image";
+	}
+
+	@Override
+	public Encoding getEncoding(Connection con) {
+		return Encoding.GBK;
 	}
 
 }

@@ -13,10 +13,12 @@
 
 package org.sosostudio.dbunifier.feature;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.ColumnType;
+import org.sosostudio.dbunifier.Encoding;
 
 public class PostgreSqlFeature extends DbFeature {
 
@@ -53,6 +55,11 @@ public class PostgreSqlFeature extends DbFeature {
 	@Override
 	public String getBlobDbType() {
 		return "bytea";
+	}
+
+	@Override
+	public Encoding getEncoding(Connection con) {
+		return Encoding.UNICODE;
 	}
 
 }

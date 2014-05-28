@@ -17,7 +17,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 
 public class JdbcDbSource extends DbSource {
@@ -30,29 +29,19 @@ public class JdbcDbSource extends DbSource {
 
 	private String password;
 
-	private Encoding encoding;
-
 	public JdbcDbSource(String databaseDriver, String databaseUrl,
-			String username, String password, Encoding encoding) {
+			String username, String password) {
 		this.databaseDriver = databaseDriver;
 		this.databaseUrl = databaseUrl;
 		this.username = username;
 		this.password = password;
-		this.encoding = encoding;
 	}
 
-	public JdbcDbSource(String databaseDriver, String databaseUrl,
-			Encoding encoding) {
+	public JdbcDbSource(String databaseDriver, String databaseUrl) {
 		this.databaseDriver = databaseDriver;
 		this.databaseUrl = databaseUrl;
-		this.encoding = encoding;
 	}
 
-	@Override
-	public Encoding getEncoding() {
-		return encoding;
-	}
-	
 	@Override
 	public Connection getConnection() {
 		if (username == null) {
@@ -81,7 +70,6 @@ public class JdbcDbSource extends DbSource {
 	public String toString() {
 		return new StringBuilder().append("\ndatabaseUrl: ")
 				.append(databaseUrl).append("\nusername: ").append(username)
-				.append("\nencoding: ").append(encoding)
 				.append("\n").toString();
 	}
 

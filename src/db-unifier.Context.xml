@@ -13,7 +13,7 @@
 		<property name="driverClassName" value="org.postgresql.Driver" />
 		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
 		<property name="username" value="postgres" />
-		<property name="password" value="55780029" />
+		<property name="password" value="password" />
 	</bean>
 
 	<bean id="dataSource"

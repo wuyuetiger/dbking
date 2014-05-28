@@ -6,35 +6,30 @@
 		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
 		<username>postgres</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="autocode">
 		<database_driver>org.postgresql.Driver</database_driver>
 		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
 		<username>postgres</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="exporter">
 		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
 		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
 		<username>system</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="importer">
 		<database_driver>org.postgresql.Driver</database_driver>
 		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
 		<username>postgres</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="oracle">
 		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
 		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
 		<username>system</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="mssqlserver">
 		<database_driver>com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -43,24 +38,20 @@
 		</database_url>
 		<username>sa</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="mysql">
 		<database_driver>com.mysql.jdbc.Driver</database_driver>
 		<database_url>jdbc:mysql://localhost:3306/test</database_url>
 		<username>root</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="postgresql">
 		<database_driver>org.postgresql.Driver</database_driver>
 		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
 		<username>postgres</username>
 		<password>password</password>
-		<encoding>UTF8</encoding>
 	</db_source>
 	<db_source name="jndi">
 		<jndi>java:test</jndi>
-		<encoding>UTF8</encoding>
 	</db_source>
 </db-unifier>
