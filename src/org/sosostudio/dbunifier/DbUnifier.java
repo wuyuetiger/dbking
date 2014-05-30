@@ -276,7 +276,6 @@ public class DbUnifier {
 					String columnName = pkRs.getString("COLUMN_NAME");
 					pkSet.add(columnName);
 				}
-			} catch (Exception e) {
 			} finally {
 				DbUtil.closeResultSet(pkRs);
 			}
@@ -291,9 +290,13 @@ public class DbUnifier {
 			} finally {
 				DbUtil.closeResultSet(columnRs);
 			}
-			Table table = new Table(tableName.toUpperCase());
-			table.addColumnList(columnList);
-			return table;
+			if (columnList.size() > 0) {
+				Table table = new Table(tableName.toUpperCase());
+				table.addColumnList(columnList);
+				return table;
+			} else {
+				return null;
+			}
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
@@ -379,10 +382,14 @@ public class DbUnifier {
 			} finally {
 				DbUtil.closeResultSet(columnRs);
 			}
-			Table view = new Table(viewName.toUpperCase());
-			view.setTable(false);
-			view.addColumnList(columnList);
-			return view;
+			if (columnList.size() > 0) {
+				Table view = new Table(viewName.toUpperCase());
+				view.setTable(false);
+				view.addColumnList(columnList);
+				return view;
+			} else {
+				return null;
+			}
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {

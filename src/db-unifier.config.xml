@@ -32,10 +32,8 @@
 		<password>password</password>
 	</db_source>
 	<db_source name="mssqlserver">
-		<database_driver>com.microsoft.sqlserver.jdbc.SQLServerDriver
-		</database_driver>
-		<database_url>jdbc:sqlserver://localhost:1433;DatabaseName=master
-		</database_url>
+		<database_driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</database_driver>
+		<database_url>jdbc:sqlserver://localhost:1433;DatabaseName=master</database_url>
 		<username>sa</username>
 		<password>password</password>
 	</db_source>
