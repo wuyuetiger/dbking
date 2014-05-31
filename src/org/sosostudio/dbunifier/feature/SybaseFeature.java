@@ -13,21 +13,7 @@
 
 package org.sosostudio.dbunifier.feature;
 
-import org.sosostudio.dbunifier.ColumnType;
-import org.sosostudio.dbunifier.Encoding;
-
-public class MicrosoftSqlServer2000Feature extends DbFeature {
-
-	@Override
-	public Encoding getEncoding() {
-		return Encoding.GBK;
-	}
-
-	@Override
-	public String getNStringDbType(int size) {
-		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
-		return "nvarchar(" + size + ")";
-	}
+public class SybaseFeature extends DbFeature {
 
 	@Override
 	public String getTimestampDbType() {
@@ -42,6 +28,11 @@ public class MicrosoftSqlServer2000Feature extends DbFeature {
 	@Override
 	public String getBlobDbType() {
 		return "image";
+	}
+
+	@Override
+	public boolean allowNullByDefault() {
+		return false;
 	}
 
 }

@@ -15,7 +15,6 @@ package org.sosostudio.dbunifier.pipe;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.sosostudio.dbunifier.DbUnifier;
@@ -53,11 +52,9 @@ public class EmptyTableRows {
 				Table table = tableList.get(i);
 				String tableName = table.getName();
 				String sql = "delete from " + tableName;
-				unifier.executeOtherSql(sql, null);
+				unifier.executeOtherSql(sql);
 				System.out.println(tableName + "'s rows have been deleted ");
 			}
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
 		} catch (IOException e) {
 			throw new DbUnifierException(e);
 		} finally {

@@ -26,6 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,9 +36,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.sql.DataSource;
-
 import org.sosostudio.dbunifier.config.XmlConfig;
+import org.sosostudio.dbunifier.dbsource.ConnectionDbSource;
 import org.sosostudio.dbunifier.dbsource.DbSource;
 import org.sosostudio.dbunifier.feature.DbFeature;
 import org.sosostudio.dbunifier.oom.ConditionClause;
@@ -59,66 +59,60 @@ public class DbUnifier {
 
 	private static Boolean existsSequenceTable = false;
 
-	private DataSource dataSource;
-
-	private Connection con;
+	private DbSource dbSource;
 
 	public DbUnifier() {
 		DbSource dbSource = XmlConfig.getDbSource("");
-		dataSource = dbSource;
+		this.dbSource = dbSource;
 	}
 
 	public DbUnifier(String dbSourceName) {
 		DbSource dbSource = XmlConfig.getDbSource(dbSourceName);
-		dataSource = dbSource;
+		this.dbSource = dbSource;
 	}
 
 	public DbUnifier(DbSource dbSource) {
-		dataSource = dbSource;
+		this.dbSource = dbSource;
 	}
 
-	public DbUnifier(DataSource dataSource) {
-		this.dataSource = dataSource;
+	public DbUnifier(Connection con, Encoding encoding) {
+		this.dbSource = new ConnectionDbSource(con, encoding);
 	}
 
 	public DbUnifier(Connection con) {
-		this.con = con;
+		this.dbSource = new ConnectionDbSource(con);
 	}
 
 	public Encoding getEncoding() {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
+		Encoding encoding = dbSource.getEncoding();
+		if (encoding != null) {
+			return encoding;
 		}
+		Connection con = null;
 		try {
+			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
-			return dbFeature.getEncoding(con);
+			return dbFeature.getEncoding();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
 	}
 
 	public String getDatabaseName() {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		try {
+			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			return dmd.getDatabaseProductName();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -161,13 +155,9 @@ public class DbUnifier {
 	}
 
 	public List<Table> getTableList(boolean sortByFk) {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		try {
+			con = dbSource.getConnection();
 			List<Table> tableList = new ArrayList<Table>();
 			Map<String, Table> tableMap = new HashMap<String, Table>();
 			ResultSet tableRs = null;
@@ -246,7 +236,7 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -257,17 +247,12 @@ public class DbUnifier {
 	}
 
 	public Table getTable(String tableName) {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		try {
+			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
-			tableName = dbFeature.defaultCaps(tableName);
 			Set<String> pkSet = new HashSet<String>();
 			ResultSet pkRs = null;
 			try {
@@ -293,6 +278,9 @@ public class DbUnifier {
 			if (columnList.size() > 0) {
 				Table table = new Table(tableName.toUpperCase());
 				table.addColumnList(columnList);
+				for (Column column : table.getColumnList()) {
+					column.setName(column.getName().toUpperCase());
+				}
 				return table;
 			} else {
 				return null;
@@ -300,20 +288,16 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
 	}
 
 	public List<Table> getViewList() {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		try {
+			con = dbSource.getConnection();
 			List<Table> viewList = new ArrayList<Table>();
 			ResultSet viewRs = null;
 			try {
@@ -353,24 +337,19 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
 	}
 
 	public Table getView(String viewName) {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		try {
+			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
-			viewName = dbFeature.defaultCaps(viewName);
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnRs = null;
 			try {
@@ -386,6 +365,9 @@ public class DbUnifier {
 				Table view = new Table(viewName.toUpperCase());
 				view.setTable(false);
 				view.addColumnList(columnList);
+				for (Column column : view.getColumnList()) {
+					column.setName(column.getName().toUpperCase());
+				}
 				return view;
 			} else {
 				return null;
@@ -393,20 +375,17 @@ public class DbUnifier {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
 	}
 
 	public void createTable(Table table) {
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
+		Statement statement = null;
 		try {
+			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			StringBuilder sb = new StringBuilder();
@@ -442,8 +421,10 @@ public class DbUnifier {
 				} else if (type == ColumnType.BLOB) {
 					sb.append(dbFeature.getBlobDbType());
 				}
-				if (!column.isNullable()) {
+				if (!column.isNullable() || column.isPrimaryKey()) {
 					sb.append(" not null");
+				} else if (!dbFeature.allowNullByDefault()) {
+					sb.append(" null");
 				}
 			}
 			if (sbPk.length() > 0) {
@@ -455,15 +436,23 @@ public class DbUnifier {
 			}
 			sb.append(")");
 			String sql = sb.toString();
-			executeOtherSql(sql, null);
+			DbUtil.printSql(sql, null);
+			statement = con.createStatement();
+			statement.executeUpdate(sql);
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {
-			if (this.con == null) {
+			DbUtil.closeStatement(statement);
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
 
+	}
+
+	public void dropTable(String tableName) {
+		String sql = "drop table " + tableName;
+		executeOtherSql(sql);
 	}
 
 	public RowSet executeSelectSql(String sql, Values values,
@@ -471,15 +460,11 @@ public class DbUnifier {
 		if (values == null) {
 			values = new Values();
 		}
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			// split sql into two part
@@ -603,7 +588,7 @@ public class DbUnifier {
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -625,16 +610,12 @@ public class DbUnifier {
 			values = new Values();
 		}
 		DbUtil.printSql(sql, values);
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			// query
+			con = dbSource.getConnection();
 			RowSet rowSet = new RowSet();
 			ps = con.prepareStatement(sql);
 			DbUtil.setColumnValue(ps, 1, values);
@@ -700,7 +681,7 @@ public class DbUnifier {
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -711,8 +692,7 @@ public class DbUnifier {
 	}
 
 	public RowSet executeSelectSql(String sql) {
-		Values values = new Values();
-		return executeSelectSql(sql, values, false);
+		return executeSelectSql(sql, null);
 	}
 
 	public RowSet executeSelectSql(SelectSql selectSql, boolean containsLob,
@@ -788,14 +768,10 @@ public class DbUnifier {
 			values = new Values();
 		}
 		DbUtil.printSql(sql, values);
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		try {
+			con = dbSource.getConnection();
 			ps = con.prepareStatement(sql);
 			DbUtil.setColumnValue(ps, 1, values);
 			return ps.executeUpdate();
@@ -803,10 +779,14 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
+	}
+
+	public void executeOtherSql(String sql) {
+		executeOtherSql(sql, null);
 	}
 
 	public int executeInsertSql(InsertSql insertSql) {
@@ -861,15 +841,11 @@ public class DbUnifier {
 			values = new Values();
 		}
 		DbUtil.printSql(sql, values);
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			con = dbSource.getConnection();
 			ps = con.prepareStatement(sql);
 			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
@@ -890,7 +866,7 @@ public class DbUnifier {
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -901,14 +877,10 @@ public class DbUnifier {
 			values = new Values();
 		}
 		DbUtil.printSql(sql, values);
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		try {
+			con = dbSource.getConnection();
 			ps = con.prepareStatement(sql);
 			if (reader == null) {
 				ps.setCharacterStream(1, null, 0);
@@ -921,7 +893,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -932,15 +904,11 @@ public class DbUnifier {
 			values = new Values();
 		}
 		DbUtil.printSql(sql, values);
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
+			con = dbSource.getConnection();
 			ps = con.prepareStatement(sql);
 			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
@@ -961,7 +929,7 @@ public class DbUnifier {
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -973,14 +941,10 @@ public class DbUnifier {
 			values = new Values();
 		}
 		DbUtil.printSql(sql, values);
-		Connection con;
-		if (this.con == null) {
-			con = DbUtil.getConnection(dataSource);
-		} else {
-			con = this.con;
-		}
+		Connection con = null;
 		PreparedStatement ps = null;
 		try {
+			con = dbSource.getConnection();
 			ps = con.prepareStatement(sql);
 			if (is == null) {
 				ps.setBinaryStream(1, null, 0);
@@ -993,7 +957,7 @@ public class DbUnifier {
 			throw new DbUnifierException(e);
 		} finally {
 			DbUtil.closeStatement(ps);
-			if (this.con == null) {
+			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
 			}
 		}
@@ -1030,7 +994,7 @@ public class DbUnifier {
 		} else {
 			Row row = rs.getRow(0);
 			BigDecimal seqValue = row.getNumber("NM_SEQ_VALUE");
-			BigDecimal nextSeqValue = new BigDecimal(seqValue.longValue() + 1
+			BigDecimal nextSeqValue = new BigDecimal((seqValue.longValue() + 1)
 					+ "");
 			int count = 0;
 			while (count == 0) {
@@ -1049,7 +1013,7 @@ public class DbUnifier {
 					break;
 				}
 				seqValue = nextSeqValue;
-				nextSeqValue = new BigDecimal(seqValue.longValue() + 1 + "");
+				nextSeqValue = new BigDecimal((seqValue.longValue() + 1) + "");
 			}
 			return nextSeqValue.longValue();
 		}

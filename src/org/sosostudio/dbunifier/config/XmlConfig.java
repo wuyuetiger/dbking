@@ -22,6 +22,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.dbsource.DbSource;
 import org.sosostudio.dbunifier.dbsource.JdbcDbSource;
 import org.sosostudio.dbunifier.dbsource.JndiDbSource;
@@ -57,21 +58,26 @@ public class XmlConfig {
 				String username = dbSourceElement.elementText("username");
 				String password = dbSourceElement.elementText("password");
 				String jndi = dbSourceElement.elementText("jndi");
+				String sEncoding = dbSourceElement.elementText("encoding");
+				Encoding encoding = null;
+				if (sEncoding != null) {
+					encoding = Encoding.valueOf(sEncoding);
+				}
 				if (databaseDriver != null && databaseUrl != null
 						&& username != null && password != null) {
 					DbSource dbSource = new JdbcDbSource(databaseDriver,
-							databaseUrl, username, password);
+							databaseUrl, username, password, encoding);
 					dbSourceMap.put(dbSourceName, dbSource);
 				} else if (databaseDriver != null && databaseUrl != null) {
 					DbSource dbSource = new JdbcDbSource(databaseDriver,
-							databaseUrl);
+							databaseUrl, encoding);
 					dbSourceMap.put(dbSourceName, dbSource);
 				} else if (jndi != null && username != null && password != null) {
 					DbSource dbSource = new JndiDbSource(jndi, username,
-							password);
+							password, encoding);
 					dbSourceMap.put(dbSourceName, dbSource);
 				} else if (jndi != null) {
-					DbSource dbSource = new JndiDbSource(jndi);
+					DbSource dbSource = new JndiDbSource(jndi, encoding);
 					dbSourceMap.put(dbSourceName, dbSource);
 				} else {
 					throw new DbUnifierException(

@@ -13,33 +13,12 @@
 
 package org.sosostudio.dbunifier.feature;
 
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.ColumnType;
-import org.sosostudio.dbunifier.Encoding;
 
 public class PostgreSqlFeature extends DbFeature {
-
-	@Override
-	public String defaultCaps(String name) {
-		return name.toLowerCase();
-	}
-
-	@Override
-	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
-		return "public";
-	}
-
-	@Override
-	public String getPaginationSql(String mainSubSql, String orderBySubSql,
-			int startPos, int endPos) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(mainSubSql).append(orderBySubSql).append(" limit ")
-				.append(endPos - startPos).append(" offset ").append(startPos);
-		return sb.toString();
-	}
 
 	@Override
 	public String getNStringDbType(int size) {
@@ -58,8 +37,17 @@ public class PostgreSqlFeature extends DbFeature {
 	}
 
 	@Override
-	public Encoding getEncoding(Connection con) {
-		return Encoding.UNICODE;
+	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
+		return "public";
+	}
+
+	@Override
+	public String getPaginationSql(String mainSubSql, String orderBySubSql,
+			int startPos, int endPos) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(mainSubSql).append(orderBySubSql).append(" limit ")
+				.append(endPos - startPos).append(" offset ").append(startPos);
+		return sb.toString();
 	}
 
 }

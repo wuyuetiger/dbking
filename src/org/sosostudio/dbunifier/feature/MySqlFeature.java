@@ -20,8 +20,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
-import org.sosostudio.dbunifier.ColumnType;
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
@@ -29,8 +27,18 @@ import org.sosostudio.dbunifier.util.DbUtil;
 public class MySqlFeature extends DbFeature {
 
 	@Override
-	public String defaultCaps(String name) {
-		return name.toLowerCase();
+	public String getTimestampDbType() {
+		return "datetime";
+	}
+
+	@Override
+	public String getClobDbType() {
+		return "longtext";
+	}
+
+	@Override
+	public String getBlobDbType() {
+		return "longblob";
 	}
 
 	@Override
@@ -40,27 +48,6 @@ public class MySqlFeature extends DbFeature {
 		sb.append(mainSubSql).append(orderBySubSql).append(" limit ")
 				.append(endPos - startPos).append(" offset ").append(startPos);
 		return sb.toString();
-	}
-
-	@Override
-	public String getNStringDbType(int size) {
-		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
-		return "nvarchar(" + size + ")";
-	}
-
-	@Override
-	public String getTimestampDbType() {
-		return "datetime";
-	}
-
-	@Override
-	public String getClobDbType() {
-		return "longclob";
-	}
-
-	@Override
-	public String getBlobDbType() {
-		return "longblob";
 	}
 
 	@Override
@@ -117,11 +104,6 @@ public class MySqlFeature extends DbFeature {
 				DbUtil.closeStatement(statement);
 			}
 		}
-	}
-
-	@Override
-	public Encoding getEncoding(Connection con) {
-		return Encoding.UNICODE;
 	}
 
 }

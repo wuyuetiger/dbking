@@ -27,22 +27,12 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.NullValue;
 import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.config.XmlConfig;
 
 public class DbUtil {
-
-	public static Connection getConnection(DataSource dataSource) {
-		try {
-			return dataSource.getConnection();
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
-		}
-	}
 
 	public static void closeConnection(Connection con) {
 		if (con != null) {
@@ -177,28 +167,30 @@ public class DbUtil {
 	}
 
 	public static void printSql(String sql, Values values) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("\n").append(sql).append("\n");
-		List<Object> valueList = values.getValueList();
-		for (int i = 0; i < valueList.size(); i++) {
-			Object value = valueList.get(i);
-			sb.append(i + 1).append(".[");
-			if (value instanceof NullValue) {
-				sb.append("<NULL>");
-			} else if (value instanceof String) {
-				sb.append(value);
-			} else if (value instanceof BigDecimal) {
-				sb.append(value);
-			} else if (value instanceof Timestamp) {
-				sb.append(value);
-			} else if (value instanceof char[]) {
-				sb.append("<CLOB>");
-			} else if (value instanceof byte[]) {
-				sb.append("<BLOB>");
-			}
-			sb.append("]\n");
-		}
 		if (XmlConfig.needsShowSql()) {
+			StringBuilder sb = new StringBuilder();
+			sb.append("\n").append(sql).append("\n");
+			if (values != null) {
+				List<Object> valueList = values.getValueList();
+				for (int i = 0; i < valueList.size(); i++) {
+					Object value = valueList.get(i);
+					sb.append(i + 1).append(".[");
+					if (value instanceof NullValue) {
+						sb.append("<NULL>");
+					} else if (value instanceof String) {
+						sb.append(value);
+					} else if (value instanceof BigDecimal) {
+						sb.append(value);
+					} else if (value instanceof Timestamp) {
+						sb.append(value);
+					} else if (value instanceof char[]) {
+						sb.append("<CLOB>");
+					} else if (value instanceof byte[]) {
+						sb.append("<BLOB>");
+					}
+					sb.append("]\n");
+				}
+			}
 			System.out.println(sb.toString());
 		}
 	}

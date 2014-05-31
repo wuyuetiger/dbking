@@ -10,15 +10,15 @@
 
 	<bean id="dataSourceTarget"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="jdbc:postgresql://localhost:5432/postgres" />
-		<property name="username" value="postgres" />
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl" />
+		<property name="username" value="system" />
 		<property name="password" value="password" />
 	</bean>
 
 	<bean id="dataSource"
 		class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
-		<constructor-arg ref bean="dataSourceTarget" />
+		<property name="dataSource" ref="dataSourceTarget" />
 	</bean>
 
 	<bean id="transactionManager"
@@ -28,8 +28,13 @@
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<bean id="dbunifier" class="org.sosostudio.dbunifier.DbUnifier">
-		<constructor-arg ref="dataSource" />
+	<bean id="dbSource" class="org.sosostudio.dbunifier.dbsource.WrappedDbSource">
+		<property name="dataSource" ref="dataSource" />
+		<property name="encoding" ref="GBK" />
+	</bean>
+
+	<bean id="dbUnifier" class="org.sosostudio.dbunifier.DbUnifier">
+		<constructor-arg ref="dbSource" />
 	</bean>
 
 </beans>

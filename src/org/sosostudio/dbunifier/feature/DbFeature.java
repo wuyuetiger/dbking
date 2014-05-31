@@ -25,46 +25,53 @@ import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
 
-public abstract class DbFeature {
+public class DbFeature {
 
-	public final static String DB_ORACLE = "Oracle";
+	public final static String ORACLE = "Oracle";
 
-	public final static String DB_MSSQLSERVER = "Microsoft SQL Server";
+	public final static String MSSQLSERVER = "Microsoft SQL Server";
 
-	public final static String DB_MYSQL = "MySQL";
+	public final static String MYSQL = "MySQL";
 
-	public final static String DB_POSTGRESQL = "PostgreSQL";
+	public final static String DB2 = "DB2";
+
+	public final static String SYBASE = "Adaptive Server Enterprise";
+
+	public final static String POSTGRESQL = "PostgreSQL";
+
+	public final static String DERBY = "Apache Derby";
 
 	public static DbFeature getInstance(DatabaseMetaData databaseMetaData)
 			throws SQLException {
 		String name = databaseMetaData.getDatabaseProductName();
 		int databaseVersion = databaseMetaData.getDatabaseMajorVersion();
-		if (DB_ORACLE.equals(name)) {
+		if (ORACLE.equals(name)) {
 			return new OracleFeature();
-		} else if (DB_MSSQLSERVER.equals(name)) {
+		} else if (MSSQLSERVER.equals(name)) {
 			if (databaseVersion >= 9) {
 				return new MicrosoftSqlServer2005Feature();
 			} else {
 				return new MicrosoftSqlServer2000Feature();
 			}
-		} else if (DB_MYSQL.equals(name)) {
+		} else if (MYSQL.equals(name)) {
 			return new MySqlFeature();
-		} else if (DB_POSTGRESQL.equals(name)) {
+		} else if (DB2.equals(name)) {
+			return new Db2Feature();
+		} else if (SYBASE.equals(name)) {
+			return new SybaseFeature();
+		} else if (POSTGRESQL.equals(name)) {
 			return new PostgreSqlFeature();
+		} else if (DERBY.equals(name)) {
+			return new DerbyFeature();
 		} else {
-			throw new DbUnifierException("not support database");
+			System.out
+					.println("db-unifier will use default db feature without test");
+			return new DbFeature();
 		}
 	}
 
-	public abstract String defaultCaps(String name);
-
-	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
-		return null;
-	}
-
-	public String getPaginationSql(String mainSubSql, String orderBySubSql,
-			int startPos, int endPos) {
-		return null;
+	public Encoding getEncoding() {
+		return Encoding.UNICODE;
 	}
 
 	public String getStringDbType(int size) {
@@ -78,7 +85,8 @@ public abstract class DbFeature {
 	}
 
 	public String getNumberDbType(int precision, int scale) {
-		return "numeric(" + precision + "," + scale + ")";
+		return "numeric(" + Math.max(0, precision) + "," + Math.max(0, scale)
+				+ ")";
 	}
 
 	public String getTimestampDbType() {
@@ -91,6 +99,19 @@ public abstract class DbFeature {
 
 	public String getBlobDbType() {
 		return "blob";
+	}
+
+	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
+		return null;
+	}
+
+	public boolean allowNullByDefault() {
+		return true;
+	}
+
+	public String getPaginationSql(String mainSubSql, String orderBySubSql,
+			int startPos, int endPos) {
+		return null;
 	}
 
 	public int getTotalRowCount(Connection con, String mainSubSql, Values values) {
@@ -114,7 +135,5 @@ public abstract class DbFeature {
 			DbUtil.closeStatement(ps);
 		}
 	}
-
-	public abstract Encoding getEncoding(Connection con);
 
 }

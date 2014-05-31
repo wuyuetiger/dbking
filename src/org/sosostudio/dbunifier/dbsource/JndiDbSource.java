@@ -20,9 +20,10 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 
-public class JndiDbSource extends DbSource {
+public class JndiDbSource implements DbSource {
 
 	private String jndi;
 
@@ -30,8 +31,23 @@ public class JndiDbSource extends DbSource {
 
 	private String password;
 
+	private Encoding encoding;
+
+	public JndiDbSource(String jndi, Encoding encoding) {
+		this.jndi = jndi;
+		this.encoding = encoding;
+	}
+
 	public JndiDbSource(String jndi) {
 		this.jndi = jndi;
+	}
+
+	public JndiDbSource(String jndi, String username, String password,
+			Encoding encoding) {
+		this.jndi = jndi;
+		this.username = username;
+		this.password = password;
+		this.encoding = encoding;
 	}
 
 	public JndiDbSource(String jndi, String username, String password) {
@@ -65,6 +81,11 @@ public class JndiDbSource extends DbSource {
 				throw new DbUnifierException(e);
 			}
 		}
+	}
+
+	@Override
+	public Encoding getEncoding() {
+		return encoding;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class AutoCodeTester {
 			DaoGenerator.main(new String[] { "test",
 					"org.sosostudio.dbunifier.test.dao", tableName });
 		} finally {
-			unifier.executeOtherSql("drop table " + tableName, null);
+			unifier.executeOtherSql("drop table " + tableName);
 		}
 	}
 

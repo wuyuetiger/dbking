@@ -19,6 +19,7 @@
 				<xs:element ref="username" minOccurs="0" />
 				<xs:element ref="password" minOccurs="0" />
 				<xs:element ref="jndi" minOccurs="0" />
+				<xs:element ref="encoding" minOccurs="0" />
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
@@ -28,4 +29,13 @@
 	<xs:element name="username" type="xs:string" />
 	<xs:element name="password" type="xs:string" />
 	<xs:element name="jndi" type="xs:string" />
+	<xs:element name="encoding">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="GBK" />
+				<xs:enumeration value="UTF8" />
+				<xs:enumeration value="UNICODE" />
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
 </xs:schema>
