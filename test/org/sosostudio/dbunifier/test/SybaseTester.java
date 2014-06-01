@@ -2,9 +2,9 @@ package org.sosostudio.dbunifier.test;
 
 import org.sosostudio.dbunifier.DbUnifier;
 
-public class Sybase15Tester extends BaseTester {
+public class SybaseTester extends BaseTester {
 
-	public Sybase15Tester() {
+	public SybaseTester() {
 		unifier = new DbUnifier("sybase");
 	}
 

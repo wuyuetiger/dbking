@@ -16,7 +16,7 @@ package org.sosostudio.dbunifier.feature;
 import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.Encoding;
 
-public class MicrosoftSqlServer2000Feature extends DbFeature {
+public class MicrosoftSqlServerFeatureBelow2005 extends DbFeature {
 
 	@Override
 	public Encoding getEncoding() {

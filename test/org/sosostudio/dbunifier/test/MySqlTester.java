@@ -3,9 +3,9 @@ package org.sosostudio.dbunifier.test;
 import org.junit.Test;
 import org.sosostudio.dbunifier.DbUnifier;
 
-public class MySql5Tester extends BaseTester {
+public class MySqlTester extends BaseTester {
 
-	public MySql5Tester() {
+	public MySqlTester() {
 		unifier = new DbUnifier("mysql");
 	}
 

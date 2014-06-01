@@ -83,6 +83,41 @@ public class DbUnifier {
 		this.dbSource = new ConnectionDbSource(con);
 	}
 
+	public void printDatabaseInfo() {
+		Connection con = null;
+		try {
+			con = dbSource.getConnection();
+			DatabaseMetaData dmd = con.getMetaData();
+			System.out.println();
+			System.out.println("DatabaseProductName: "
+					+ dmd.getDatabaseProductName());
+			System.out.println("DatabaseProductVersion: "
+					+ dmd.getDatabaseProductVersion());
+			System.out.println("DatabaseMajorVersion: "
+					+ dmd.getDatabaseMajorVersion());
+			System.out.println("DatabaseMinorVersion: "
+					+ dmd.getDatabaseMinorVersion());
+			System.out.println("DriverName: " + dmd.getDriverName());
+			System.out.println("DriverMajorVersion: "
+					+ dmd.getDriverMajorVersion());
+			System.out.println("DriverMinorVersion: "
+					+ dmd.getDriverMinorVersion());
+			System.out.println("DriverVersion: " + dmd.getDriverVersion());
+			System.out
+					.println("JDBCMajorVersion: " + dmd.getJDBCMajorVersion());
+			System.out
+					.println("JDBCMinorVersion: " + dmd.getJDBCMinorVersion());
+
+			System.out.println();
+		} catch (SQLException e) {
+			throw new DbUnifierException(e);
+		} finally {
+			if (!(dbSource instanceof ConnectionDbSource)) {
+				DbUtil.closeConnection(con);
+			}
+		}
+	}
+
 	public Encoding getEncoding() {
 		Encoding encoding = dbSource.getEncoding();
 		if (encoding != null) {
@@ -94,21 +129,6 @@ public class DbUnifier {
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			return dbFeature.getEncoding();
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
-		} finally {
-			if (!(dbSource instanceof ConnectionDbSource)) {
-				DbUtil.closeConnection(con);
-			}
-		}
-	}
-
-	public String getDatabaseName() {
-		Connection con = null;
-		try {
-			con = dbSource.getConnection();
-			DatabaseMetaData dmd = con.getMetaData();
-			return dmd.getDatabaseProductName();
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		} finally {

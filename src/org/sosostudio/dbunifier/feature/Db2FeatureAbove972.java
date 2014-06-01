@@ -13,13 +13,15 @@
 
 package org.sosostudio.dbunifier.feature;
 
-import org.sosostudio.dbunifier.Encoding;
-
-public class Db2Feature extends DbFeature {
+public class Db2FeatureAbove972 extends Db2FeatureBelow972 {
 
 	@Override
-	public Encoding getEncoding() {
-		return Encoding.UTF8;
+	public String getPaginationSql(String mainSubSql, String orderBySubSql,
+			int startPos, int endPos) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(mainSubSql).append(orderBySubSql).append(" limit ")
+				.append(endPos - startPos).append(" offset ").append(startPos);
+		return sb.toString();
 	}
 
 }

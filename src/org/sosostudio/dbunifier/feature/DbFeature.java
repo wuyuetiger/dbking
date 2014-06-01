@@ -44,19 +44,30 @@ public class DbFeature {
 	public static DbFeature getInstance(DatabaseMetaData databaseMetaData)
 			throws SQLException {
 		String name = databaseMetaData.getDatabaseProductName();
-		int databaseVersion = databaseMetaData.getDatabaseMajorVersion();
+		String version = databaseMetaData.getDatabaseProductVersion();
+		int majorVersion = databaseMetaData.getDatabaseMajorVersion();
+		int minorVersion = databaseMetaData.getDatabaseMinorVersion();
 		if (ORACLE.equals(name)) {
 			return new OracleFeature();
 		} else if (MSSQLSERVER.equals(name)) {
-			if (databaseVersion >= 9) {
-				return new MicrosoftSqlServer2005Feature();
+			if (majorVersion >= 9) {
+				return new MicrosoftSqlServerFeatureAbove2005();
 			} else {
-				return new MicrosoftSqlServer2000Feature();
+				return new MicrosoftSqlServerFeatureBelow2005();
 			}
 		} else if (MYSQL.equals(name)) {
 			return new MySqlFeature();
-		} else if (DB2.equals(name)) {
-			return new Db2Feature();
+		} else if (name.startsWith(DB2)) {
+			float ver = new Float(majorVersion + "." + minorVersion);
+			if (ver > 9.7) {
+				return new Db2FeatureAbove972();
+			} else {
+				if ("SQL9072".equals(version)) {
+					return new Db2FeatureAbove972();
+				} else {
+					return new Db2FeatureBelow972();
+				}
+			}
 		} else if (SYBASE.equals(name)) {
 			return new SybaseFeature();
 		} else if (POSTGRESQL.equals(name)) {
