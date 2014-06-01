@@ -13,7 +13,6 @@
 
 package org.sosostudio.dbunifier.feature;
 
-import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.Encoding;
 
 public class MicrosoftSqlServerFeatureBelow2005 extends DbFeature {
@@ -21,12 +20,6 @@ public class MicrosoftSqlServerFeatureBelow2005 extends DbFeature {
 	@Override
 	public Encoding getEncoding() {
 		return Encoding.GBK;
-	}
-
-	@Override
-	public String getNStringDbType(int size) {
-		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
-		return "nvarchar(" + size + ")";
 	}
 
 	@Override

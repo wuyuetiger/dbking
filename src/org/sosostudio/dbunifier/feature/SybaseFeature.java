@@ -13,7 +13,14 @@
 
 package org.sosostudio.dbunifier.feature;
 
+import org.sosostudio.dbunifier.Encoding;
+
 public class SybaseFeature extends DbFeature {
+
+	@Override
+	public Encoding getEncoding() {
+		return Encoding.GBK;
+	}
 
 	@Override
 	public String getTimestampDbType() {
