@@ -14,7 +14,6 @@
 package org.sosostudio.dbunifier.feature;
 
 import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.ColumnType;
 
@@ -37,7 +36,7 @@ public class PostgreSqlFeature extends DbFeature {
 	}
 
 	@Override
-	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
+	public String getDatabaseSchema(DatabaseMetaData dmd) {
 		return "public";
 	}
 

@@ -39,8 +39,12 @@ public class OracleFeature extends DbFeature {
 	}
 
 	@Override
-	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
-		return dmd.getUserName();
+	public String getDatabaseSchema(DatabaseMetaData dmd) {
+		try {
+			return dmd.getUserName();
+		} catch (SQLException e) {
+			return null;
+		}
 	}
 
 	@Override

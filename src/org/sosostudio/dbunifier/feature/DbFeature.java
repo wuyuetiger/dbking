@@ -112,7 +112,7 @@ public class DbFeature {
 		return "blob";
 	}
 
-	public String getDatabaseSchema(DatabaseMetaData dmd) throws SQLException {
+	public String getDatabaseSchema(DatabaseMetaData dmd) {
 		return null;
 	}
 
