@@ -16,9 +16,15 @@ public class MySqlTester extends BaseTester {
 	}
 
 	@Test
+	public void testTypeFloat() {
+		String typeName = "float(3,2)";
+		testSmallDecimal(typeName);
+	}
+
+	@Test
 	public void testTypeTimestamp() {
 		String typeName = "timestamp null";
 		testTimestamp(typeName);
 	}
-
+	
 }

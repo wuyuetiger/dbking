@@ -118,12 +118,13 @@ public class DbUtil {
 		} else if (dataType == Types.NCLOB) {
 			return ColumnType.CLOB;
 		} else {
-			return ColumnType.UNKNOWN;
+			return ColumnType.STRING;
 		}
 	}
 
 	public static boolean isNationalString(String dbType) {
 		dbType = dbType.toUpperCase();
+		System.out.println(dbType);
 		return dbType.startsWith("NATIONAL") || dbType.startsWith("NCHAR")
 				|| dbType.startsWith("NVARCHAR");
 	}

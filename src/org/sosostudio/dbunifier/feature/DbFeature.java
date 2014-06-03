@@ -116,6 +116,10 @@ public class DbFeature {
 		return null;
 	}
 
+	public String defaultCaps(String name) {
+		return name.toUpperCase();
+	}
+
 	public boolean allowNullByDefault() {
 		return true;
 	}

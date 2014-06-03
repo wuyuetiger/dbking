@@ -42,6 +42,11 @@ public class PostgreSqlFeature extends DbFeature {
 	}
 
 	@Override
+	public String defaultCaps(String name) {
+		return name.toLowerCase();
+	}
+
+	@Override
 	public String getPaginationSql(String mainSubSql, String orderBySubSql,
 			int startPos, int endPos) {
 		StringBuilder sb = new StringBuilder();

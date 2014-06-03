@@ -516,6 +516,12 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
+	public void testTypeDbclob() {
+		String typeName = "dbclob";
+		testClob(typeName);
+	}
+
+	@Test
 	public void testTypeDec() {
 		String typeName = "dec(10,2)";
 		testDecimal(typeName);
@@ -672,6 +678,12 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
+	public void testTypeNum() {
+		String typeName = "num(10,2)";
+		testDecimal(typeName);
+	}
+
+	@Test
 	public void testTypeNumber() {
 		String typeName = "number(10,2)";
 		testDecimal(typeName);
@@ -765,6 +777,24 @@ public class BaseTester extends TestCase {
 	public void testTypeTinytext() {
 		String typeName = "tinytext";
 		testSmallClob(typeName);
+	}
+
+	@Test
+	public void testTypeUnichar() {
+		String typeName = "unichar(12)";
+		testChineseString12(typeName);
+	}
+
+	@Test
+	public void testTypeUnitext() {
+		String typeName = "unitext";
+		testClob(typeName);
+	}
+
+	@Test
+	public void testTypeUnivarchar() {
+		String typeName = "univarchar(12)";
+		testChineseString12(typeName);
 	}
 
 	@Test

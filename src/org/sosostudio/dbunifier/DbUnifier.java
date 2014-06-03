@@ -273,6 +273,7 @@ public class DbUnifier {
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
+			tableName = dbFeature.defaultCaps(tableName);
 			Set<String> pkSet = new HashSet<String>();
 			ResultSet pkRs = null;
 			try {
@@ -306,7 +307,7 @@ public class DbUnifier {
 				return null;
 			}
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			return null;
 		} finally {
 			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
@@ -370,6 +371,7 @@ public class DbUnifier {
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
 			String schema = dbFeature.getDatabaseSchema(dmd);
+			viewName = dbFeature.defaultCaps(viewName);
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnRs = null;
 			try {
@@ -393,7 +395,7 @@ public class DbUnifier {
 				return null;
 			}
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			return null;
 		} finally {
 			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
