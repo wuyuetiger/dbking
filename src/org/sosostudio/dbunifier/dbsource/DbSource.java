@@ -15,12 +15,8 @@ package org.sosostudio.dbunifier.dbsource;
 
 import java.sql.Connection;
 
-import org.sosostudio.dbunifier.Encoding;
-
 public interface DbSource {
 
 	public Connection getConnection();
-
-	public Encoding getEncoding();
 
 }

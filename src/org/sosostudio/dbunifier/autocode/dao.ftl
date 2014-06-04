@@ -45,7 +45,7 @@ public class ${table.definationName}Dao {
 
 	<#if table.table>
 	public int add${table.definationName}(${table.definationName} ${table.variableName}) {
-		${table.variableName}.validateString(unifier.getEncoding());
+		${table.variableName}.truncateString();
 		InsertSql insertSql = new InsertSql().setTableName(${table.definationName}.${table.name})
 			.setInsertKeyValueClause(
 				new InsertKeyValueClause()
@@ -58,7 +58,7 @@ public class ${table.definationName}Dao {
 
 	<#if hasPrimaryKey>
 	public int update${table.definationName}(${table.definationName} ${table.variableName}) {
-		${table.variableName}.validateString(unifier.getEncoding());
+		${table.variableName}.truncateString();
 		UpdateSql updateSql = new UpdateSql().setTableName(${table.definationName}.${table.name})
 			.setUpdateKeyValueClause(
 				new UpdateKeyValueClause()
@@ -99,8 +99,7 @@ public class ${table.definationName}Dao {
 			.setOrderByClause(orderByClause);
 		RowSet rowSet = unifier.executeSelectSql(selectSql, pageSize, pageNumber);
 		PaginationArrayList<${table.definationName}> pal = new PaginationArrayList<${table.definationName}>(rowSet.getPageSize(), rowSet.getPageNumber(), rowSet.getTotalRowCount());
-		for (int i = 0; i < rowSet.size(); i++) {
-			Row row = rowSet.getRow(i);
+		for (Row row : rowSet) {
 			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
@@ -118,8 +117,7 @@ public class ${table.definationName}Dao {
 			.setOrderByClause(orderByClause);
 		RowSet rowSet = unifier.executeSelectSql(selectSql);
 		ArrayList<${table.definationName}> al = new ArrayList<${table.definationName}>();
-		for (int i = 0; i < rowSet.size(); i++) {
-			Row row = rowSet.getRow(i);
+		for (Row row : rowSet) {
 			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));

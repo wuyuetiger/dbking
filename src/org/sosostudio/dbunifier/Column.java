@@ -25,8 +25,6 @@ public class Column implements Serializable {
 
 	private ColumnType type;
 
-	private boolean isNationalString = true;
-
 	private int size = 50;
 
 	private int precision = 10;
@@ -69,14 +67,6 @@ public class Column implements Serializable {
 	public Column setType(ColumnType type) {
 		this.type = type;
 		return this;
-	}
-
-	public boolean isNationalString() {
-		return isNationalString;
-	}
-
-	public void setNationalString(boolean isNationalString) {
-		this.isNationalString = isNationalString;
 	}
 
 	public int getSize() {
@@ -128,8 +118,7 @@ public class Column implements Serializable {
 	public String toString() {
 		return new StringBuilder().append("\t[name = ").append(name)
 				.append("]").append("[type = ").append(type).append("]")
-				.append("[isNationalString = ").append(isNationalString)
-				.append("]").append("[size = ").append(size).append("]")
+				.append("[size = ").append(size).append("]")
 				.append("[precision = ").append(precision).append("]")
 				.append("[scale = ").append(scale).append("]")
 				.append("[nullable = ").append(isNullable).append("]")

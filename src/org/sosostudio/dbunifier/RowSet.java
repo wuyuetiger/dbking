@@ -18,11 +18,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RowSet {
+@SuppressWarnings("serial")
+public class RowSet extends ArrayList<Row> {
 
 	private List<String> columnNameList = new ArrayList<String>();
-
-	private List<Row> rowList = new ArrayList<Row>();
 
 	private int pageSize = Integer.MAX_VALUE / 2;
 
@@ -38,18 +37,6 @@ public class RowSet {
 
 	public void addColumnName(String columnName) {
 		columnNameList.add(columnName);
-	}
-
-	public void addRow(Row row) {
-		rowList.add(row);
-	}
-
-	public int size() {
-		return rowList.size();
-	}
-
-	public Row getRow(int i) {
-		return rowList.get(i);
 	}
 
 	public int getPageSize() {
@@ -85,49 +72,49 @@ public class RowSet {
 	}
 
 	public String getOnlyString() {
-		if (rowList.size() > 0) {
-			return rowList.get(0).getString(1);
+		if (size() > 0) {
+			return get(0).getString(1);
 		} else {
 			return null;
 		}
 	}
 
 	public BigDecimal getOnlyNumber() {
-		if (rowList.size() > 0) {
-			return rowList.get(0).getNumber(1);
+		if (size() > 0) {
+			return get(0).getNumber(1);
 		} else {
 			return null;
 		}
 	}
 
 	public Timestamp getOnlyTimestamp() {
-		if (rowList.size() > 0) {
-			return rowList.get(0).getTimestamp(1);
+		if (size() > 0) {
+			return get(0).getTimestamp(1);
 		} else {
 			return null;
 		}
 	}
 
 	public String getOnlyClob() {
-		if (rowList.size() > 0) {
-			return rowList.get(0).getClob(1);
+		if (size() > 0) {
+			return get(0).getClob(1);
 		} else {
 			return null;
 		}
 	}
 
 	public byte[] getOnlyBlob() {
-		if (rowList.size() > 0) {
-			return rowList.get(0).getBlob(1);
+		if (size() > 0) {
+			return get(0).getBlob(1);
 		} else {
 			return null;
 		}
 	}
 
 	public Object[] toBeans(Class<?> clazz) {
-		Object[] objs = new Object[rowList.size()];
-		for (int i = 0; i < rowList.size(); i++) {
-			Row row = rowList.get(i);
+		Object[] objs = new Object[size()];
+		for (int i = 0; i < size(); i++) {
+			Row row = get(i);
 			objs[i] = row.toBean(clazz);
 		}
 		return objs;
@@ -139,9 +126,9 @@ public class RowSet {
 		sb.append("\n[pageSize = ").append(pageSize).append("][pageNumber = ")
 				.append(pageNumber).append("][totalRowCount = ")
 				.append(totalRowCount).append("][totalPageCount = ")
-				.append(totalPageCount).append("][rowCount = ")
-				.append(rowList.size()).append("]\n");
-		for (Row row : rowList) {
+				.append(totalPageCount).append("][rowCount = ").append(size())
+				.append("]\n");
+		for (Row row : this) {
 			sb.append(row);
 		}
 		return sb.toString();

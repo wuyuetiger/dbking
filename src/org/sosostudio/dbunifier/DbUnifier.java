@@ -57,6 +57,12 @@ import org.sosostudio.dbunifier.util.IoUtil;
 
 public class DbUnifier {
 
+	public static final String SEQ_TABLE_NAME = "SYS_SEQ";
+
+	public static final String SEQ_NAME_COLUMN_NAME = "ST_SEQ_NAME";
+
+	public static final String SEQ_VALUE_COLUMN_NAME = "NM_SEQ_VALUE";
+
 	private static Boolean existsSequenceTable = false;
 
 	private DbSource dbSource;
@@ -73,10 +79,6 @@ public class DbUnifier {
 
 	public DbUnifier(DbSource dbSource) {
 		this.dbSource = dbSource;
-	}
-
-	public DbUnifier(Connection con, Encoding encoding) {
-		this.dbSource = new ConnectionDbSource(con, encoding);
 	}
 
 	public DbUnifier(Connection con) {
@@ -118,36 +120,14 @@ public class DbUnifier {
 		}
 	}
 
-	public Encoding getEncoding() {
-		Encoding encoding = dbSource.getEncoding();
-		if (encoding != null) {
-			return encoding;
-		}
-		Connection con = null;
-		try {
-			con = dbSource.getConnection();
-			DatabaseMetaData dmd = con.getMetaData();
-			DbFeature dbFeature = DbFeature.getInstance(dmd);
-			return dbFeature.getEncoding();
-		} catch (SQLException e) {
-			throw new DbUnifierException(e);
-		} finally {
-			if (!(dbSource instanceof ConnectionDbSource)) {
-				DbUtil.closeConnection(con);
-			}
-		}
-	}
-
-	private Column getColumn(DbFeature dbFeature, ResultSet columnRs,
-			Set<String> pkSet) throws SQLException {
+	private Column getColumn(ResultSet columnRs, Set<String> pkSet)
+			throws SQLException {
 		String columnName = columnRs.getString("COLUMN_NAME");
 		short dataType = columnRs.getShort("DATA_TYPE");
-		String dbType = columnRs.getString("TYPE_NAME");
 		int size = columnRs.getInt("COLUMN_SIZE");
 		int scale = columnRs.getInt("DECIMAL_DIGITS");
 		int nullable = columnRs.getInt("NULLABLE");
 		Column column = new Column(columnName, DbUtil.getColumnType(dataType));
-		column.setNationalString(DbUtil.isNationalString(dbType));
 		column.setSize(size);
 		column.setPrecision(size);
 		column.setScale(scale);
@@ -208,8 +188,7 @@ public class DbUnifier {
 					try {
 						columnRs = dmd.getColumns(null, schema, tableName, "%");
 						while (columnRs.next()) {
-							Column column = getColumn(dbFeature, columnRs,
-									pkSet);
+							Column column = getColumn(columnRs, pkSet);
 							columnList.add(column);
 						}
 					} finally {
@@ -290,7 +269,7 @@ public class DbUnifier {
 			try {
 				columnRs = dmd.getColumns(null, schema, tableName, "%");
 				while (columnRs.next()) {
-					Column column = getColumn(dbFeature, columnRs, pkSet);
+					Column column = getColumn(columnRs, pkSet);
 					columnList.add(column);
 				}
 			} finally {
@@ -334,7 +313,7 @@ public class DbUnifier {
 					try {
 						columnRs = dmd.getColumns(null, schema, viewName, "%");
 						while (columnRs.next()) {
-							Column column = getColumn(dbFeature, columnRs, null);
+							Column column = getColumn(columnRs, null);
 							columnList.add(column);
 						}
 					} finally {
@@ -377,7 +356,7 @@ public class DbUnifier {
 			try {
 				columnRs = dmd.getColumns(null, schema, viewName, "%");
 				while (columnRs.next()) {
-					Column column = getColumn(dbFeature, columnRs, null);
+					Column column = getColumn(columnRs, null);
 					columnList.add(column);
 				}
 			} finally {
@@ -428,11 +407,7 @@ public class DbUnifier {
 				sb.append(column.getName()).append(" ");
 				ColumnType type = column.getType();
 				if (type == ColumnType.STRING) {
-					if (column.isNationalString()) {
-						sb.append(dbFeature.getNStringDbType(column.getSize()));
-					} else {
-						sb.append(dbFeature.getStringDbType(column.getSize()));
-					}
+					sb.append(dbFeature.getStringDbType(column.getSize()));
 				} else if (type == ColumnType.NUMBER) {
 					sb.append(dbFeature.getNumberDbType(column.getPrecision(),
 							column.getScale()));
@@ -602,7 +577,7 @@ public class DbUnifier {
 					}
 					row.addValue(columnName, value);
 				}
-				rowSet.addRow(row);
+				rowSet.add(row);
 			}
 			return rowSet;
 		} catch (SQLException e) {
@@ -694,7 +669,7 @@ public class DbUnifier {
 					}
 					row.addValue(columnName, value);
 				}
-				rowSet.addRow(row);
+				rowSet.add(row);
 			}
 			rowSet.setTotalRowCount(rowSet.size());
 			return rowSet;
@@ -988,48 +963,51 @@ public class DbUnifier {
 	public long getSequenceNextValue(String sequenceName) {
 		synchronized (existsSequenceTable) {
 			if (!existsSequenceTable) {
-				Table table = getTable("SYS_SEQ");
+				Table table = getTable(SEQ_TABLE_NAME);
 				if (table == null) {
-					table = new Table("SYS_SEQ").addColumn(
-							new Column("ST_SEQ_NAME", ColumnType.STRING)
-									.setPrimaryKey(true)).addColumn(
-							new Column("NM_SEQ_VALUE", ColumnType.NUMBER));
+					table = new Table(SEQ_TABLE_NAME).addColumn(
+							new Column(SEQ_NAME_COLUMN_NAME, ColumnType.STRING)
+									.setPrimaryKey(true))
+							.addColumn(
+									new Column(SEQ_VALUE_COLUMN_NAME,
+											ColumnType.NUMBER));
 					createTable(table);
 					existsSequenceTable = true;
 				}
 			}
 		}
 		RowSet rs = executeSelectSql(new SelectSql()
-				.setTableName("SYS_SEQ")
-				.setColumns("NM_SEQ_VALUE")
+				.setTableName(SEQ_TABLE_NAME)
+				.setColumns(SEQ_VALUE_COLUMN_NAME)
 				.setConditionClause(
 						new ConditionClause(LogicalOp.AND).addStringClause(
-								"ST_SEQ_NAME", RelationOp.EQUAL, sequenceName)));
+								SEQ_NAME_COLUMN_NAME, RelationOp.EQUAL,
+								sequenceName)));
 		if (rs.size() == 0) {
-			executeInsertSql(new InsertSql().setTableName("SYS_SEQ")
+			executeInsertSql(new InsertSql().setTableName(SEQ_TABLE_NAME)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addStringClause(
-									"ST_SEQ_NAME", sequenceName)
-									.addNumberClause("NM_SEQ_VALUE",
+									SEQ_NAME_COLUMN_NAME, sequenceName)
+									.addNumberClause(SEQ_VALUE_COLUMN_NAME,
 											BigDecimal.ONE)));
 			return 1;
 		} else {
-			Row row = rs.getRow(0);
-			BigDecimal seqValue = row.getNumber("NM_SEQ_VALUE");
+			Row row = rs.get(0);
+			BigDecimal seqValue = row.getNumber(SEQ_VALUE_COLUMN_NAME);
 			BigDecimal nextSeqValue = new BigDecimal((seqValue.longValue() + 1)
 					+ "");
 			int count = 0;
 			while (count == 0) {
 				count = executeUpdateSql(new UpdateSql()
-						.setTableName("SYS_SEQ")
+						.setTableName(SEQ_TABLE_NAME)
 						.setUpdateKeyValueClause(
 								new UpdateKeyValueClause().addNumberClause(
-										"NM_SEQ_VALUE", nextSeqValue))
+										SEQ_VALUE_COLUMN_NAME, nextSeqValue))
 						.setConditionClause(
 								new ConditionClause(LogicalOp.AND)
-										.addStringClause("ST_SEQ_NAME",
+										.addStringClause(SEQ_NAME_COLUMN_NAME,
 												RelationOp.EQUAL, sequenceName)
-										.addNumberClause("NM_SEQ_VALUE",
+										.addNumberClause(SEQ_VALUE_COLUMN_NAME,
 												RelationOp.EQUAL, seqValue)));
 				if (count == 1) {
 					break;

@@ -18,7 +18,7 @@ import org.sosostudio.dbunifier.ColumnType;
 public class DerbyFeature extends DbFeature {
 
 	@Override
-	public String getNStringDbType(int size) {
+	public String getStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
 		return "varchar(" + size + ")";
 	}

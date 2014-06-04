@@ -15,18 +15,9 @@ package org.sosostudio.dbunifier.dbsource;
 
 import java.sql.Connection;
 
-import org.sosostudio.dbunifier.Encoding;
-
 public class ConnectionDbSource implements DbSource {
 
 	private Connection con;
-
-	private Encoding encoding;
-
-	public ConnectionDbSource(Connection con, Encoding encoding) {
-		this.con = con;
-		this.encoding = encoding;
-	}
 
 	public ConnectionDbSource(Connection con) {
 		this.con = con;
@@ -35,11 +26,6 @@ public class ConnectionDbSource implements DbSource {
 	@Override
 	public Connection getConnection() {
 		return con;
-	}
-
-	@Override
-	public Encoding getEncoding() {
-		return encoding;
 	}
 
 }

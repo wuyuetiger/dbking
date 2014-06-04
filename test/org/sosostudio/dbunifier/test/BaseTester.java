@@ -75,7 +75,7 @@ public class BaseTester extends TestCase {
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
-			Row row = rowSet.getRow(0);
+			Row row = rowSet.get(0);
 			String value2 = row.getString(columnName);
 			assertEquals(value, value2);
 			UpdateSql updateSql = new UpdateSql()
@@ -89,7 +89,7 @@ public class BaseTester extends TestCase {
 			count = unifier.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
-			row = rowSet.getRow(0);
+			row = rowSet.get(0);
 			String value3 = row.getString(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
@@ -127,7 +127,7 @@ public class BaseTester extends TestCase {
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
-			Row row = rowSet.getRow(0);
+			Row row = rowSet.get(0);
 			BigDecimal value2 = row.getNumber(columnName);
 			assertEquals(value, value2);
 			UpdateSql updateSql = new UpdateSql()
@@ -141,7 +141,7 @@ public class BaseTester extends TestCase {
 			count = unifier.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
-			row = rowSet.getRow(0);
+			row = rowSet.get(0);
 			BigDecimal value3 = row.getNumber(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
@@ -189,7 +189,7 @@ public class BaseTester extends TestCase {
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql);
-			Row row = rowSet.getRow(0);
+			Row row = rowSet.get(0);
 			Timestamp value2 = row.getTimestamp(columnName);
 			assertEquals(sdf.format(value), sdf.format(value2));
 			UpdateSql updateSql = new UpdateSql().setTableName(tableName)
@@ -199,7 +199,7 @@ public class BaseTester extends TestCase {
 			count = unifier.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql);
-			row = rowSet.getRow(0);
+			row = rowSet.get(0);
 			Timestamp value3 = row.getTimestamp(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
@@ -233,7 +233,7 @@ public class BaseTester extends TestCase {
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql, true);
-			Row row = rowSet.getRow(0);
+			Row row = rowSet.get(0);
 			String value2 = row.getClob(columnName);
 			assertEquals(value, value2);
 			UpdateSql updateSql = new UpdateSql().setTableName(tableName)
@@ -243,7 +243,7 @@ public class BaseTester extends TestCase {
 			count = unifier.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql, true);
-			row = rowSet.getRow(0);
+			row = rowSet.get(0);
 			String value3 = row.getClob(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
@@ -276,7 +276,7 @@ public class BaseTester extends TestCase {
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
 			RowSet rowSet = unifier.executeSelectSql(selectSql, true);
-			Row row = rowSet.getRow(0);
+			Row row = rowSet.get(0);
 			byte[] value2 = row.getBlob(columnName);
 			for (int i = 0; i < value.length; i++) {
 				assertEquals(value[i], value2[i]);
@@ -289,7 +289,7 @@ public class BaseTester extends TestCase {
 			count = unifier.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
 			rowSet = unifier.executeSelectSql(selectSql, true);
-			row = rowSet.getRow(0);
+			row = rowSet.get(0);
 			byte[] value3 = row.getBlob(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
@@ -374,7 +374,7 @@ public class BaseTester extends TestCase {
 				assertEquals(rowSet.getPageNumber(), 2);
 				assertEquals(rowSet.getTotalRowCount(), 10);
 				assertEquals(rowSet.getTotalPageCount(), 4);
-				Row row = rowSet.getRow(0);
+				Row row = rowSet.get(0);
 				String value = row.getString(1);
 				assertEquals(value, "3");
 			}
@@ -385,7 +385,7 @@ public class BaseTester extends TestCase {
 				assertEquals(rowSet.getPageNumber(), 4);
 				assertEquals(rowSet.getTotalRowCount(), 10);
 				assertEquals(rowSet.getTotalPageCount(), 4);
-				Row row = rowSet.getRow(0);
+				Row row = rowSet.get(0);
 				String value = row.getString(1);
 				assertEquals(value, "9");
 			}
@@ -396,7 +396,7 @@ public class BaseTester extends TestCase {
 				assertEquals(rowSet.getPageNumber(), 2);
 				assertEquals(rowSet.getTotalRowCount(), 10);
 				assertEquals(rowSet.getTotalPageCount(), 2);
-				Row row = rowSet.getRow(0);
+				Row row = rowSet.get(0);
 				String value = row.getString(1);
 				assertEquals(value, "5");
 			}

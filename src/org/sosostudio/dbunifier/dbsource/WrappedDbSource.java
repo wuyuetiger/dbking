@@ -18,19 +18,11 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 
 public class WrappedDbSource implements DbSource {
 
 	private DataSource dataSource;
-
-	private Encoding encoding;
-
-	public WrappedDbSource(DataSource dataSource, Encoding encoding) {
-		this.dataSource = dataSource;
-		this.encoding = encoding;
-	}
 
 	public WrappedDbSource(DataSource dataSource) {
 		this.dataSource = dataSource;
@@ -43,11 +35,6 @@ public class WrappedDbSource implements DbSource {
 		} catch (SQLException e) {
 			throw new DbUnifierException(e);
 		}
-	}
-
-	@Override
-	public Encoding getEncoding() {
-		return encoding;
 	}
 
 }

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.autocode.TimestampXmlAdapter;
 import org.sosostudio.dbunifier.util.StringUtil;
 
@@ -56,12 +55,10 @@ public class ${table.definationName} implements Serializable {
 		</#if>
 	</#list>
 	
-	public void validateString(Encoding encoding) {
+	public void truncateString() {
 	<#list table.columnList as column>
 		<#if column.type == "STRING">
-			<#if !column.nationalString>
-		${column.variableName} = StringUtil.substring(${column.variableName}, ${column.size}, encoding);
-			</#if>
+		${column.variableName} = StringUtil.truncate(${column.variableName}, ${column.size});
 		</#if>
 	</#list>
 	}

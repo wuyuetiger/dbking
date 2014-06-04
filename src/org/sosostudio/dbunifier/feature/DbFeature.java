@@ -20,7 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.ColumnType;
-import org.sosostudio.dbunifier.Encoding;
 import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
@@ -81,16 +80,7 @@ public class DbFeature {
 		}
 	}
 
-	public Encoding getEncoding() {
-		return Encoding.UNICODE;
-	}
-
 	public String getStringDbType(int size) {
-		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
-		return "varchar(" + size + ")";
-	}
-
-	public String getNStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
 		return "nvarchar(" + size + ")";
 	}

@@ -13,14 +13,7 @@
 
 package org.sosostudio.dbunifier.feature;
 
-import org.sosostudio.dbunifier.Encoding;
-
 public class Db2FeatureBelow972 extends DbFeature {
-
-	@Override
-	public Encoding getEncoding() {
-		return Encoding.UTF8;
-	}
 
 	@Override
 	public String getPaginationSql(String mainSubSql, String orderBySubSql,

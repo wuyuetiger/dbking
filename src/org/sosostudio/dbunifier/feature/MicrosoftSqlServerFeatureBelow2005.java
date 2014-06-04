@@ -13,14 +13,7 @@
 
 package org.sosostudio.dbunifier.feature;
 
-import org.sosostudio.dbunifier.Encoding;
-
 public class MicrosoftSqlServerFeatureBelow2005 extends DbFeature {
-
-	@Override
-	public Encoding getEncoding() {
-		return Encoding.GBK;
-	}
 
 	@Override
 	public String getTimestampDbType() {

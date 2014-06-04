@@ -20,11 +20,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.UUID;
 
+import org.sosostudio.dbunifier.ColumnType;
 import org.sosostudio.dbunifier.Values;
 import org.sosostudio.dbunifier.util.DbUnifierException;
 import org.sosostudio.dbunifier.util.DbUtil;
 
 public class MySqlFeature extends DbFeature {
+
+	public String getStringDbType(int size) {
+		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
+		return "varchar(" + size + ")";
+	}
 
 	@Override
 	public String getTimestampDbType() {

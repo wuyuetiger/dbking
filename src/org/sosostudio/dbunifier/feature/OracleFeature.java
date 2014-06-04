@@ -17,23 +17,11 @@ import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import org.sosostudio.dbunifier.ColumnType;
-import org.sosostudio.dbunifier.Encoding;
 
 public class OracleFeature extends DbFeature {
 
 	@Override
-	public Encoding getEncoding() {
-		return Encoding.GBK;
-	}
-
-	@Override
 	public String getStringDbType(int size) {
-		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
-		return "varchar2(" + size + ")";
-	}
-
-	@Override
-	public String getNStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
 		return "nvarchar2(" + size + ")";
 	}

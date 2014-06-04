@@ -5,11 +5,6 @@
 		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
 		<database_url>jdbc:derby:db;create=true</database_url>
 	</db_source>
-	<db_source name="encoding_dbsource">
-		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
-		<database_url>jdbc:derby:db;create=true</database_url>
-		<encoding>UNICODE</encoding>
-	</db_source>
 	<db_source name="autocode">
 		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
 		<database_url>jdbc:derby:db;create=true</database_url>
