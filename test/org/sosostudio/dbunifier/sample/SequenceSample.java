@@ -1,6 +1,7 @@
 package org.sosostudio.dbunifier.sample;
 
 import org.sosostudio.dbunifier.DbUnifier;
+import org.sosostudio.dbunifier.util.DbUnifierException;
 
 public class SequenceSample {
 
@@ -17,8 +18,13 @@ public class SequenceSample {
 			public void run() {
 				DbUnifier unifier = new DbUnifier();
 				for (int i = 0; i < Integer.MAX_VALUE; i++) {
-					System.out.println("***** " + name + " value = "
-							+ unifier.getSequenceNextValue("test"));
+					long seq;
+					try {
+						seq = unifier.getSequenceNextValue("test");
+					} catch (DbUnifierException e) {
+						continue;
+					}
+					System.out.println("***** " + name + " value = " + seq);
 					try {
 						Thread.sleep(delay);
 					} catch (InterruptedException ex) {

@@ -63,8 +63,6 @@ public class DbUnifier {
 
 	public static final String SEQ_VALUE_COLUMN_NAME = "NM_SEQ_VALUE";
 
-	private static Boolean existsSequenceTable = false;
-
 	private DbSource dbSource;
 
 	public DbUnifier() {
@@ -960,42 +958,47 @@ public class DbUnifier {
 		}
 	}
 
+	private void initSequenceTable() {
+		Table table = new Table(SEQ_TABLE_NAME).addColumn(
+				new Column(SEQ_NAME_COLUMN_NAME, ColumnType.STRING)
+						.setPrimaryKey(true)).addColumn(
+				new Column(SEQ_VALUE_COLUMN_NAME, ColumnType.NUMBER)
+						.setScale(0));
+		createTable(table);
+	}
+
+	private void initSequenceRow(String sequenceName) {
+		executeInsertSql(new InsertSql().setTableName(SEQ_TABLE_NAME)
+				.setInsertKeyValueClause(
+						new InsertKeyValueClause().addStringClause(
+								SEQ_NAME_COLUMN_NAME, sequenceName)
+								.addNumberClause(SEQ_VALUE_COLUMN_NAME,
+										BigDecimal.ONE)));
+	}
+
 	public long getSequenceNextValue(String sequenceName) {
-		synchronized (existsSequenceTable) {
-			if (!existsSequenceTable) {
-				Table table = getTable(SEQ_TABLE_NAME);
-				if (table == null) {
-					table = new Table(SEQ_TABLE_NAME).addColumn(
-							new Column(SEQ_NAME_COLUMN_NAME, ColumnType.STRING)
-									.setPrimaryKey(true))
-							.addColumn(
-									new Column(SEQ_VALUE_COLUMN_NAME,
-											ColumnType.NUMBER));
-					createTable(table);
-					existsSequenceTable = true;
-				}
-			}
-		}
-		RowSet rs = executeSelectSql(new SelectSql()
+		SelectSql selectSql = new SelectSql()
 				.setTableName(SEQ_TABLE_NAME)
 				.setColumns(SEQ_VALUE_COLUMN_NAME)
 				.setConditionClause(
 						new ConditionClause(LogicalOp.AND).addStringClause(
 								SEQ_NAME_COLUMN_NAME, RelationOp.EQUAL,
-								sequenceName)));
+								sequenceName));
+		RowSet rs;
+		try {
+			rs = executeSelectSql(selectSql);
+		} catch (DbUnifierException e) {
+			initSequenceTable();
+			initSequenceRow(sequenceName);
+			rs = executeSelectSql(selectSql);
+		}
 		if (rs.size() == 0) {
-			executeInsertSql(new InsertSql().setTableName(SEQ_TABLE_NAME)
-					.setInsertKeyValueClause(
-							new InsertKeyValueClause().addStringClause(
-									SEQ_NAME_COLUMN_NAME, sequenceName)
-									.addNumberClause(SEQ_VALUE_COLUMN_NAME,
-											BigDecimal.ONE)));
+			initSequenceRow(sequenceName);
 			return 1;
 		} else {
 			Row row = rs.get(0);
 			BigDecimal seqValue = row.getNumber(SEQ_VALUE_COLUMN_NAME);
-			BigDecimal nextSeqValue = new BigDecimal((seqValue.longValue() + 1)
-					+ "");
+			BigDecimal nextSeqValue = seqValue.add(BigDecimal.ONE);
 			int count = 0;
 			while (count == 0) {
 				count = executeUpdateSql(new UpdateSql()
@@ -1013,7 +1016,7 @@ public class DbUnifier {
 					break;
 				}
 				seqValue = nextSeqValue;
-				nextSeqValue = new BigDecimal((seqValue.longValue() + 1) + "");
+				nextSeqValue = seqValue.add(BigDecimal.ONE);
 			}
 			return nextSeqValue.longValue();
 		}
