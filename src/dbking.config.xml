@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dbking xmlns="http://www.sosostudio.org/dbking/config">
+	<show_sql>true</show_sql>
+	<db_source>
+		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
+		<database_url>jdbc:derby:db;create=true</database_url>
+	</db_source>
+	<db_source name="autocode">
+		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
+		<database_url>jdbc:derby:db;create=true</database_url>
+	</db_source>
+	<db_source name="exporter">
+		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
+		<database_url>jdbc:derby:db;create=true</database_url>
+	</db_source>
+	<db_source name="importer">
+		<database_driver>org.apache.derby.jdbc.EmbeddedDriver</database_driver>
+		<database_url>jdbc:derby:db;create=true</database_url>
+	</db_source>
+	<db_source name="oracle">
+		<database_driver>oracle.jdbc.driver.OracleDriver</database_driver>
+		<database_url>jdbc:oracle:thin:@localhost:1521:orcl</database_url>
+		<username>system</username>
+		<password>password</password>
+	</db_source>
+	<db_source name="mssqlserver">
+		<database_driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</database_driver>
+		<database_url>jdbc:sqlserver://localhost:1433;DatabaseName=master</database_url>
+		<username>sa</username>
+		<password>password</password>
+	</db_source>
+	<db_source name="mysql">
+		<database_driver>com.mysql.jdbc.Driver</database_driver>
+		<database_url>jdbc:mysql://localhost:3306/test</database_url>
+		<username>root</username>
+		<password>password</password>
+	</db_source>
+	<db_source name="db2">
+		<database_driver>com.ibm.db2.jcc.DB2Driver</database_driver>
+		<database_url>jdbc:db2://localhost:50000/SAMPLE</database_url>
+		<username>db2admin</username>
+		<password>password</password>
+	</db_source>
+	<db_source name="sybase">
+		<database_driver>com.sybase.jdbc4.jdbc.SybDriver</database_driver>
+		<database_url>jdbc:sybase:Tds:localhost:5000/master</database_url>
+		<username>sa</username>
+		<password>password</password>
+	</db_source>
+	<db_source name="postgresql">
+		<database_driver>org.postgresql.Driver</database_driver>
+		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
+		<username>postgres</username>
+		<password>password</password>
+	</db_source>
+	<db_source name="jndi">
+		<jndi>java:test</jndi>
+	</db_source>
+</dbking>
