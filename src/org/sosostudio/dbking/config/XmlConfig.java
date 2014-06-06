@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.config;
@@ -25,7 +25,7 @@ import org.dom4j.io.SAXReader;
 import org.sosostudio.dbking.dbsource.DbSource;
 import org.sosostudio.dbking.dbsource.JdbcDbSource;
 import org.sosostudio.dbking.dbsource.JndiDbSource;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.IoUtil;
 
 public class XmlConfig {
@@ -38,7 +38,7 @@ public class XmlConfig {
 		SAXReader saxReader = new SAXReader();
 		InputStream is = null;
 		try {
-			is = XmlConfig.class.getResourceAsStream("/db-unifier.config.xml");
+			is = XmlConfig.class.getResourceAsStream("/dbking.config.xml");
 			Document doc = saxReader.read(is);
 			Element rootElement = doc.getRootElement();
 			showSql = Boolean.valueOf(rootElement.elementText("show_sql"));
@@ -74,13 +74,13 @@ public class XmlConfig {
 					DbSource dbSource = new JndiDbSource(jndi);
 					dbSourceMap.put(dbSourceName, dbSource);
 				} else {
-					throw new DbUnifierException(
-							"initial db-unifier config failed");
+					throw new DbKingException(
+							"initial dbking config failed");
 				}
 
 			}
 		} catch (DocumentException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			IoUtil.closeInputStream(is);
 		}

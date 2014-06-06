@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.feature;
@@ -21,7 +21,7 @@ import java.sql.SQLException;
 
 import org.sosostudio.dbking.ColumnType;
 import org.sosostudio.dbking.Values;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.DbUtil;
 
 public class DbFeature {
@@ -75,7 +75,7 @@ public class DbFeature {
 			return new DerbyFeature();
 		} else {
 			System.out
-					.println("db-unifier will use default db feature without test");
+					.println("dbking will use default db feature without test");
 			return new DbFeature();
 		}
 	}
@@ -131,10 +131,10 @@ public class DbFeature {
 			if (rs.next()) {
 				return rs.getBigDecimal(1).intValue();
 			} else {
-				throw new DbUnifierException("no resultset");
+				throw new DbKingException("no resultset");
 			}
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);

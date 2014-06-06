@@ -6,14 +6,15 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.util;
 
 import org.sosostudio.dbking.ColumnType;
+import org.sosostudio.dbking.exception.DbKingException;
 
 public class StringUtil {
 
@@ -53,7 +54,7 @@ public class StringUtil {
 			if (maxSize >= ColumnType.MAX_STRING_SIZE) {
 				return s.substring(0, maxSize);
 			} else {
-				throw new DbUnifierException("string is too long");
+				throw new DbKingException("string is too long");
 			}
 		}
 	}

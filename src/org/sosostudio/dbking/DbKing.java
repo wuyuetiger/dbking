@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking;
@@ -39,6 +39,7 @@ import java.util.UUID;
 import org.sosostudio.dbking.config.XmlConfig;
 import org.sosostudio.dbking.dbsource.ConnectionDbSource;
 import org.sosostudio.dbking.dbsource.DbSource;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.feature.DbFeature;
 import org.sosostudio.dbking.oom.ConditionClause;
 import org.sosostudio.dbking.oom.DeleteSql;
@@ -51,11 +52,10 @@ import org.sosostudio.dbking.oom.RelationOp;
 import org.sosostudio.dbking.oom.SelectSql;
 import org.sosostudio.dbking.oom.UpdateKeyValueClause;
 import org.sosostudio.dbking.oom.UpdateSql;
-import org.sosostudio.dbking.util.DbUnifierException;
 import org.sosostudio.dbking.util.DbUtil;
 import org.sosostudio.dbking.util.IoUtil;
 
-public class DbUnifier {
+public class DbKing {
 
 	public static final String SEQ_TABLE_NAME = "SYS_SEQ";
 
@@ -65,21 +65,21 @@ public class DbUnifier {
 
 	private DbSource dbSource;
 
-	public DbUnifier() {
+	public DbKing() {
 		DbSource dbSource = XmlConfig.getDbSource("");
 		this.dbSource = dbSource;
 	}
 
-	public DbUnifier(String dbSourceName) {
+	public DbKing(String dbSourceName) {
 		DbSource dbSource = XmlConfig.getDbSource(dbSourceName);
 		this.dbSource = dbSource;
 	}
 
-	public DbUnifier(DbSource dbSource) {
+	public DbKing(DbSource dbSource) {
 		this.dbSource = dbSource;
 	}
 
-	public DbUnifier(Connection con) {
+	public DbKing(Connection con) {
 		this.dbSource = new ConnectionDbSource(con);
 	}
 
@@ -110,7 +110,7 @@ public class DbUnifier {
 
 			System.out.println();
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
@@ -231,7 +231,7 @@ public class DbUnifier {
 			}
 			return tableList;
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
@@ -333,7 +333,7 @@ public class DbUnifier {
 			}
 			return viewList;
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			if (!(dbSource instanceof ConnectionDbSource)) {
 				DbUtil.closeConnection(con);
@@ -435,7 +435,7 @@ public class DbUnifier {
 			statement = con.createStatement();
 			statement.executeUpdate(sql);
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeStatement(statement);
 			if (!(dbSource instanceof ConnectionDbSource)) {
@@ -520,7 +520,7 @@ public class DbUnifier {
 			}
 			if (paginationSql == null) {
 				if (!rs.absolute(pageSize * (pageNumber - 1) + 1)) {
-					throw new DbUnifierException("abnormal resultset location");
+					throw new DbKingException("abnormal resultset location");
 				} else {
 					rs.previous();
 				}
@@ -551,7 +551,7 @@ public class DbUnifier {
 								try {
 									value = IoUtil.convertStream(reader);
 								} catch (IOException e) {
-									throw new DbUnifierException(e);
+									throw new DbKingException(e);
 								} finally {
 									IoUtil.closeReader(reader);
 								}
@@ -564,14 +564,14 @@ public class DbUnifier {
 								try {
 									value = IoUtil.convertStream(is);
 								} catch (IOException e) {
-									throw new DbUnifierException(e);
+									throw new DbKingException(e);
 								} finally {
 									IoUtil.closeInputStream(is);
 								}
 							}
 						}
 					} else {
-						throw new DbUnifierException("not support data type");
+						throw new DbKingException("not support data type");
 					}
 					row.addValue(columnName, value);
 				}
@@ -579,7 +579,7 @@ public class DbUnifier {
 			}
 			return rowSet;
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
@@ -643,7 +643,7 @@ public class DbUnifier {
 								try {
 									value = IoUtil.convertStream(reader);
 								} catch (IOException e) {
-									throw new DbUnifierException(e);
+									throw new DbKingException(e);
 								} finally {
 									IoUtil.closeReader(reader);
 								}
@@ -656,14 +656,14 @@ public class DbUnifier {
 								try {
 									value = IoUtil.convertStream(is);
 								} catch (IOException e) {
-									throw new DbUnifierException(e);
+									throw new DbKingException(e);
 								} finally {
 									IoUtil.closeInputStream(is);
 								}
 							}
 						}
 					} else {
-						throw new DbUnifierException("not support data type");
+						throw new DbKingException("not support data type");
 					}
 					row.addValue(columnName, value);
 				}
@@ -672,7 +672,7 @@ public class DbUnifier {
 			rowSet.setTotalRowCount(rowSet.size());
 			return rowSet;
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
@@ -771,7 +771,7 @@ public class DbUnifier {
 			DbUtil.setColumnValue(ps, 1, values);
 			return ps.executeUpdate();
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeStatement(ps);
 			if (!(dbSource instanceof ConnectionDbSource)) {
@@ -850,14 +850,14 @@ public class DbUnifier {
 					try {
 						IoUtil.convertStream(reader, writer);
 					} catch (IOException e) {
-						throw new DbUnifierException(e);
+						throw new DbKingException(e);
 					} finally {
 						IoUtil.closeReader(reader);
 					}
 				}
 			}
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
@@ -885,7 +885,7 @@ public class DbUnifier {
 			DbUtil.setColumnValue(ps, 2, values);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeStatement(ps);
 			if (!(dbSource instanceof ConnectionDbSource)) {
@@ -913,14 +913,14 @@ public class DbUnifier {
 					try {
 						IoUtil.convertStream(is, os);
 					} catch (IOException e) {
-						throw new DbUnifierException(e);
+						throw new DbKingException(e);
 					} finally {
 						IoUtil.closeInputStream(is);
 					}
 				}
 			}
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeResultSet(rs);
 			DbUtil.closeStatement(ps);
@@ -949,7 +949,7 @@ public class DbUnifier {
 			DbUtil.setColumnValue(ps, 2, values);
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeStatement(ps);
 			if (!(dbSource instanceof ConnectionDbSource)) {
@@ -987,7 +987,7 @@ public class DbUnifier {
 		RowSet rs;
 		try {
 			rs = executeSelectSql(selectSql);
-		} catch (DbUnifierException e) {
+		} catch (DbKingException e) {
 			initSequenceTable();
 			initSequenceRow(sequenceName);
 			rs = executeSelectSql(selectSql);

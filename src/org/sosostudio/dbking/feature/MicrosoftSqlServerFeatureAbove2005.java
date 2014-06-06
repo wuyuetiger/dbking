@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.feature;

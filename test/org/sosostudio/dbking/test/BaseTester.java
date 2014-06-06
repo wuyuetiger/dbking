@@ -15,10 +15,11 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.sosostudio.dbking.Column;
 import org.sosostudio.dbking.ColumnType;
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Row;
 import org.sosostudio.dbking.RowSet;
 import org.sosostudio.dbking.Table;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.oom.ConditionClause;
 import org.sosostudio.dbking.oom.Direction;
 import org.sosostudio.dbking.oom.InsertKeyValueClause;
@@ -29,7 +30,6 @@ import org.sosostudio.dbking.oom.RelationOp;
 import org.sosostudio.dbking.oom.SelectSql;
 import org.sosostudio.dbking.oom.UpdateKeyValueClause;
 import org.sosostudio.dbking.oom.UpdateSql;
-import org.sosostudio.dbking.util.DbUnifierException;
 import org.sosostudio.dbking.util.IoUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -41,14 +41,14 @@ public class BaseTester extends TestCase {
 
 	protected String sequenceName = "SEQ_NAME";
 
-	protected DbUnifier unifier;
+	protected DbKing dbKing;
 
 	public BaseTester() {
-		unifier = new DbUnifier();
+		dbKing = new DbKing();
 	}
 
 	protected void createTable(String typeName) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+		dbKing.executeOtherSql("create table " + tableName + " (" + columnName
 				+ " " + typeName + ")");
 	}
 
@@ -57,7 +57,7 @@ public class BaseTester extends TestCase {
 		try {
 			return IoUtil.convertStream(is);
 		} catch (IOException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			IoUtil.closeInputStream(is);
 		}
@@ -70,11 +70,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addStringClause(
 									columnName, value));
-			int count = unifier.executeInsertSql(insertSql);
+			int count = dbKing.executeInsertSql(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowSet rowSet = unifier.executeSelectSql(selectSql);
+			RowSet rowSet = dbKing.executeSelectSql(selectSql);
 			Row row = rowSet.get(0);
 			String value2 = row.getString(columnName);
 			assertEquals(value, value2);
@@ -86,16 +86,16 @@ public class BaseTester extends TestCase {
 					.setConditionClause(
 							new ConditionClause(LogicalOp.AND).addStringClause(
 									columnName, RelationOp.EQUAL, value));
-			count = unifier.executeUpdateSql(updateSql);
+			count = dbKing.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
-			rowSet = unifier.executeSelectSql(selectSql);
+			rowSet = dbKing.executeSelectSql(selectSql);
 			row = rowSet.get(0);
 			String value3 = row.getString(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
 			fail(e.toString());
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
@@ -122,11 +122,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addNumberClause(
 									columnName, value));
-			int count = unifier.executeInsertSql(insertSql);
+			int count = dbKing.executeInsertSql(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowSet rowSet = unifier.executeSelectSql(selectSql);
+			RowSet rowSet = dbKing.executeSelectSql(selectSql);
 			Row row = rowSet.get(0);
 			BigDecimal value2 = row.getNumber(columnName);
 			assertEquals(value, value2);
@@ -138,16 +138,16 @@ public class BaseTester extends TestCase {
 					.setConditionClause(
 							new ConditionClause(LogicalOp.AND).addNumberClause(
 									columnName, RelationOp.EQUAL, value));
-			count = unifier.executeUpdateSql(updateSql);
+			count = dbKing.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
-			rowSet = unifier.executeSelectSql(selectSql);
+			rowSet = dbKing.executeSelectSql(selectSql);
 			row = rowSet.get(0);
 			BigDecimal value3 = row.getNumber(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
 			fail(e.toString());
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
@@ -184,11 +184,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addTimestampClause(
 									columnName, value));
-			int count = unifier.executeInsertSql(insertSql);
+			int count = dbKing.executeInsertSql(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowSet rowSet = unifier.executeSelectSql(selectSql);
+			RowSet rowSet = dbKing.executeSelectSql(selectSql);
 			Row row = rowSet.get(0);
 			Timestamp value2 = row.getTimestamp(columnName);
 			assertEquals(sdf.format(value), sdf.format(value2));
@@ -196,16 +196,16 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addTimestampClause(
 									columnName, null));
-			count = unifier.executeUpdateSql(updateSql);
+			count = dbKing.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
-			rowSet = unifier.executeSelectSql(selectSql);
+			rowSet = dbKing.executeSelectSql(selectSql);
 			row = rowSet.get(0);
 			Timestamp value3 = row.getTimestamp(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
 			fail(e.toString());
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
@@ -228,11 +228,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addClobClause(
 									columnName, value));
-			int count = unifier.executeInsertSql(insertSql);
+			int count = dbKing.executeInsertSql(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowSet rowSet = unifier.executeSelectSql(selectSql, true);
+			RowSet rowSet = dbKing.executeSelectSql(selectSql, true);
 			Row row = rowSet.get(0);
 			String value2 = row.getClob(columnName);
 			assertEquals(value, value2);
@@ -240,16 +240,16 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addClobClause(
 									columnName, null));
-			count = unifier.executeUpdateSql(updateSql);
+			count = dbKing.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
-			rowSet = unifier.executeSelectSql(selectSql, true);
+			rowSet = dbKing.executeSelectSql(selectSql, true);
 			row = rowSet.get(0);
 			String value3 = row.getClob(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
 			fail(e.toString());
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
@@ -271,11 +271,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addBlobClause(
 									columnName, value));
-			int count = unifier.executeInsertSql(insertSql);
+			int count = dbKing.executeInsertSql(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowSet rowSet = unifier.executeSelectSql(selectSql, true);
+			RowSet rowSet = dbKing.executeSelectSql(selectSql, true);
 			Row row = rowSet.get(0);
 			byte[] value2 = row.getBlob(columnName);
 			for (int i = 0; i < value.length; i++) {
@@ -286,16 +286,16 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addBlobClause(
 									columnName, null));
-			count = unifier.executeUpdateSql(updateSql);
+			count = dbKing.executeUpdateSql(updateSql);
 			assertEquals(count, 1);
-			rowSet = unifier.executeSelectSql(selectSql, true);
+			rowSet = dbKing.executeSelectSql(selectSql, true);
 			row = rowSet.get(0);
 			byte[] value3 = row.getBlob(columnName);
 			assertNull(value3);
 		} catch (Exception e) {
 			fail(e.toString());
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
@@ -309,12 +309,12 @@ public class BaseTester extends TestCase {
 
 	@Test
 	public void testFuncGetTableList() {
-		unifier.createTable(new Table(tableName).addColumn(new Column(
+		dbKing.createTable(new Table(tableName).addColumn(new Column(
 				columnName, ColumnType.STRING).setSize(50)));
 		try {
 			boolean success = false;
 			String tableName2 = null;
-			List<Table> tableList = unifier.getTableList();
+			List<Table> tableList = dbKing.getTableList();
 			for (Table table : tableList) {
 				if (tableName.equalsIgnoreCase(table.getName())) {
 					success = true;
@@ -322,16 +322,16 @@ public class BaseTester extends TestCase {
 				}
 			}
 			assertTrue(success);
-			Table table2 = unifier.getTable(tableName2);
+			Table table2 = dbKing.getTable(tableName2);
 			assertEquals(tableName2, table2.getName());
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
 	@Test
 	public void testFuncGetTable() {
-		unifier.createTable(new Table(tableName)
+		dbKing.createTable(new Table(tableName)
 				.addColumn(
 						new Column("ST_VALUE", ColumnType.STRING)
 								.setPrimaryKey(true))
@@ -340,23 +340,23 @@ public class BaseTester extends TestCase {
 				.addColumn(new Column("CL_VALUE", ColumnType.CLOB))
 				.addColumn(new Column("BL_VALUE", ColumnType.BLOB)));
 		try {
-			Table table = unifier.getTable(tableName);
+			Table table = dbKing.getTable(tableName);
 			List<Column> columnList = table.getColumnList();
 			assertEquals(columnList.size(), 5);
 			Column column = columnList.get(0);
 			assertEquals(column.isPrimaryKey(), true);
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
 	@Test
 	public void testFuncGetPage() {
-		unifier.createTable(new Table(tableName).addColumn(new Column(
+		dbKing.createTable(new Table(tableName).addColumn(new Column(
 				columnName, ColumnType.STRING).setPrimaryKey(true)));
 		try {
 			for (int i = 0; i < 10; i++) {
-				unifier.executeInsertSql(new InsertSql()
+				dbKing.executeInsertSql(new InsertSql()
 						.setTableName(tableName).setInsertKeyValueClause(
 								new InsertKeyValueClause().addStringClause(
 										columnName, i + "")));
@@ -368,7 +368,7 @@ public class BaseTester extends TestCase {
 							new OrderByClause().addOrder(columnName,
 									Direction.ASC));
 			{
-				RowSet rowSet = unifier.executeSelectSql(selectSql, 3, 2);
+				RowSet rowSet = dbKing.executeSelectSql(selectSql, 3, 2);
 				assertEquals(rowSet.size(), 3);
 				assertEquals(rowSet.getPageSize(), 3);
 				assertEquals(rowSet.getPageNumber(), 2);
@@ -379,7 +379,7 @@ public class BaseTester extends TestCase {
 				assertEquals(value, "3");
 			}
 			{
-				RowSet rowSet = unifier.executeSelectSql(selectSql, 3, 4);
+				RowSet rowSet = dbKing.executeSelectSql(selectSql, 3, 4);
 				assertEquals(rowSet.size(), 1);
 				assertEquals(rowSet.getPageSize(), 3);
 				assertEquals(rowSet.getPageNumber(), 4);
@@ -390,7 +390,7 @@ public class BaseTester extends TestCase {
 				assertEquals(value, "9");
 			}
 			{
-				RowSet rowSet = unifier.executeSelectSql(selectSql, 5, 2);
+				RowSet rowSet = dbKing.executeSelectSql(selectSql, 5, 2);
 				assertEquals(rowSet.size(), 5);
 				assertEquals(rowSet.getPageSize(), 5);
 				assertEquals(rowSet.getPageNumber(), 2);
@@ -401,15 +401,15 @@ public class BaseTester extends TestCase {
 				assertEquals(value, "5");
 			}
 		} finally {
-			unifier.dropTable(tableName);
+			dbKing.dropTable(tableName);
 		}
 	}
 
 	@Test
 	public void testFuncGetSequenceNextValue() {
-		long value = unifier.getSequenceNextValue(sequenceName);
+		long value = dbKing.getSequenceNextValue(sequenceName);
 		value++;
-		long value2 = unifier.getSequenceNextValue(sequenceName);
+		long value2 = dbKing.getSequenceNextValue(sequenceName);
 		assertEquals(value, value2);
 	}
 

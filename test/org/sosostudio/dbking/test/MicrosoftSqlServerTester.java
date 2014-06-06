@@ -1,12 +1,12 @@
 package org.sosostudio.dbking.test;
 
 import org.junit.Test;
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 
 public class MicrosoftSqlServerTester extends BaseTester {
 
 	public MicrosoftSqlServerTester() {
-		unifier = new DbUnifier("mssqlserver");
+		dbKing = new DbKing("mssqlserver");
 	}
 
 	@Test

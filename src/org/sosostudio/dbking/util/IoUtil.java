@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.util;
@@ -26,6 +26,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import org.sosostudio.dbking.exception.DbKingException;
+
 public class IoUtil {
 
 	public static void closeInputStream(InputStream is) {
@@ -33,7 +35,7 @@ public class IoUtil {
 			try {
 				is.close();
 			} catch (IOException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -43,7 +45,7 @@ public class IoUtil {
 			try {
 				os.close();
 			} catch (IOException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -53,7 +55,7 @@ public class IoUtil {
 			try {
 				reader.close();
 			} catch (IOException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -63,7 +65,7 @@ public class IoUtil {
 			try {
 				reader.close();
 			} catch (XMLStreamException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -73,7 +75,7 @@ public class IoUtil {
 			try {
 				reader.close();
 			} catch (XMLStreamException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -83,7 +85,7 @@ public class IoUtil {
 			try {
 				writer.close();
 			} catch (IOException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -93,7 +95,7 @@ public class IoUtil {
 			try {
 				writer.close();
 			} catch (XMLStreamException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}

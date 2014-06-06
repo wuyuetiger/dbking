@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.dbsource;
@@ -20,7 +20,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 
 public class JndiDbSource implements DbSource {
 
@@ -49,9 +49,9 @@ public class JndiDbSource implements DbSource {
 						.lookup(jndi);
 				return dataSource.getConnection();
 			} catch (NamingException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		} else {
 			try {
@@ -60,9 +60,9 @@ public class JndiDbSource implements DbSource {
 						.lookup(jndi);
 				return dataSource.getConnection(username, password);
 			} catch (NamingException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}

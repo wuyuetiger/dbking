@@ -1,12 +1,12 @@
 package org.sosostudio.dbking.test;
 
 import org.junit.Test;
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 
 public class MySqlTester extends BaseTester {
 
 	public MySqlTester() {
-		unifier = new DbUnifier("mysql");
+		dbKing = new DbKing("mysql");
 	}
 
 	@Test

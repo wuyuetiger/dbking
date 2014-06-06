@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.autocode;
@@ -21,7 +21,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Table;
 import org.sosostudio.dbking.util.IoUtil;
 
@@ -57,16 +57,16 @@ public class DaoGenerator {
 		cfg.setTemplateLoader(loader);
 		Template beanTemplate = cfg.getTemplate("bean", "UTF-8");
 		Template daoTemplate = cfg.getTemplate("dao", "UTF-8");
-		DbUnifier unifier = new DbUnifier(CONFIG_NAME);
+		DbKing dbKing = new DbKing(CONFIG_NAME);
 		String classPath = args[0];
 		String packagePath = args[1];
 		String destPath = classPath + "/" + packagePath.replaceAll("\\.", "/");
 		new File(destPath).mkdirs();
 		for (int i = 2; i < args.length; i++) {
 			Map<String, Object> root = new HashMap<String, Object>();
-			Table table = unifier.getTable(args[i]);
+			Table table = dbKing.getTable(args[i]);
 			if (table == null) {
-				table = unifier.getView(args[i]);
+				table = dbKing.getView(args[i]);
 			}
 			root.put("package", packagePath);
 			root.put("table", table);

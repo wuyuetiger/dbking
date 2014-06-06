@@ -1,7 +1,7 @@
 package org.sosostudio.dbking.sample;
 
-import org.sosostudio.dbking.DbUnifier;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.DbKing;
+import org.sosostudio.dbking.exception.DbKingException;
 
 public class SequenceSample {
 
@@ -16,12 +16,12 @@ public class SequenceSample {
 	private static void startTestThread(final String name, final int delay) {
 		new Thread(new Runnable() {
 			public void run() {
-				DbUnifier unifier = new DbUnifier();
+				DbKing dbKing = new DbKing();
 				for (int i = 0; i < Integer.MAX_VALUE; i++) {
 					long seq;
 					try {
-						seq = unifier.getSequenceNextValue("test");
-					} catch (DbUnifierException e) {
+						seq = dbKing.getSequenceNextValue("test");
+					} catch (DbKingException e) {
 						continue;
 					}
 					System.out.println("***** " + name + " value = " + seq);

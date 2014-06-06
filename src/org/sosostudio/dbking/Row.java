@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking;
@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.persistence.Column;
 
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.StringUtil;
 
 public class Row {
@@ -122,17 +122,17 @@ public class Row {
 			}
 			return bean;
 		} catch (SecurityException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (IllegalArgumentException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (InstantiationException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (IllegalAccessException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (NoSuchMethodException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (InvocationTargetException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		}
 	}
 

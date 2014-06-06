@@ -1,11 +1,11 @@
 package org.sosostudio.dbking.test;
 
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 
 public class PostgreSqlTester extends BaseTester {
 
 	public PostgreSqlTester() {
-		unifier = new DbUnifier("postgresql");
+		dbKing = new DbKing("postgresql");
 	}
 
 }

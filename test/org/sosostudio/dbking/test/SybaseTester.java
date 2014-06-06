@@ -1,16 +1,16 @@
 package org.sosostudio.dbking.test;
 
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 
 public class SybaseTester extends BaseTester {
 
 	public SybaseTester() {
-		unifier = new DbUnifier("sybase");
+		dbKing = new DbKing("sybase");
 	}
 
 	@Override
 	protected void createTable(String typeName) {
-		unifier.executeOtherSql("create table " + tableName + " (" + columnName
+		dbKing.executeOtherSql("create table " + tableName + " (" + columnName
 				+ " " + typeName + " null)");
 	}
 

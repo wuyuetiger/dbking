@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.pipe;
@@ -17,11 +17,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.List;
 
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Table;
 import org.sosostudio.dbking.config.XmlConfig;
 import org.sosostudio.dbking.dbsource.DbSource;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.DbUtil;
 
 public class EmptyTableRows {
@@ -46,17 +46,17 @@ public class EmptyTableRows {
 				}
 			}
 			con = dbSource.getConnection();
-			DbUnifier unifier = new DbUnifier(con);
-			List<Table> tableList = unifier.getTableList(true);
+			DbKing dbKing = new DbKing(con);
+			List<Table> tableList = dbKing.getTableList(true);
 			for (int i = tableList.size() - 1; i >= 0; i--) {
 				Table table = tableList.get(i);
 				String tableName = table.getName();
 				String sql = "delete from " + tableName;
-				unifier.executeOtherSql(sql);
+				dbKing.executeOtherSql(sql);
 				System.out.println(tableName + "'s rows have been deleted ");
 			}
 		} catch (IOException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			DbUtil.closeConnection(con);
 		}

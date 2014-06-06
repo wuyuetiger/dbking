@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.pipe;
@@ -43,11 +43,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.sosostudio.dbking.Column;
 import org.sosostudio.dbking.ColumnType;
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Table;
 import org.sosostudio.dbking.config.XmlConfig;
 import org.sosostudio.dbking.dbsource.DbSource;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.DbUtil;
 import org.sosostudio.dbking.util.IoUtil;
 
@@ -77,9 +77,9 @@ public class DbExporter {
 				}
 			}
 			con = dbSource.getConnection();
-			DbUnifier unifier = new DbUnifier(con);
+			DbKing dbKing = new DbKing(con);
 			// produce name mapping and table mapping
-			List<Table> tableList = unifier.getTableList(true);
+			List<Table> tableList = dbKing.getTableList(true);
 			Map<String, Table> tableMap = new HashMap<String, Table>();
 			Map<String, String> map = new HashMap<String, String>();
 			int num = 1;
@@ -260,11 +260,11 @@ public class DbExporter {
 			xmlw.writeEndDocument();
 			xmlw.flush();
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (IOException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (XMLStreamException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			IoUtil.closeOutputStream(blobos);
 			IoUtil.closeWriter(clobw);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="db-unifier" default="pack">
+<project name="dbking" default="pack">
 	<!-- properies -->
 	<property name="src.dir" value="src" />
 	<property name="classes.dir" value="bin" />
@@ -22,8 +22,8 @@
 	<!-- pack -->
 	<target name="pack" depends="compile" description="make .jar file">
 		<mkdir dir="${dist.dir}" />
-		<jar destfile="${dist.dir}/db-unifier-v0.5.jar" basedir="${classes.dir}">
-			<include name="org/sosostudio/dbunifier/**/*.*" />
+		<jar destfile="${dist.dir}/dbking-v0.6.jar" basedir="${classes.dir}">
+			<include name="org/sosostudio/dbking/**/*.*" />
 		</jar>
 	</target>
 </project>

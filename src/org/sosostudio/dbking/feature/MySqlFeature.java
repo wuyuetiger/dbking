@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.feature;
@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import org.sosostudio.dbking.ColumnType;
 import org.sosostudio.dbking.Values;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.DbUtil;
 
 public class MySqlFeature extends DbFeature {
@@ -71,7 +71,7 @@ public class MySqlFeature extends DbFeature {
 					DbUtil.setColumnValue(ps, 1, values);
 					ps.executeUpdate();
 				} catch (SQLException e) {
-					throw new DbUnifierException(e);
+					throw new DbKingException(e);
 				} finally {
 					DbUtil.closeStatement(ps);
 				}
@@ -88,10 +88,10 @@ public class MySqlFeature extends DbFeature {
 					if (rs.next()) {
 						return rs.getBigDecimal(1).intValue();
 					} else {
-						throw new DbUnifierException("no resultset");
+						throw new DbKingException("no resultset");
 					}
 				} catch (SQLException e) {
-					throw new DbUnifierException(e);
+					throw new DbKingException(e);
 				} finally {
 					DbUtil.closeResultSet(rs);
 					DbUtil.closeStatement(ps);
@@ -105,7 +105,7 @@ public class MySqlFeature extends DbFeature {
 				statement = con.createStatement();
 				statement.executeUpdate(dropViewSql);
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			} finally {
 				DbUtil.closeStatement(statement);
 			}

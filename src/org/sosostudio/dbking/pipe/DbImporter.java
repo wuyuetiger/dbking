@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.pipe;
@@ -42,11 +42,11 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.sosostudio.dbking.Column;
 import org.sosostudio.dbking.ColumnType;
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Table;
 import org.sosostudio.dbking.config.XmlConfig;
 import org.sosostudio.dbking.dbsource.DbSource;
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.util.DbUtil;
 import org.sosostudio.dbking.util.IoUtil;
 
@@ -84,11 +84,11 @@ public class DbImporter {
 				}
 			}
 			con = dbSource.getConnection();
-			DbUnifier unifier = new DbUnifier(con);
+			DbKing dbKing = new DbKing(con);
 			// produce name mapping
 			Map<String, String> map = new HashMap<String, String>();
 			Map<String, Table> tableMap = new HashMap<String, Table>();
-			List<Table> tableList = unifier.getTableList();
+			List<Table> tableList = dbKing.getTableList();
 			for (Table table : tableList) {
 				tableMap.put(table.getName(), table);
 			}
@@ -129,7 +129,7 @@ public class DbImporter {
 								ObjectInputStream ois = new ObjectInputStream(
 										fis);
 								table = (Table) ois.readObject();
-								unifier.createTable(table);
+								dbKing.createTable(table);
 								tableMap.put(tableName, table);
 							} finally {
 								IoUtil.closeInputStream(fis);
@@ -250,13 +250,13 @@ public class DbImporter {
 				}
 			}
 		} catch (ClassNotFoundException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (SQLException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (IOException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} catch (XMLStreamException e) {
-			throw new DbUnifierException(e);
+			throw new DbKingException(e);
 		} finally {
 			IoUtil.closeInputStream(blobis);
 			IoUtil.closeReader(clobr);

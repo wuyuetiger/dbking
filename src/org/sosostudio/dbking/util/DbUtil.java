@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.util;
@@ -31,6 +31,7 @@ import org.sosostudio.dbking.ColumnType;
 import org.sosostudio.dbking.NullValue;
 import org.sosostudio.dbking.Values;
 import org.sosostudio.dbking.config.XmlConfig;
+import org.sosostudio.dbking.exception.DbKingException;
 
 public class DbUtil {
 
@@ -39,7 +40,7 @@ public class DbUtil {
 			try {
 				con.close();
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -49,7 +50,7 @@ public class DbUtil {
 			try {
 				statement.close();
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
@@ -59,7 +60,7 @@ public class DbUtil {
 			try {
 				resultSet.close();
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}

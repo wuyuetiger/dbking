@@ -1,11 +1,11 @@
 package org.sosostudio.dbking.test;
 
-import org.sosostudio.dbking.DbUnifier;
+import org.sosostudio.dbking.DbKing;
 
 public class DB2Tester extends BaseTester {
 
 	public DB2Tester() {
-		unifier = new DbUnifier("db2");
+		dbKing = new DbKing("db2");
 	}
 
 }

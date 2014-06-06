@@ -6,9 +6,9 @@
  * License: GNU Lesser General Public License (LGPL)
  * 
  * Source code availability:
- *  https://github.com/wuyuetiger/db-unifier
- *  https://code.csdn.net/tigeryu/db-unifier
- *  https://git.oschina.net/db-unifier/db-unifier
+ *  https://github.com/wuyuetiger/dbking
+ *  https://code.csdn.net/tigeryu/dbking
+ *  https://git.oschina.net/db-unifier/dbking
  */
 
 package org.sosostudio.dbking.dbsource;
@@ -17,7 +17,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import org.sosostudio.dbking.util.DbUnifierException;
+import org.sosostudio.dbking.exception.DbKingException;
 
 public class JdbcDbSource implements DbSource {
 
@@ -49,9 +49,9 @@ public class JdbcDbSource implements DbSource {
 				Class.forName(databaseDriver);
 				return DriverManager.getConnection(databaseUrl);
 			} catch (ClassNotFoundException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		} else {
 			try {
@@ -59,9 +59,9 @@ public class JdbcDbSource implements DbSource {
 				return DriverManager.getConnection(databaseUrl, username,
 						password);
 			} catch (ClassNotFoundException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			} catch (SQLException e) {
-				throw new DbUnifierException(e);
+				throw new DbKingException(e);
 			}
 		}
 	}
