@@ -973,7 +973,7 @@ public class DbKing {
 						new InsertKeyValueClause().addStringClause(
 								SEQ_NAME_COLUMN_NAME, sequenceName)
 								.addNumberClause(SEQ_VALUE_COLUMN_NAME,
-										BigDecimal.ONE)));
+										BigDecimal.ZERO)));
 	}
 
 	public long getSequenceNextValue(String sequenceName) {
@@ -988,38 +988,46 @@ public class DbKing {
 		try {
 			rs = executeSelectSql(selectSql);
 		} catch (DbKingException e) {
-			initSequenceTable();
-			initSequenceRow(sequenceName);
+			try {
+				initSequenceTable();
+			} catch (DbKingException e1) {
+			}
+			try {
+				initSequenceRow(sequenceName);
+			} catch (DbKingException e1) {
+			}
 			rs = executeSelectSql(selectSql);
 		}
 		if (rs.size() == 0) {
-			initSequenceRow(sequenceName);
-			return 1;
-		} else {
-			Row row = rs.get(0);
-			BigDecimal seqValue = row.getNumber(SEQ_VALUE_COLUMN_NAME);
-			BigDecimal nextSeqValue = seqValue.add(BigDecimal.ONE);
-			int count = 0;
-			while (count == 0) {
-				count = executeUpdateSql(new UpdateSql()
-						.setTableName(SEQ_TABLE_NAME)
-						.setUpdateKeyValueClause(
-								new UpdateKeyValueClause().addNumberClause(
-										SEQ_VALUE_COLUMN_NAME, nextSeqValue))
-						.setConditionClause(
-								new ConditionClause(LogicalOp.AND)
-										.addStringClause(SEQ_NAME_COLUMN_NAME,
-												RelationOp.EQUAL, sequenceName)
-										.addNumberClause(SEQ_VALUE_COLUMN_NAME,
-												RelationOp.EQUAL, seqValue)));
-				if (count == 1) {
-					break;
-				}
-				seqValue = nextSeqValue;
-				nextSeqValue = seqValue.add(BigDecimal.ONE);
+			try {
+				initSequenceRow(sequenceName);
+			} catch (DbKingException e) {
 			}
-			return nextSeqValue.longValue();
+			rs = executeSelectSql(selectSql);
 		}
+		Row row = rs.get(0);
+		BigDecimal seqValue = row.getNumber(SEQ_VALUE_COLUMN_NAME);
+		BigDecimal nextSeqValue = seqValue.add(BigDecimal.ONE);
+		int count = 0;
+		while (count == 0) {
+			count = executeUpdateSql(new UpdateSql()
+					.setTableName(SEQ_TABLE_NAME)
+					.setUpdateKeyValueClause(
+							new UpdateKeyValueClause().addNumberClause(
+									SEQ_VALUE_COLUMN_NAME, nextSeqValue))
+					.setConditionClause(
+							new ConditionClause(LogicalOp.AND).addStringClause(
+									SEQ_NAME_COLUMN_NAME, RelationOp.EQUAL,
+									sequenceName).addNumberClause(
+									SEQ_VALUE_COLUMN_NAME, RelationOp.EQUAL,
+									seqValue)));
+			if (count == 1) {
+				break;
+			}
+			seqValue = nextSeqValue;
+			nextSeqValue = seqValue.add(BigDecimal.ONE);
+		}
+		return nextSeqValue.longValue();
 	}
 
 }
