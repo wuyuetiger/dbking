@@ -40,6 +40,10 @@ public class DbFeature {
 
 	public final static String DERBY = "Apache Derby";
 
+	public final static String KINGBASE = "KingbaseES";
+
+	public final static String DM = "DM DBMS";
+
 	public static DbFeature getInstance(DatabaseMetaData databaseMetaData)
 			throws SQLException {
 		String name = databaseMetaData.getDatabaseProductName();
@@ -55,7 +59,11 @@ public class DbFeature {
 				return new MicrosoftSqlServerFeatureBelow2005();
 			}
 		} else if (MYSQL.equals(name)) {
-			return new MySqlFeature();
+			if (version.indexOf("MariaDB") >= 0) {
+				return new MariaDbFeature();
+			} else {
+				return new MySqlFeature();
+			}
 		} else if (name.startsWith(DB2)) {
 			float ver = new Float(majorVersion + "." + minorVersion);
 			if (ver > 9.7) {
@@ -73,6 +81,10 @@ public class DbFeature {
 			return new PostgreSqlFeature();
 		} else if (DERBY.equals(name)) {
 			return new DerbyFeature();
+		} else if (KINGBASE.equals(name)) {
+			return new KingbaseFeature();
+		} else if (DM.equals(name)) {
+			return new DmFeature();
 		} else {
 			System.out
 					.println("dbking will use default db feature without test");
