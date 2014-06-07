@@ -33,7 +33,7 @@ public class EmptyTableRows {
 		Connection con = null;
 		try {
 			DbSource dbSource = XmlConfig.getDbSource(CONFIG_NAME);
-			System.out.println("You will operate the following database:");
+			System.out.println("you will operate the following database:");
 			System.out.println(dbSource);
 			System.out
 					.println("Please confirm the database you really want to operate, (Y)es for going on or (N)o for breaking?");
@@ -61,6 +61,7 @@ public class EmptyTableRows {
 			DbUtil.closeConnection(con);
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("It took up " + (end - start) / 1000 + " minutes.");
+		System.out
+				.println("it took up " + ((end - start) / 1000) + " minutes");
 	}
 }

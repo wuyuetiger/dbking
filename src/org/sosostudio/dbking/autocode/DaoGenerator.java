@@ -93,7 +93,7 @@ public class DaoGenerator {
 				}
 			}
 			System.out.println(table.getName()
-					+ " DAO classes had been generated");
+					+ " BO and DAO classes have been generated");
 		}
 
 	}

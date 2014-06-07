@@ -1,7 +1,6 @@
 package org.sosostudio.dbking.sample;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import org.sosostudio.dbking.Column;
 import org.sosostudio.dbking.ColumnType;
@@ -15,8 +14,8 @@ public class AutoCodeSample {
 
 	private static String tableName = "SYS_TEST";
 
-	public static void main(String[] args) throws UnsupportedEncodingException,
-			TemplateException, IOException {
+	public static void main(String[] args) throws TemplateException,
+			IOException {
 		DbKing dbKing = new DbKing();
 		try {
 			dbKing.createTable(new Table(tableName)

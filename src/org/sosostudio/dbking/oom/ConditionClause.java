@@ -16,6 +16,7 @@ package org.sosostudio.dbking.oom;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.sosostudio.dbking.Values;
@@ -114,35 +115,37 @@ public class ConditionClause {
 
 	private ConditionClause addClause(String columnName, SetOp setOp,
 			Collection<? extends Object> collection) {
+		if (collection == null) {
+			collection = new HashSet<Object>();
+		}
 		setLogicalOp();
 		sb.append(columnName).append(" ");
 		if (setOp == SetOp.IN) {
-			if (collection != null) {
-				if (collection.size() == 0) {
-					sb.append("1 = 2");
-				} else {
-					sb.append("in (");
-				}
+
+			if (collection.size() == 0) {
+				sb.append("1 = 2");
+			} else {
+				sb.append("in (");
 			}
 		} else if (setOp == SetOp.NOT_IN) {
-			if (collection != null) {
-				if (collection.size() == 0) {
-					sb.append("1 = 1");
-				} else {
-					sb.append("not in (");
-				}
+			if (collection.size() == 0) {
+				sb.append("1 = 1");
+			} else {
+				sb.append("not in (");
 			}
 		}
-		Iterator<?> it = collection.iterator();
-		if (it.hasNext()) {
-			sb.append("?");
-			values.getValueList().add(it.next());
+		if (collection.size() > 0) {
+			Iterator<?> it = collection.iterator();
+			if (it.hasNext()) {
+				sb.append("?");
+				values.getValueList().add(it.next());
+			}
+			while (it.hasNext()) {
+				sb.append(", ?");
+				values.getValueList().add(it.next());
+			}
+			sb.append(")");
 		}
-		while (it.hasNext()) {
-			sb.append(", ?");
-			values.getValueList().add(it.next());
-		}
-		sb.append(")");
 		return this;
 	}
 

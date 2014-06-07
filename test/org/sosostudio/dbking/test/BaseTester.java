@@ -356,8 +356,8 @@ public class BaseTester extends TestCase {
 				columnName, ColumnType.STRING).setPrimaryKey(true)));
 		try {
 			for (int i = 0; i < 10; i++) {
-				dbKing.executeInsertSql(new InsertSql()
-						.setTableName(tableName).setInsertKeyValueClause(
+				dbKing.executeInsertSql(new InsertSql().setTableName(tableName)
+						.setInsertKeyValueClause(
 								new InsertKeyValueClause().addStringClause(
 										columnName, i + "")));
 			}

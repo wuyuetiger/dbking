@@ -273,7 +273,8 @@ public class DbExporter {
 			DbUtil.closeConnection(con);
 		}
 		long end = System.currentTimeMillis();
-		System.out.println("It took up " + (end - start) / 1000 + " minutes.");
+		System.out
+				.println("it took up " + ((end - start) / 1000) + " minutes");
 	}
 
 }
