@@ -53,6 +53,12 @@
 		<username>sa</username>
 		<password>password</password>
 	</db_source>
+	<db_source name="informix">
+		<database_driver>com.informix.jdbc.IfxDriver</database_driver>
+		<database_url>jdbc:informix-sqli://localhost:1533/sysuser:INFORMIXSERVER=ol_ids_1150_1</database_url>
+		<username>sysuser</username>
+		<password>password</password>
+	</db_source>
 	<db_source name="postgresql">
 		<database_driver>org.postgresql.Driver</database_driver>
 		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
