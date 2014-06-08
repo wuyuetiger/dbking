@@ -426,12 +426,6 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testTypeBinaryVarying() {
-		String typeName = "binary varying(4000)";
-		testBlob(typeName);
-	}
-
-	@Test
 	public void testTypeBit() {
 		String typeName = "bit";
 		testSmallInteger(typeName);
@@ -464,12 +458,6 @@ public class BaseTester extends TestCase {
 	@Test
 	public void testTypeChar() {
 		String typeName = "char(10)";
-		testString(typeName);
-	}
-
-	@Test
-	public void testTypeCharBinary() {
-		String typeName = "char(50) binary";
 		testString(typeName);
 	}
 
@@ -510,18 +498,6 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testTypeDatetime2() {
-		String typeName = "datetime2";
-		testTimestamp(typeName);
-	}
-
-	@Test
-	public void testTypeDbclob() {
-		String typeName = "dbclob";
-		testClob(typeName);
-	}
-
-	@Test
 	public void testTypeDec() {
 		String typeName = "dec(10,2)";
 		testDecimal(typeName);
@@ -543,18 +519,6 @@ public class BaseTester extends TestCase {
 	public void testTypeDoublePrecision() {
 		String typeName = "double precision";
 		testHighPrecisionDecimal(typeName);
-	}
-
-	@Test
-	public void testTypeEnum() {
-		String typeName = "enum('abcdefghij')";
-		testString(typeName);
-	}
-
-	@Test
-	public void testTypeFixed() {
-		String typeName = "fixed(10,2)";
-		testDecimal(typeName);
 	}
 
 	@Test
@@ -612,24 +576,6 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testTypeMediumblob() {
-		String typeName = "mediumblob";
-		testBlob(typeName);
-	}
-
-	@Test
-	public void testTypeMediumint() {
-		String typeName = "mediumint";
-		testSmallInteger(typeName);
-	}
-
-	@Test
-	public void testTypeMediumtext() {
-		String typeName = "mediumtext";
-		testClob(typeName);
-	}
-
-	@Test
 	public void testTypeMoney() {
 		String typeName = "money";
 		testMoney(typeName);
@@ -678,12 +624,6 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testTypeNum() {
-		String typeName = "num(10,2)";
-		testDecimal(typeName);
-	}
-
-	@Test
 	public void testTypeNumber() {
 		String typeName = "number(10,2)";
 		testDecimal(typeName);
@@ -720,27 +660,9 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testTypeSet() {
-		String typeName = "set('abcdefghij')";
-		testString(typeName);
-	}
-
-	@Test
-	public void testTypeSmalldatetime() {
-		String typeName = "smalldatetime";
-		testDate(typeName);
-	}
-
-	@Test
 	public void testTypeSmallint() {
 		String typeName = "smallint";
 		testSmallInteger(typeName);
-	}
-
-	@Test
-	public void testTypeSmallmoney() {
-		String typeName = "smallmoney";
-		testMoney(typeName);
 	}
 
 	@Test
@@ -762,39 +684,9 @@ public class BaseTester extends TestCase {
 	}
 
 	@Test
-	public void testTypeTinyblob() {
-		String typeName = "tinyblob";
-		testSmallBlob(typeName);
-	}
-
-	@Test
 	public void testTypeTinyint() {
 		String typeName = "tinyint";
 		testSmallInteger(typeName);
-	}
-
-	@Test
-	public void testTypeTinytext() {
-		String typeName = "tinytext";
-		testSmallClob(typeName);
-	}
-
-	@Test
-	public void testTypeUnichar() {
-		String typeName = "unichar(12)";
-		testChineseString12(typeName);
-	}
-
-	@Test
-	public void testTypeUnitext() {
-		String typeName = "unitext";
-		testClob(typeName);
-	}
-
-	@Test
-	public void testTypeUnivarchar() {
-		String typeName = "univarchar(12)";
-		testChineseString12(typeName);
 	}
 
 	@Test

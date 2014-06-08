@@ -19,7 +19,6 @@ import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -34,7 +33,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import org.sosostudio.dbking.config.XmlConfig;
 import org.sosostudio.dbking.dbsource.ConnectionDbSource;
@@ -423,11 +421,7 @@ public class DbKing {
 				}
 			}
 			if (sbPk.length() > 0) {
-				String uuid16 = UUID.randomUUID().toString().replace("-", "");
-				BigInteger big = new BigInteger(uuid16, 16);
-				String uuid36 = big.toString(36);
-				sb.append(", constraint ").append("PK_" + uuid36)
-						.append(" primary key (").append(sbPk).append(")");
+				sb.append(dbFeature.constraintClause(sbPk));
 			}
 			sb.append(")");
 			String sql = sb.toString();

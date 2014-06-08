@@ -55,8 +55,8 @@
 	</db_source>
 	<db_source name="informix">
 		<database_driver>com.informix.jdbc.IfxDriver</database_driver>
-		<database_url>jdbc:informix-sqli://localhost:1533/sysuser:INFORMIXSERVER=ol_ids_1150_1</database_url>
-		<username>sysuser</username>
+		<database_url>jdbc:informix-sqli://localhost:9088/sysuser:INFORMIXSERVER=ol_ids_1150_1;NEWCODESET=utf8,8859-1,819</database_url>
+		<username>informix</username>
 		<password>password</password>
 	</db_source>
 	<db_source name="postgresql">

@@ -13,11 +13,13 @@
 
 package org.sosostudio.dbking.feature;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 import org.sosostudio.dbking.ColumnType;
 import org.sosostudio.dbking.Values;
@@ -35,6 +37,8 @@ public class DbFeature {
 	public final static String DB2 = "DB2";
 
 	public final static String SYBASE = "Adaptive Server Enterprise";
+
+	public final static String INFORMIX = "Informix Dynamic Server";
 
 	public final static String POSTGRESQL = "PostgreSQL";
 
@@ -77,6 +81,8 @@ public class DbFeature {
 			}
 		} else if (SYBASE.equals(name)) {
 			return new SybaseFeature();
+		} else if (INFORMIX.equals(name)) {
+			return new InformixFeature();
 		} else if (POSTGRESQL.equals(name)) {
 			return new PostgreSqlFeature();
 		} else if (DERBY.equals(name)) {
@@ -124,6 +130,16 @@ public class DbFeature {
 
 	public boolean allowNullByDefault() {
 		return true;
+	}
+
+	public String constraintClause(StringBuilder sbPk) {
+		StringBuilder sb = new StringBuilder();
+		String uuid16 = UUID.randomUUID().toString().replace("-", "");
+		BigInteger big = new BigInteger(uuid16, 16);
+		String uuid36 = big.toString(36);
+		sb.append(", constraint ").append("PK_").append(uuid36)
+				.append(" primary key (").append(sbPk).append(")");
+		return sb.toString();
 	}
 
 	public String getPaginationSql(String mainSubSql, String orderBySubSql,
