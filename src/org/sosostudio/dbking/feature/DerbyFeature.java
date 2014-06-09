@@ -13,9 +13,14 @@
 
 package org.sosostudio.dbking.feature;
 
+import java.sql.DatabaseMetaData;
+
 import org.sosostudio.dbking.ColumnType;
 
 public class DerbyFeature extends DbFeature {
+
+	public DerbyFeature(DatabaseMetaData dmd) {
+	}
 
 	@Override
 	public String getStringDbType(int size) {

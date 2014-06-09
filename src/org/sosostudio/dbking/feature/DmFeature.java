@@ -13,7 +13,12 @@
 
 package org.sosostudio.dbking.feature;
 
+import java.sql.DatabaseMetaData;
+
 public class DmFeature extends DbFeature {
+
+	public DmFeature(DatabaseMetaData dmd) {
+	}
 
 	@Override
 	public String getPaginationSql(String mainSubSql, String orderBySubSql,

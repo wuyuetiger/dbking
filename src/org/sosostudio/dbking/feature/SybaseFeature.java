@@ -13,7 +13,12 @@
 
 package org.sosostudio.dbking.feature;
 
+import java.sql.DatabaseMetaData;
+
 public class SybaseFeature extends DbFeature {
+
+	public SybaseFeature(DatabaseMetaData dmd) {
+	}
 
 	@Override
 	public String getTimestampDbType() {

@@ -14,6 +14,7 @@
 package org.sosostudio.dbking.feature;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,6 +28,10 @@ import org.sosostudio.dbking.util.DbUtil;
 
 public class MySqlFeature extends DbFeature {
 
+	public MySqlFeature(DatabaseMetaData dmd) {
+	}
+
+	@Override
 	public String getStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
 		return "varchar(" + size + ")";

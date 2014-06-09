@@ -48,49 +48,32 @@ public class DbFeature {
 
 	public final static String DM = "DM DBMS";
 
-	public static DbFeature getInstance(DatabaseMetaData databaseMetaData)
+	protected DbFeature() {
+	}
+
+	public static DbFeature getInstance(DatabaseMetaData dmd)
 			throws SQLException {
-		String name = databaseMetaData.getDatabaseProductName();
-		String version = databaseMetaData.getDatabaseProductVersion();
-		int majorVersion = databaseMetaData.getDatabaseMajorVersion();
-		int minorVersion = databaseMetaData.getDatabaseMinorVersion();
+		String name = dmd.getDatabaseProductName();
 		if (ORACLE.equals(name)) {
-			return new OracleFeature();
+			return new OracleFeature(dmd);
 		} else if (MSSQLSERVER.equals(name)) {
-			if (majorVersion >= 9) {
-				return new MicrosoftSqlServerFeatureAbove2005();
-			} else {
-				return new MicrosoftSqlServerFeatureBelow2005();
-			}
+			return new MicrosoftSqlServerFeature(dmd);
 		} else if (MYSQL.equals(name)) {
-			if (version.indexOf("MariaDB") >= 0) {
-				return new MariaDbFeature();
-			} else {
-				return new MySqlFeature();
-			}
+			return new MySqlFeature(dmd);
 		} else if (name.startsWith(DB2)) {
-			float ver = new Float(majorVersion + "." + minorVersion);
-			if (ver > 9.7) {
-				return new Db2FeatureAbove972();
-			} else {
-				if ("SQL9072".equals(version)) {
-					return new Db2FeatureAbove972();
-				} else {
-					return new Db2FeatureBelow972();
-				}
-			}
+			return new Db2Feature(dmd);
 		} else if (SYBASE.equals(name)) {
-			return new SybaseFeature();
+			return new SybaseFeature(dmd);
 		} else if (INFORMIX.equals(name)) {
-			return new InformixFeature();
+			return new InformixFeature(dmd);
 		} else if (POSTGRESQL.equals(name)) {
-			return new PostgreSqlFeature();
+			return new PostgreSqlFeature(dmd);
 		} else if (DERBY.equals(name)) {
-			return new DerbyFeature();
+			return new DerbyFeature(dmd);
 		} else if (KINGBASE.equals(name)) {
-			return new KingbaseFeature();
+			return new KingbaseFeature(dmd);
 		} else if (DM.equals(name)) {
-			return new DmFeature();
+			return new DmFeature(dmd);
 		} else {
 			System.out
 					.println("dbking will use default db feature without test");

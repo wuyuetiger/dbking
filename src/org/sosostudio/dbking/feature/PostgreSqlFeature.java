@@ -19,6 +19,9 @@ import org.sosostudio.dbking.ColumnType;
 
 public class PostgreSqlFeature extends DbFeature {
 
+	public PostgreSqlFeature(DatabaseMetaData dmd) {
+	}
+
 	@Override
 	public String getStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));

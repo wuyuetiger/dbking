@@ -14,10 +14,14 @@
 package org.sosostudio.dbking.feature;
 
 import java.math.BigInteger;
+import java.sql.DatabaseMetaData;
 import java.util.UUID;
 
 public class InformixFeature extends DbFeature {
 
+	public InformixFeature(DatabaseMetaData dmd) {
+	}
+	
 	@Override
 	public String getTimestampDbType() {
 		return "datetime year to fraction";

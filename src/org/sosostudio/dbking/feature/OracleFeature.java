@@ -20,6 +20,9 @@ import org.sosostudio.dbking.ColumnType;
 
 public class OracleFeature extends DbFeature {
 
+	public OracleFeature(DatabaseMetaData dmd) {
+	}
+	
 	@Override
 	public String getStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
