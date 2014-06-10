@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Row;
-import org.sosostudio.dbking.RowSet;
+import org.sosostudio.dbking.RowList;
 import org.sosostudio.dbking.autocode.PaginationArrayList;
 import org.sosostudio.dbking.oom.ConditionClause;
 import org.sosostudio.dbking.oom.DeleteSql;
@@ -97,9 +97,9 @@ public class ${table.definationName}Dao {
 			.setConditionClause(conditionClause)
 			.setExtraClause(extraClause)
 			.setOrderByClause(orderByClause);
-		RowSet rowSet = dbKing.executeSelectSql(selectSql, pageSize, pageNumber);
-		PaginationArrayList<${table.definationName}> pal = new PaginationArrayList<${table.definationName}>(rowSet.getPageSize(), rowSet.getPageNumber(), rowSet.getTotalRowCount());
-		for (Row row : rowSet) {
+		RowList rowList = dbKing.executeSelectSql(selectSql, pageSize, pageNumber);
+		PaginationArrayList<${table.definationName}> pal = new PaginationArrayList<${table.definationName}>(rowList.getPageSize(), rowList.getPageNumber(), rowList.getTotalRowCount());
+		for (Row row : rowList) {
 			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
@@ -115,9 +115,9 @@ public class ${table.definationName}Dao {
 			.setConditionClause(conditionClause)
 			.setExtraClause(extraClause)
 			.setOrderByClause(orderByClause);
-		RowSet rowSet = dbKing.executeSelectSql(selectSql);
+		RowList rowList = dbKing.executeSelectSql(selectSql);
 		ArrayList<${table.definationName}> al = new ArrayList<${table.definationName}>();
-		for (Row row : rowSet) {
+		for (Row row : rowList) {
 			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));

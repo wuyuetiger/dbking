@@ -31,10 +31,10 @@ public class Row {
 
 	private Map<String, Object> valueMap = new HashMap<String, Object>();
 
-	private RowSet rowSet;
+	private RowList rowList;
 
-	public Row(RowSet rowSet) {
-		this.rowSet = rowSet;
+	public Row(RowList rowList) {
+		this.rowList = rowList;
 	}
 
 	public Map<String, Object> getValueMap() {
@@ -46,7 +46,7 @@ public class Row {
 	}
 
 	public Object get(int i) {
-		List<String> columnNameList = rowSet.getColumnNameList();
+		List<String> columnNameList = rowList.getColumnNameList();
 		String columnName = columnNameList.get(i - 1);
 		return valueMap.get(columnName);
 	}

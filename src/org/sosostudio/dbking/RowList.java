@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class RowSet extends ArrayList<Row> {
+public class RowList extends ArrayList<Row> {
 
 	private List<String> columnNameList = new ArrayList<String>();
 
@@ -71,7 +71,7 @@ public class RowSet extends ArrayList<Row> {
 		this.totalPageCount = totalPageCount;
 	}
 
-	public String getOnlyString() {
+	public String getSingleString() {
 		if (size() > 0) {
 			return get(0).getString(1);
 		} else {
@@ -79,7 +79,7 @@ public class RowSet extends ArrayList<Row> {
 		}
 	}
 
-	public BigDecimal getOnlyNumber() {
+	public BigDecimal getSingleNumber() {
 		if (size() > 0) {
 			return get(0).getNumber(1);
 		} else {
@@ -87,7 +87,7 @@ public class RowSet extends ArrayList<Row> {
 		}
 	}
 
-	public Timestamp getOnlyTimestamp() {
+	public Timestamp getSingleTimestamp() {
 		if (size() > 0) {
 			return get(0).getTimestamp(1);
 		} else {
@@ -95,7 +95,7 @@ public class RowSet extends ArrayList<Row> {
 		}
 	}
 
-	public String getOnlyClob() {
+	public String getSingleClob() {
 		if (size() > 0) {
 			return get(0).getClob(1);
 		} else {
@@ -103,7 +103,7 @@ public class RowSet extends ArrayList<Row> {
 		}
 	}
 
-	public byte[] getOnlyBlob() {
+	public byte[] getSingleBlob() {
 		if (size() > 0) {
 			return get(0).getBlob(1);
 		} else {

@@ -55,11 +55,11 @@ import org.sosostudio.dbking.util.IoUtil;
 
 public class DbKing {
 
-	public static final String SEQ_TABLE_NAME = "SYS_SEQ";
+	private static final String SEQ_TABLE_NAME = "DBKING_SEQ";
 
-	public static final String SEQ_NAME_COLUMN_NAME = "ST_SEQ_NAME";
+	private static final String SEQ_NAME_COLUMN_NAME = "ST_SEQ_NAME";
 
-	public static final String SEQ_VALUE_COLUMN_NAME = "NM_SEQ_VALUE";
+	private static final String SEQ_VALUE_COLUMN_NAME = "NM_SEQ_VALUE";
 
 	private DbSource dbSource;
 
@@ -81,7 +81,7 @@ public class DbKing {
 		this.dbSource = new ConnectionDbSource(con);
 	}
 
-	public void printDatabaseInfo() {
+	public void printDbInfo() {
 		Connection con = null;
 		try {
 			con = dbSource.getConnection();
@@ -456,7 +456,7 @@ public class DbKing {
 		executeOtherSql(sql);
 	}
 
-	public RowSet executeSelectSql(String sql, Values values,
+	public RowList executeSelectSql(String sql, Values values,
 			boolean containsLob, int pageSize, int pageNumber) {
 		if (values == null) {
 			values = new Values();
@@ -501,11 +501,11 @@ public class DbKing {
 			String paginationSql = dbFeature.getPaginationSql(mainSubSql,
 					orderBySubSql, startPos, endPos);
 			// query
-			RowSet rowSet = new RowSet();
-			rowSet.setPageNumber(pageNumber);
-			rowSet.setPageSize(pageSize);
-			rowSet.setTotalRowCount(totalRowCount);
-			rowSet.setTotalPageCount(totalPageCount);
+			RowList rowList = new RowList();
+			rowList.setPageNumber(pageNumber);
+			rowList.setPageSize(pageSize);
+			rowList.setTotalRowCount(totalRowCount);
+			rowList.setTotalPageCount(totalPageCount);
 			if (paginationSql == null) {
 				DbUtil.printSql(sql, values);
 				ps = con.prepareStatement(sql,
@@ -522,7 +522,7 @@ public class DbKing {
 			for (int i = 0; i < columnCount; i++) {
 				String columnName = rsmd.getColumnLabel(i + 1);
 				columnName = columnName.toUpperCase();
-				rowSet.addColumnName(columnName);
+				rowList.addColumnName(columnName);
 			}
 			if (paginationSql == null) {
 				if (!rs.absolute(pageSize * (pageNumber - 1) + 1)) {
@@ -537,7 +537,7 @@ public class DbKing {
 						break;
 					}
 				}
-				Row row = new Row(rowSet);
+				Row row = new Row(rowList);
 				for (int i = 0; i < columnCount; i++) {
 					String columnName = rsmd.getColumnLabel(i + 1);
 					columnName = columnName.toUpperCase();
@@ -581,9 +581,9 @@ public class DbKing {
 					}
 					row.addValue(columnName, value);
 				}
-				rowSet.add(row);
+				rowList.add(row);
 			}
-			return rowSet;
+			return rowList;
 		} catch (SQLException e) {
 			throw new DbKingException(e);
 		} finally {
@@ -595,17 +595,17 @@ public class DbKing {
 		}
 	}
 
-	public RowSet executeSelectSql(String sql, Values values, int pageSize,
+	public RowList executeSelectSql(String sql, Values values, int pageSize,
 			int pageNumber) {
 		return executeSelectSql(sql, values, false, pageSize, pageNumber);
 	}
 
-	public RowSet executeSelectSql(String sql, int pageSize, int pageNumber) {
+	public RowList executeSelectSql(String sql, int pageSize, int pageNumber) {
 		Values values = new Values();
 		return executeSelectSql(sql, values, false, pageSize, pageNumber);
 	}
 
-	public RowSet executeSelectSql(String sql, Values values,
+	public RowList executeSelectSql(String sql, Values values,
 			boolean containsLob) {
 		if (values == null) {
 			values = new Values();
@@ -617,7 +617,7 @@ public class DbKing {
 		try {
 			// query
 			con = dbSource.getConnection();
-			RowSet rowSet = new RowSet();
+			RowList rowList = new RowList();
 			ps = con.prepareStatement(sql);
 			DbUtil.setColumnValue(ps, 1, values);
 			rs = ps.executeQuery();
@@ -626,10 +626,10 @@ public class DbKing {
 			for (int i = 0; i < columnCount; i++) {
 				String columnName = rsmd.getColumnLabel(i + 1);
 				columnName = columnName.toUpperCase();
-				rowSet.addColumnName(columnName);
+				rowList.addColumnName(columnName);
 			}
 			while (rs.next()) {
-				Row row = new Row(rowSet);
+				Row row = new Row(rowList);
 				for (int i = 0; i < columnCount; i++) {
 					String columnName = rsmd.getColumnLabel(i + 1);
 					columnName = columnName.toUpperCase();
@@ -673,10 +673,10 @@ public class DbKing {
 					}
 					row.addValue(columnName, value);
 				}
-				rowSet.add(row);
+				rowList.add(row);
 			}
-			rowSet.setTotalRowCount(rowSet.size());
-			return rowSet;
+			rowList.setTotalRowCount(rowList.size());
+			return rowList;
 		} catch (SQLException e) {
 			throw new DbKingException(e);
 		} finally {
@@ -688,15 +688,15 @@ public class DbKing {
 		}
 	}
 
-	public RowSet executeSelectSql(String sql, Values values) {
+	public RowList executeSelectSql(String sql, Values values) {
 		return executeSelectSql(sql, values, false);
 	}
 
-	public RowSet executeSelectSql(String sql) {
+	public RowList executeSelectSql(String sql) {
 		return executeSelectSql(sql, null);
 	}
 
-	public RowSet executeSelectSql(SelectSql selectSql, boolean containsLob,
+	public RowList executeSelectSql(SelectSql selectSql, boolean containsLob,
 			int pageSize, int pageNumber) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
@@ -726,12 +726,12 @@ public class DbKing {
 		return executeSelectSql(sql, values, containsLob, pageSize, pageNumber);
 	}
 
-	public RowSet executeSelectSql(SelectSql selectSql, int pageSize,
+	public RowList executeSelectSql(SelectSql selectSql, int pageSize,
 			int pageNumber) {
 		return executeSelectSql(selectSql, false, pageSize, pageNumber);
 	}
 
-	public RowSet executeSelectSql(SelectSql selectSql, boolean containsLob) {
+	public RowList executeSelectSql(SelectSql selectSql, boolean containsLob) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		sb.append("select ").append(selectSql.getColumns()).append(" from ")
@@ -760,7 +760,7 @@ public class DbKing {
 		return executeSelectSql(sql, values, containsLob);
 	}
 
-	public RowSet executeSelectSql(SelectSql selectSql) {
+	public RowList executeSelectSql(SelectSql selectSql) {
 		return executeSelectSql(selectSql, false);
 	}
 
@@ -990,7 +990,7 @@ public class DbKing {
 						new ConditionClause(LogicalOp.AND).addStringClause(
 								SEQ_NAME_COLUMN_NAME, RelationOp.EQUAL,
 								sequenceName));
-		RowSet rs;
+		RowList rs;
 		try {
 			rs = executeSelectSql(selectSql);
 		} catch (DbKingException e) {
