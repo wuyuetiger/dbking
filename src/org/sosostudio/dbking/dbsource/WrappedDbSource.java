@@ -24,6 +24,13 @@ public class WrappedDbSource implements DbSource {
 
 	private DataSource dataSource;
 
+	private String schema;
+
+	public WrappedDbSource(DataSource dataSource, String schema) {
+		this.dataSource = dataSource;
+		this.schema = schema;
+	}
+
 	public WrappedDbSource(DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
@@ -35,6 +42,11 @@ public class WrappedDbSource implements DbSource {
 		} catch (SQLException e) {
 			throw new DbKingException(e);
 		}
+	}
+
+	@Override
+	public String getSchema() {
+		return schema;
 	}
 
 }

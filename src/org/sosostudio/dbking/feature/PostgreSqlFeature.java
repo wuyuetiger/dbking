@@ -20,6 +20,7 @@ import org.sosostudio.dbking.ColumnType;
 public class PostgreSqlFeature extends DbFeature {
 
 	public PostgreSqlFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
 
 	@Override
@@ -39,7 +40,7 @@ public class PostgreSqlFeature extends DbFeature {
 	}
 
 	@Override
-	public String getDatabaseSchema(DatabaseMetaData dmd) {
+	public String defaultSchema() {
 		return "public";
 	}
 

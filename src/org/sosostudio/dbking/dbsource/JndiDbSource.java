@@ -30,8 +30,23 @@ public class JndiDbSource implements DbSource {
 
 	private String password;
 
+	private String schema;
+
+	public JndiDbSource(String jndi, String schema) {
+		this.jndi = jndi;
+		this.schema = schema;
+	}
+
 	public JndiDbSource(String jndi) {
 		this.jndi = jndi;
+	}
+
+	public JndiDbSource(String jndi, String username, String password,
+			String schema) {
+		this.jndi = jndi;
+		this.username = username;
+		this.password = password;
+		this.schema = schema;
 	}
 
 	public JndiDbSource(String jndi, String username, String password) {
@@ -65,6 +80,11 @@ public class JndiDbSource implements DbSource {
 				throw new DbKingException(e);
 			}
 		}
+	}
+
+	@Override
+	public String getSchema() {
+		return schema;
 	}
 
 	@Override

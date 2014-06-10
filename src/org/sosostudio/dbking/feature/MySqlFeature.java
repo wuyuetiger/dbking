@@ -29,6 +29,7 @@ import org.sosostudio.dbking.util.DbUtil;
 public class MySqlFeature extends DbFeature {
 
 	public MySqlFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
 
 	@Override

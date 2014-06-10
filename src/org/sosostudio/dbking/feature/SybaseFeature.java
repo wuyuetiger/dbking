@@ -18,6 +18,7 @@ import java.sql.DatabaseMetaData;
 public class SybaseFeature extends DbFeature {
 
 	public SybaseFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
 
 	@Override

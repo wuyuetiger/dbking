@@ -18,6 +18,7 @@ import java.sql.DatabaseMetaData;
 public class DmFeature extends DbFeature {
 
 	public DmFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
 
 	@Override

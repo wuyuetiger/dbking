@@ -21,8 +21,9 @@ import org.sosostudio.dbking.ColumnType;
 public class OracleFeature extends DbFeature {
 
 	public OracleFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
-	
+
 	@Override
 	public String getStringDbType(int size) {
 		size = Math.max(0, Math.min(size, ColumnType.MAX_STRING_SIZE));
@@ -30,7 +31,7 @@ public class OracleFeature extends DbFeature {
 	}
 
 	@Override
-	public String getDatabaseSchema(DatabaseMetaData dmd) {
+	public String defaultSchema() {
 		try {
 			return dmd.getUserName();
 		} catch (SQLException e) {

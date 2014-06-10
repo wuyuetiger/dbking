@@ -20,8 +20,9 @@ import java.util.UUID;
 public class InformixFeature extends DbFeature {
 
 	public InformixFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
-	
+
 	@Override
 	public String getTimestampDbType() {
 		return "datetime year to fraction";

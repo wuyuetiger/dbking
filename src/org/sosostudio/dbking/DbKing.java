@@ -160,7 +160,10 @@ public class DbKing {
 			try {
 				DatabaseMetaData dmd = con.getMetaData();
 				DbFeature dbFeature = DbFeature.getInstance(dmd);
-				String schema = dbFeature.getDatabaseSchema(dmd);
+				String schema = dbSource.getSchema();
+				if (schema == null) {
+					schema = dbFeature.defaultSchema();
+				}
 				String[] types = { "TABLE" };
 				tableRs = dmd.getTables(null, schema, "%", types);
 				while (tableRs.next()) {
@@ -247,7 +250,10 @@ public class DbKing {
 			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
-			String schema = dbFeature.getDatabaseSchema(dmd);
+			String schema = dbSource.getSchema();
+			if (schema == null) {
+				schema = dbFeature.defaultSchema();
+			}
 			tableName = dbFeature.defaultCaps(tableName);
 			Set<String> pkSet = new HashSet<String>();
 			ResultSet pkRs = null;
@@ -299,7 +305,10 @@ public class DbKing {
 			try {
 				DatabaseMetaData dmd = con.getMetaData();
 				DbFeature dbFeature = DbFeature.getInstance(dmd);
-				String schema = dbFeature.getDatabaseSchema(dmd);
+				String schema = dbSource.getSchema();
+				if (schema == null) {
+					schema = dbFeature.defaultSchema();
+				}
 				String[] types = { "VIEW" };
 				viewRs = dmd.getTables(null, schema, "%", types);
 				while (viewRs.next()) {
@@ -345,7 +354,10 @@ public class DbKing {
 			con = dbSource.getConnection();
 			DatabaseMetaData dmd = con.getMetaData();
 			DbFeature dbFeature = DbFeature.getInstance(dmd);
-			String schema = dbFeature.getDatabaseSchema(dmd);
+			String schema = dbSource.getSchema();
+			if (schema == null) {
+				schema = dbFeature.defaultSchema();
+			}
 			viewName = dbFeature.defaultCaps(viewName);
 			List<Column> columnList = new ArrayList<Column>();
 			ResultSet columnRs = null;

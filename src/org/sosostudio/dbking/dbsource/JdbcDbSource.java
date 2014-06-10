@@ -29,12 +29,29 @@ public class JdbcDbSource implements DbSource {
 
 	private String password;
 
+	private String schema;
+
+	public JdbcDbSource(String databaseDriver, String databaseUrl,
+			String username, String password, String schema) {
+		this.databaseDriver = databaseDriver;
+		this.databaseUrl = databaseUrl;
+		this.username = username;
+		this.password = password;
+		this.schema = schema;
+	}
+
 	public JdbcDbSource(String databaseDriver, String databaseUrl,
 			String username, String password) {
 		this.databaseDriver = databaseDriver;
 		this.databaseUrl = databaseUrl;
 		this.username = username;
 		this.password = password;
+	}
+
+	public JdbcDbSource(String databaseDriver, String databaseUrl, String schema) {
+		this.databaseDriver = databaseDriver;
+		this.databaseUrl = databaseUrl;
+		this.schema = schema;
 	}
 
 	public JdbcDbSource(String databaseDriver, String databaseUrl) {
@@ -64,6 +81,11 @@ public class JdbcDbSource implements DbSource {
 				throw new DbKingException(e);
 			}
 		}
+	}
+
+	@Override
+	public String getSchema() {
+		return schema;
 	}
 
 	@Override

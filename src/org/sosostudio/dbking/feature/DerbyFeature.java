@@ -20,6 +20,7 @@ import org.sosostudio.dbking.ColumnType;
 public class DerbyFeature extends DbFeature {
 
 	public DerbyFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
 
 	@Override

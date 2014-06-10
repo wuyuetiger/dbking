@@ -20,6 +20,7 @@ import org.sosostudio.dbking.ColumnType;
 public class KingbaseFeature extends DbFeature {
 
 	public KingbaseFeature(DatabaseMetaData dmd) {
+		super(dmd);
 	}
 
 	@Override
@@ -29,7 +30,7 @@ public class KingbaseFeature extends DbFeature {
 	}
 
 	@Override
-	public String getDatabaseSchema(DatabaseMetaData dmd) {
+	public String defaultSchema() {
 		return "PUBLIC";
 	}
 

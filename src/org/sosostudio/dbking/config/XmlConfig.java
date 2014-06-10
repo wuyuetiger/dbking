@@ -74,6 +74,7 @@ public class XmlConfig {
 			String username = null;
 			String password = null;
 			String jndi = null;
+			String schema = null;
 			NodeList nodeList = dbSourceElement.getChildNodes();
 			for (int j = 0; j < nodeList.getLength(); j++) {
 				Node node = nodeList.item(j);
@@ -91,23 +92,26 @@ public class XmlConfig {
 						password = value;
 					} else if ("jndi".equals(elementName)) {
 						jndi = value;
+					} else if ("schema".equals(elementName)) {
+						schema = value;
 					}
 				}
 			}
 			if (databaseDriver != null && databaseUrl != null
 					&& username != null && password != null) {
 				DbSource dbSource = new JdbcDbSource(databaseDriver,
-						databaseUrl, username, password);
+						databaseUrl, username, password, schema);
 				dbSourceMap.put(dbSourceName, dbSource);
 			} else if (databaseDriver != null && databaseUrl != null) {
 				DbSource dbSource = new JdbcDbSource(databaseDriver,
-						databaseUrl);
+						databaseUrl, schema);
 				dbSourceMap.put(dbSourceName, dbSource);
 			} else if (jndi != null && username != null && password != null) {
-				DbSource dbSource = new JndiDbSource(jndi, username, password);
+				DbSource dbSource = new JndiDbSource(jndi, username, password,
+						schema);
 				dbSourceMap.put(dbSourceName, dbSource);
 			} else if (jndi != null) {
-				DbSource dbSource = new JndiDbSource(jndi);
+				DbSource dbSource = new JndiDbSource(jndi, schema);
 				dbSourceMap.put(dbSourceName, dbSource);
 			} else {
 				throw new DbKingException("initial dbking config failed");

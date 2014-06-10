@@ -48,7 +48,10 @@ public class DbFeature {
 
 	public final static String DM = "DM DBMS";
 
-	protected DbFeature() {
+	protected DatabaseMetaData dmd;
+
+	protected DbFeature(DatabaseMetaData dmd) {
+		this.dmd = dmd;
 	}
 
 	public static DbFeature getInstance(DatabaseMetaData dmd)
@@ -77,7 +80,7 @@ public class DbFeature {
 		} else {
 			System.out
 					.println("dbking will use default db feature without test");
-			return new DbFeature();
+			return new DbFeature(dmd);
 		}
 	}
 
@@ -103,7 +106,7 @@ public class DbFeature {
 		return "blob";
 	}
 
-	public String getDatabaseSchema(DatabaseMetaData dmd) {
+	public String defaultSchema() {
 		return null;
 	}
 

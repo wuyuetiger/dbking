@@ -19,4 +19,6 @@ public interface DbSource {
 
 	public Connection getConnection();
 
+	public String getSchema();
+
 }

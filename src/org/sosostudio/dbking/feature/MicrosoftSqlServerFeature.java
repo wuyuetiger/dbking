@@ -20,10 +20,8 @@ import org.sosostudio.dbking.exception.DbKingException;
 
 public class MicrosoftSqlServerFeature extends DbFeature {
 
-	private DatabaseMetaData dmd;
-
 	public MicrosoftSqlServerFeature(DatabaseMetaData dmd) {
-		this.dmd = dmd;
+		super(dmd);
 	}
 
 	@Override

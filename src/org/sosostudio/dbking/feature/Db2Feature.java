@@ -21,10 +21,8 @@ import org.sosostudio.dbking.exception.DbKingException;
 
 public class Db2Feature extends DbFeature {
 
-	private DatabaseMetaData dmd;
-
 	public Db2Feature(DatabaseMetaData dmd) {
-		this.dmd = dmd;
+		super(dmd);
 	}
 
 	@Override

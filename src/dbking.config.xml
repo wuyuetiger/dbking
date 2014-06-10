@@ -64,12 +64,14 @@
 		<database_url>jdbc:postgresql://localhost:5432/postgres</database_url>
 		<username>postgres</username>
 		<password>password</password>
+		<schema>public</schema>
 	</db_source>
 	<db_source name="kingbase">
 		<database_driver>com.kingbase.Driver</database_driver>
 		<database_url>jdbc:kingbase://localhost:54321/TEST</database_url>
 		<username>system</username>
 		<password>password</password>
+		<schema>PUBLIC</schema>
 	</db_source>
 	<db_source name="dm">
 		<database_driver>dm.jdbc.driver.DmDriver</database_driver>

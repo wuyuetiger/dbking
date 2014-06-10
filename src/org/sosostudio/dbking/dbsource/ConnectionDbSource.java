@@ -19,6 +19,13 @@ public class ConnectionDbSource implements DbSource {
 
 	private Connection con;
 
+	private String schema;
+
+	public ConnectionDbSource(Connection con, String schema) {
+		this.con = con;
+		this.schema = schema;
+	}
+
 	public ConnectionDbSource(Connection con) {
 		this.con = con;
 	}
@@ -26,6 +33,11 @@ public class ConnectionDbSource implements DbSource {
 	@Override
 	public Connection getConnection() {
 		return con;
+	}
+	
+	@Override
+	public String getSchema() {
+		return schema;
 	}
 
 }

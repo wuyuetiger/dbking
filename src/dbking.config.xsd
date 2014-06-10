@@ -19,6 +19,7 @@
 				<xs:element ref="username" minOccurs="0" />
 				<xs:element ref="password" minOccurs="0" />
 				<xs:element ref="jndi" minOccurs="0" />
+				<xs:element ref="schema" minOccurs="0" />
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" />
 		</xs:complexType>
@@ -28,4 +29,5 @@
 	<xs:element name="username" type="xs:string" />
 	<xs:element name="password" type="xs:string" />
 	<xs:element name="jndi" type="xs:string" />
+	<xs:element name="schema" type="xs:string" />
 </xs:schema>
