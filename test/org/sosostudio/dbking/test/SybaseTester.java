@@ -10,7 +10,7 @@ public class SybaseTester extends BaseTester {
 
 	@Override
 	protected void createTable(String typeName) {
-		dbKing.executeOtherSql("create table " + tableName + " (" + columnName
+		dbKing.execute("create table " + tableName + " (" + columnName
 				+ " " + typeName + " null)");
 	}
 

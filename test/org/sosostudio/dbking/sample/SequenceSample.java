@@ -20,7 +20,7 @@ public class SequenceSample {
 				for (int i = 0; i < Integer.MAX_VALUE; i++) {
 					long seq;
 					try {
-						seq = dbKing.getSequenceNextValue("test");
+						seq = dbKing.getNextValue("test");
 					} catch (DbKingException e) {
 						continue;
 					}

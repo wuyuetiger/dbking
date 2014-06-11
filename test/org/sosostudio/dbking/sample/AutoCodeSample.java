@@ -27,7 +27,7 @@ public class AutoCodeSample {
 			DaoGenerator.main(new String[] { "test",
 					"org.sosostudio.dbking.sample.dao", tableName });
 		} finally {
-			dbKing.executeOtherSql("drop table " + tableName);
+			dbKing.execute("drop table " + tableName);
 		}
 	}
 

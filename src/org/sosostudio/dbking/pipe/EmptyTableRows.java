@@ -52,7 +52,7 @@ public class EmptyTableRows {
 				Table table = tableList.get(i);
 				String tableName = table.getName();
 				String sql = "delete from " + tableName;
-				dbKing.executeOtherSql(sql);
+				dbKing.execute(sql);
 				System.out.println(tableName + "'s rows have been deleted ");
 			}
 		} catch (IOException e) {

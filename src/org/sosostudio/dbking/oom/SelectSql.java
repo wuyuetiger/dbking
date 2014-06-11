@@ -19,7 +19,7 @@ public class SelectSql {
 
 	private String columns = "*";
 
-	private ConditionClause conditionClause;
+	private WhereClause whereClause;
 
 	private ExtraClause extraClause;
 
@@ -43,12 +43,12 @@ public class SelectSql {
 		return this;
 	}
 
-	public ConditionClause getConditionClause() {
-		return conditionClause;
+	public WhereClause getWhereClause() {
+		return whereClause;
 	}
 
-	public SelectSql setConditionClause(ConditionClause conditionClause) {
-		this.conditionClause = conditionClause;
+	public SelectSql setWhereClause(WhereClause whereClause) {
+		this.whereClause = whereClause;
 		return this;
 	}
 

@@ -39,7 +39,6 @@ import org.sosostudio.dbking.dbsource.ConnectionDbSource;
 import org.sosostudio.dbking.dbsource.DbSource;
 import org.sosostudio.dbking.exception.DbKingException;
 import org.sosostudio.dbking.feature.DbFeature;
-import org.sosostudio.dbking.oom.ConditionClause;
 import org.sosostudio.dbking.oom.DeleteSql;
 import org.sosostudio.dbking.oom.ExtraClause;
 import org.sosostudio.dbking.oom.InsertKeyValueClause;
@@ -50,6 +49,7 @@ import org.sosostudio.dbking.oom.RelationOp;
 import org.sosostudio.dbking.oom.SelectSql;
 import org.sosostudio.dbking.oom.UpdateKeyValueClause;
 import org.sosostudio.dbking.oom.UpdateSql;
+import org.sosostudio.dbking.oom.WhereClause;
 import org.sosostudio.dbking.util.DbUtil;
 import org.sosostudio.dbking.util.IoUtil;
 
@@ -453,11 +453,11 @@ public class DbKing {
 
 	public void dropTable(String tableName) {
 		String sql = "drop table " + tableName;
-		executeOtherSql(sql);
+		execute(sql);
 	}
 
-	public RowList executeSelectSql(String sql, Values values,
-			boolean containsLob, int pageSize, int pageNumber) {
+	public RowList query(String sql, Values values, boolean containsLob,
+			int pageSize, int pageNumber) {
 		if (values == null) {
 			values = new Values();
 		}
@@ -595,18 +595,17 @@ public class DbKing {
 		}
 	}
 
-	public RowList executeSelectSql(String sql, Values values, int pageSize,
+	public RowList query(String sql, Values values, int pageSize,
 			int pageNumber) {
-		return executeSelectSql(sql, values, false, pageSize, pageNumber);
+		return query(sql, values, false, pageSize, pageNumber);
 	}
 
-	public RowList executeSelectSql(String sql, int pageSize, int pageNumber) {
+	public RowList query(String sql, int pageSize, int pageNumber) {
 		Values values = new Values();
-		return executeSelectSql(sql, values, false, pageSize, pageNumber);
+		return query(sql, values, false, pageSize, pageNumber);
 	}
 
-	public RowList executeSelectSql(String sql, Values values,
-			boolean containsLob) {
+	public RowList query(String sql, Values values, boolean containsLob) {
 		if (values == null) {
 			values = new Values();
 		}
@@ -688,21 +687,21 @@ public class DbKing {
 		}
 	}
 
-	public RowList executeSelectSql(String sql, Values values) {
-		return executeSelectSql(sql, values, false);
+	public RowList query(String sql, Values values) {
+		return query(sql, values, false);
 	}
 
-	public RowList executeSelectSql(String sql) {
-		return executeSelectSql(sql, null);
+	public RowList query(String sql) {
+		return query(sql, null);
 	}
 
-	public RowList executeSelectSql(SelectSql selectSql, boolean containsLob,
+	public RowList query(SelectSql selectSql, boolean containsLob,
 			int pageSize, int pageNumber) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		sb.append("select ").append(selectSql.getColumns()).append(" from ")
 				.append(selectSql.getTableName());
-		ConditionClause cc = selectSql.getConditionClause();
+		WhereClause cc = selectSql.getWhereClause();
 		if (cc != null) {
 			String clause = cc.getClause();
 			if (clause.length() > 0) {
@@ -723,20 +722,19 @@ public class DbKing {
 			}
 		}
 		String sql = sb.toString();
-		return executeSelectSql(sql, values, containsLob, pageSize, pageNumber);
+		return query(sql, values, containsLob, pageSize, pageNumber);
 	}
 
-	public RowList executeSelectSql(SelectSql selectSql, int pageSize,
-			int pageNumber) {
-		return executeSelectSql(selectSql, false, pageSize, pageNumber);
+	public RowList query(SelectSql selectSql, int pageSize, int pageNumber) {
+		return query(selectSql, false, pageSize, pageNumber);
 	}
 
-	public RowList executeSelectSql(SelectSql selectSql, boolean containsLob) {
+	public RowList query(SelectSql selectSql, boolean containsLob) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		sb.append("select ").append(selectSql.getColumns()).append(" from ")
 				.append(selectSql.getTableName());
-		ConditionClause cc = selectSql.getConditionClause();
+		WhereClause cc = selectSql.getWhereClause();
 		if (cc != null) {
 			String clause = cc.getClause();
 			if (clause.length() > 0) {
@@ -757,14 +755,14 @@ public class DbKing {
 			}
 		}
 		String sql = sb.toString();
-		return executeSelectSql(sql, values, containsLob);
+		return query(sql, values, containsLob);
 	}
 
-	public RowList executeSelectSql(SelectSql selectSql) {
-		return executeSelectSql(selectSql, false);
+	public RowList query(SelectSql selectSql) {
+		return query(selectSql, false);
 	}
 
-	public int executeOtherSql(String sql, Values values) {
+	public int execute(String sql, Values values) {
 		if (values == null) {
 			values = new Values();
 		}
@@ -786,11 +784,11 @@ public class DbKing {
 		}
 	}
 
-	public void executeOtherSql(String sql) {
-		executeOtherSql(sql, null);
+	public void execute(String sql) {
+		execute(sql, null);
 	}
 
-	public int executeInsertSql(InsertSql insertSql) {
+	public int execute(InsertSql insertSql) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		InsertKeyValueClause ikvc = insertSql.getInsertKeyValueClause();
@@ -799,17 +797,17 @@ public class DbKing {
 				.append(ikvc.getKeysClause()).append(") values(")
 				.append(ikvc.getValuesClause()).append(")");
 		String sql = sb.toString();
-		return executeOtherSql(sql, values);
+		return execute(sql, values);
 	}
 
-	public int executeUpdateSql(UpdateSql updateSql) {
+	public int execute(UpdateSql updateSql) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		UpdateKeyValueClause ukvc = updateSql.getUpdateKeyValueClause();
 		values.addValues(ukvc.getValues());
 		sb.append("update ").append(updateSql.getTableName()).append(" set ")
 				.append(ukvc.getClause());
-		ConditionClause cc = updateSql.getConditionClause();
+		WhereClause cc = updateSql.getWhereClause();
 		if (cc != null) {
 			String clause = cc.getClause();
 			if (clause.length() > 0) {
@@ -818,14 +816,14 @@ public class DbKing {
 			}
 		}
 		String sql = sb.toString();
-		return executeOtherSql(sql, values);
+		return execute(sql, values);
 	}
 
-	public int executeDeleteSql(DeleteSql deleteSql) {
+	public int execute(DeleteSql deleteSql) {
 		StringBuilder sb = new StringBuilder();
 		Values values = new Values();
 		sb.append("delete from ").append(deleteSql.getTableName());
-		ConditionClause cc = deleteSql.getConditionClause();
+		WhereClause cc = deleteSql.getWhereClause();
 		if (cc != null) {
 			String clause = cc.getClause();
 			if (clause.length() > 0) {
@@ -834,7 +832,7 @@ public class DbKing {
 			}
 		}
 		String sql = sb.toString();
-		return executeOtherSql(sql, values);
+		return execute(sql, values);
 	}
 
 	public void getSingleClob(String sql, Values values, Writer writer) {
@@ -974,7 +972,7 @@ public class DbKing {
 	}
 
 	private void initSequenceRow(String sequenceName) {
-		executeInsertSql(new InsertSql().setTableName(SEQ_TABLE_NAME)
+		execute(new InsertSql().setTableName(SEQ_TABLE_NAME)
 				.setInsertKeyValueClause(
 						new InsertKeyValueClause().addStringClause(
 								SEQ_NAME_COLUMN_NAME, sequenceName)
@@ -982,17 +980,17 @@ public class DbKing {
 										BigDecimal.ZERO)));
 	}
 
-	public long getSequenceNextValue(String sequenceName) {
+	public long getNextValue(String sequenceName) {
 		SelectSql selectSql = new SelectSql()
 				.setTableName(SEQ_TABLE_NAME)
 				.setColumns(SEQ_VALUE_COLUMN_NAME)
-				.setConditionClause(
-						new ConditionClause(LogicalOp.AND).addStringClause(
+				.setWhereClause(
+						new WhereClause(LogicalOp.AND).addStringClause(
 								SEQ_NAME_COLUMN_NAME, RelationOp.EQUAL,
 								sequenceName));
 		RowList rs;
 		try {
-			rs = executeSelectSql(selectSql);
+			rs = query(selectSql);
 		} catch (DbKingException e) {
 			try {
 				initSequenceTable();
@@ -1002,27 +1000,27 @@ public class DbKing {
 				initSequenceRow(sequenceName);
 			} catch (DbKingException e1) {
 			}
-			rs = executeSelectSql(selectSql);
+			rs = query(selectSql);
 		}
 		if (rs.size() == 0) {
 			try {
 				initSequenceRow(sequenceName);
 			} catch (DbKingException e) {
 			}
-			rs = executeSelectSql(selectSql);
+			rs = query(selectSql);
 		}
 		Row row = rs.get(0);
 		BigDecimal seqValue = row.getNumber(SEQ_VALUE_COLUMN_NAME);
 		BigDecimal nextSeqValue = seqValue.add(BigDecimal.ONE);
 		int count = 0;
 		while (count == 0) {
-			count = executeUpdateSql(new UpdateSql()
+			count = execute(new UpdateSql()
 					.setTableName(SEQ_TABLE_NAME)
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addNumberClause(
 									SEQ_VALUE_COLUMN_NAME, nextSeqValue))
-					.setConditionClause(
-							new ConditionClause(LogicalOp.AND).addStringClause(
+					.setWhereClause(
+							new WhereClause(LogicalOp.AND).addStringClause(
 									SEQ_NAME_COLUMN_NAME, RelationOp.EQUAL,
 									sequenceName).addNumberClause(
 									SEQ_VALUE_COLUMN_NAME, RelationOp.EQUAL,

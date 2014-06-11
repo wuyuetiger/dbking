@@ -19,7 +19,7 @@ public class UpdateSql {
 
 	private UpdateKeyValueClause updateKeyValueClause;
 
-	private ConditionClause conditionClause;
+	private WhereClause whereClause;
 
 	public String getTableName() {
 		return tableName;
@@ -40,12 +40,12 @@ public class UpdateSql {
 		return this;
 	}
 
-	public ConditionClause getConditionClause() {
-		return conditionClause;
+	public WhereClause getWhereClause() {
+		return whereClause;
 	}
 
-	public UpdateSql setConditionClause(ConditionClause conditionClause) {
-		this.conditionClause = conditionClause;
+	public UpdateSql setWhereClause(WhereClause whereClause) {
+		this.whereClause = whereClause;
 		return this;
 	}
 

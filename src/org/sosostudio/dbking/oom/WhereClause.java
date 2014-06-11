@@ -21,7 +21,7 @@ import java.util.Iterator;
 
 import org.sosostudio.dbking.Values;
 
-public class ConditionClause {
+public class WhereClause {
 
 	private StringBuilder sb = new StringBuilder();
 
@@ -29,7 +29,7 @@ public class ConditionClause {
 
 	private LogicalOp logicalOp;
 
-	public ConditionClause(LogicalOp logicalOp) {
+	public WhereClause(LogicalOp logicalOp) {
 		this.logicalOp = logicalOp;
 	}
 
@@ -43,7 +43,7 @@ public class ConditionClause {
 		}
 	}
 
-	private ConditionClause addClause(String columnName, RelationOp relationOp,
+	private WhereClause addClause(String columnName, RelationOp relationOp,
 			Object value) {
 		setLogicalOp();
 		sb.append(columnName).append(" ");
@@ -113,7 +113,7 @@ public class ConditionClause {
 		return this;
 	}
 
-	private ConditionClause addClause(String columnName, SetOp setOp,
+	private WhereClause addClause(String columnName, SetOp setOp,
 			Collection<? extends Object> collection) {
 		if (collection == null) {
 			collection = new HashSet<Object>();
@@ -149,44 +149,44 @@ public class ConditionClause {
 		return this;
 	}
 
-	public ConditionClause addStringClause(String columnName,
+	public WhereClause addStringClause(String columnName,
 			RelationOp relationOp, String stringValue) {
 		return addClause(columnName, relationOp, stringValue);
 	}
 
-	public ConditionClause addNumberClause(String columnName,
+	public WhereClause addNumberClause(String columnName,
 			RelationOp relationOp, BigDecimal numberValue) {
 		return addClause(columnName, relationOp, numberValue);
 	}
 
-	public ConditionClause addTimestampClause(String columnName,
+	public WhereClause addTimestampClause(String columnName,
 			RelationOp relationOp, Timestamp timestampValue) {
 		return addClause(columnName, relationOp, timestampValue);
 	}
 
-	public ConditionClause addStringClause(String columnName, SetOp setOp,
+	public WhereClause addStringClause(String columnName, SetOp setOp,
 			Collection<String> stringCollection) {
 		return addClause(columnName, setOp, stringCollection);
 	}
 
-	public ConditionClause addNumberClause(String columnName, SetOp setOp,
+	public WhereClause addNumberClause(String columnName, SetOp setOp,
 			Collection<BigDecimal> numberCollection) {
 		return addClause(columnName, setOp, numberCollection);
 	}
 
-	public ConditionClause addTimestampClause(String columnName, SetOp setOp,
+	public WhereClause addTimestampClause(String columnName, SetOp setOp,
 			Collection<Timestamp> timestampCollection) {
 		return addClause(columnName, setOp, timestampCollection);
 	}
 
-	public ConditionClause addClause(ConditionClause conditionClause) {
+	public WhereClause addClause(WhereClause whereClause) {
 		setLogicalOp();
-		sb.append("(").append(conditionClause.toString()).append(")");
-		values.addValues(conditionClause.getValues());
+		sb.append("(").append(whereClause.toString()).append(")");
+		values.addValues(whereClause.getValues());
 		return this;
 	}
 
-	public ConditionClause addClause(String clause, Values values) {
+	public WhereClause addClause(String clause, Values values) {
 		setLogicalOp();
 		sb.append(clause);
 		values.addValues(values);

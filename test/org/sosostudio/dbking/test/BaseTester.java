@@ -20,7 +20,6 @@ import org.sosostudio.dbking.Row;
 import org.sosostudio.dbking.RowList;
 import org.sosostudio.dbking.Table;
 import org.sosostudio.dbking.exception.DbKingException;
-import org.sosostudio.dbking.oom.ConditionClause;
 import org.sosostudio.dbking.oom.Direction;
 import org.sosostudio.dbking.oom.InsertKeyValueClause;
 import org.sosostudio.dbking.oom.InsertSql;
@@ -30,6 +29,7 @@ import org.sosostudio.dbking.oom.RelationOp;
 import org.sosostudio.dbking.oom.SelectSql;
 import org.sosostudio.dbking.oom.UpdateKeyValueClause;
 import org.sosostudio.dbking.oom.UpdateSql;
+import org.sosostudio.dbking.oom.WhereClause;
 import org.sosostudio.dbking.util.IoUtil;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -48,7 +48,7 @@ public class BaseTester extends TestCase {
 	}
 
 	protected void createTable(String typeName) {
-		dbKing.executeOtherSql("create table " + tableName + " (" + columnName
+		dbKing.execute("create table " + tableName + " (" + columnName
 				+ " " + typeName + ")");
 	}
 
@@ -70,11 +70,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addStringClause(
 									columnName, value));
-			int count = dbKing.executeInsertSql(insertSql);
+			int count = dbKing.execute(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowList rowList = dbKing.executeSelectSql(selectSql);
+			RowList rowList = dbKing.query(selectSql);
 			Row row = rowList.get(0);
 			String value2 = row.getString(columnName);
 			assertEquals(value, value2);
@@ -83,12 +83,12 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addStringClause(
 									columnName, null))
-					.setConditionClause(
-							new ConditionClause(LogicalOp.AND).addStringClause(
+					.setWhereClause(
+							new WhereClause(LogicalOp.AND).addStringClause(
 									columnName, RelationOp.EQUAL, value));
-			count = dbKing.executeUpdateSql(updateSql);
+			count = dbKing.execute(updateSql);
 			assertEquals(count, 1);
-			rowList = dbKing.executeSelectSql(selectSql);
+			rowList = dbKing.query(selectSql);
 			row = rowList.get(0);
 			String value3 = row.getString(columnName);
 			assertNull(value3);
@@ -122,11 +122,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addNumberClause(
 									columnName, value));
-			int count = dbKing.executeInsertSql(insertSql);
+			int count = dbKing.execute(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowList rowList = dbKing.executeSelectSql(selectSql);
+			RowList rowList = dbKing.query(selectSql);
 			Row row = rowList.get(0);
 			BigDecimal value2 = row.getNumber(columnName);
 			assertEquals(value, value2);
@@ -135,12 +135,12 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addNumberClause(
 									columnName, null))
-					.setConditionClause(
-							new ConditionClause(LogicalOp.AND).addNumberClause(
+					.setWhereClause(
+							new WhereClause(LogicalOp.AND).addNumberClause(
 									columnName, RelationOp.EQUAL, value));
-			count = dbKing.executeUpdateSql(updateSql);
+			count = dbKing.execute(updateSql);
 			assertEquals(count, 1);
-			rowList = dbKing.executeSelectSql(selectSql);
+			rowList = dbKing.query(selectSql);
 			row = rowList.get(0);
 			BigDecimal value3 = row.getNumber(columnName);
 			assertNull(value3);
@@ -184,11 +184,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addTimestampClause(
 									columnName, value));
-			int count = dbKing.executeInsertSql(insertSql);
+			int count = dbKing.execute(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowList rowList = dbKing.executeSelectSql(selectSql);
+			RowList rowList = dbKing.query(selectSql);
 			Row row = rowList.get(0);
 			Timestamp value2 = row.getTimestamp(columnName);
 			assertEquals(sdf.format(value), sdf.format(value2));
@@ -196,9 +196,9 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addTimestampClause(
 									columnName, null));
-			count = dbKing.executeUpdateSql(updateSql);
+			count = dbKing.execute(updateSql);
 			assertEquals(count, 1);
-			rowList = dbKing.executeSelectSql(selectSql);
+			rowList = dbKing.query(selectSql);
 			row = rowList.get(0);
 			Timestamp value3 = row.getTimestamp(columnName);
 			assertNull(value3);
@@ -228,11 +228,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addClobClause(
 									columnName, value));
-			int count = dbKing.executeInsertSql(insertSql);
+			int count = dbKing.execute(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowList rowList = dbKing.executeSelectSql(selectSql, true);
+			RowList rowList = dbKing.query(selectSql, true);
 			Row row = rowList.get(0);
 			String value2 = row.getClob(columnName);
 			assertEquals(value, value2);
@@ -240,9 +240,9 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addClobClause(
 									columnName, null));
-			count = dbKing.executeUpdateSql(updateSql);
+			count = dbKing.execute(updateSql);
 			assertEquals(count, 1);
-			rowList = dbKing.executeSelectSql(selectSql, true);
+			rowList = dbKing.query(selectSql, true);
 			row = rowList.get(0);
 			String value3 = row.getClob(columnName);
 			assertNull(value3);
@@ -271,11 +271,11 @@ public class BaseTester extends TestCase {
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addBlobClause(
 									columnName, value));
-			int count = dbKing.executeInsertSql(insertSql);
+			int count = dbKing.execute(insertSql);
 			assertEquals(count, 1);
 			SelectSql selectSql = new SelectSql().setTableName(tableName)
 					.setColumns(columnName);
-			RowList rowList = dbKing.executeSelectSql(selectSql, true);
+			RowList rowList = dbKing.query(selectSql, true);
 			Row row = rowList.get(0);
 			byte[] value2 = row.getBlob(columnName);
 			for (int i = 0; i < value.length; i++) {
@@ -286,9 +286,9 @@ public class BaseTester extends TestCase {
 					.setUpdateKeyValueClause(
 							new UpdateKeyValueClause().addBlobClause(
 									columnName, null));
-			count = dbKing.executeUpdateSql(updateSql);
+			count = dbKing.execute(updateSql);
 			assertEquals(count, 1);
-			rowList = dbKing.executeSelectSql(selectSql, true);
+			rowList = dbKing.query(selectSql, true);
 			row = rowList.get(0);
 			byte[] value3 = row.getBlob(columnName);
 			assertNull(value3);
@@ -356,7 +356,7 @@ public class BaseTester extends TestCase {
 				columnName, ColumnType.STRING).setPrimaryKey(true)));
 		try {
 			for (int i = 0; i < 10; i++) {
-				dbKing.executeInsertSql(new InsertSql().setTableName(tableName)
+				dbKing.execute(new InsertSql().setTableName(tableName)
 						.setInsertKeyValueClause(
 								new InsertKeyValueClause().addStringClause(
 										columnName, i + "")));
@@ -368,7 +368,7 @@ public class BaseTester extends TestCase {
 							new OrderByClause().addOrder(columnName,
 									Direction.ASC));
 			{
-				RowList rowList = dbKing.executeSelectSql(selectSql, 3, 2);
+				RowList rowList = dbKing.query(selectSql, 3, 2);
 				assertEquals(rowList.size(), 3);
 				assertEquals(rowList.getPageSize(), 3);
 				assertEquals(rowList.getPageNumber(), 2);
@@ -379,7 +379,7 @@ public class BaseTester extends TestCase {
 				assertEquals(value, "3");
 			}
 			{
-				RowList rowList = dbKing.executeSelectSql(selectSql, 3, 4);
+				RowList rowList = dbKing.query(selectSql, 3, 4);
 				assertEquals(rowList.size(), 1);
 				assertEquals(rowList.getPageSize(), 3);
 				assertEquals(rowList.getPageNumber(), 4);
@@ -390,7 +390,7 @@ public class BaseTester extends TestCase {
 				assertEquals(value, "9");
 			}
 			{
-				RowList rowList = dbKing.executeSelectSql(selectSql, 5, 2);
+				RowList rowList = dbKing.query(selectSql, 5, 2);
 				assertEquals(rowList.size(), 5);
 				assertEquals(rowList.getPageSize(), 5);
 				assertEquals(rowList.getPageNumber(), 2);
@@ -407,9 +407,9 @@ public class BaseTester extends TestCase {
 
 	@Test
 	public void testFuncGetSequenceNextValue() {
-		long value = dbKing.getSequenceNextValue(sequenceName);
+		long value = dbKing.getNextValue(sequenceName);
 		value++;
-		long value2 = dbKing.getSequenceNextValue(sequenceName);
+		long value2 = dbKing.getNextValue(sequenceName);
 		assertEquals(value, value2);
 	}
 

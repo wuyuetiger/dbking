@@ -1,20 +1,23 @@
-<#assign hasPrimaryKey = false />
+<#assign pkCount = 0 />
 <#list table.columnList as column>
 	<#if column.primaryKey>
-		<#assign hasPrimaryKey = true>
-		<#break>
+		<#assign pkCount = pkCount + 1>
+		<#if pkCount = 1>
+			<#assign firstPkColumn = column>
+		</#if>
 	</#if>
 </#list>
 package ${package};
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.sosostudio.dbking.DbKing;
 import org.sosostudio.dbking.Row;
 import org.sosostudio.dbking.RowList;
-import org.sosostudio.dbking.autocode.PaginationArrayList;
-import org.sosostudio.dbking.oom.ConditionClause;
+import org.sosostudio.dbking.autocode.PageList;
+import org.sosostudio.dbking.oom.WhereClause;
 import org.sosostudio.dbking.oom.DeleteSql;
 import org.sosostudio.dbking.oom.ExtraClause;
 import org.sosostudio.dbking.oom.InsertKeyValueClause;
@@ -23,6 +26,7 @@ import org.sosostudio.dbking.oom.LogicalOp;
 import org.sosostudio.dbking.oom.OrderByClause;
 import org.sosostudio.dbking.oom.RelationOp;
 import org.sosostudio.dbking.oom.SelectSql;
+import org.sosostudio.dbking.oom.SetOp;
 import org.sosostudio.dbking.oom.UpdateKeyValueClause;
 import org.sosostudio.dbking.oom.UpdateSql;
 
@@ -44,7 +48,7 @@ public class ${table.definationName}Dao {
 	}
 
 	<#if table.table>
-	public int add${table.definationName}(${table.definationName} ${table.variableName}) {
+	public int add(${table.definationName} ${table.variableName}) {
 		${table.variableName}.truncateString();
 		InsertSql insertSql = new InsertSql().setTableName(${table.definationName}.${table.name})
 			.setInsertKeyValueClause(
@@ -53,11 +57,11 @@ public class ${table.definationName}Dao {
 					.add${column.type.getName()}Clause(${table.definationName}.${column.name}, ${table.variableName}.get${column.definationName}())
 		</#list>
 		);
-		return dbKing.executeInsertSql(insertSql);
+		return dbKing.execute(insertSql);
 	}
 
-	<#if hasPrimaryKey>
-	public int update${table.definationName}(${table.definationName} ${table.variableName}) {
+	<#if pkCount &gt; 0>
+	public int update(${table.definationName} ${table.variableName}) {
 		${table.variableName}.truncateString();
 		UpdateSql updateSql = new UpdateSql().setTableName(${table.definationName}.${table.name})
 			.setUpdateKeyValueClause(
@@ -65,66 +69,90 @@ public class ${table.definationName}Dao {
 		<#list table.columnList as column>
 					.add${column.type.getName()}Clause(${table.definationName}.${column.name}, ${table.variableName}.get${column.definationName}())
 		</#list>
-			).setConditionClause(
-				new ConditionClause(LogicalOp.AND)
+			).setWhereClause(
+				new WhereClause(LogicalOp.AND)
 		<#list table.columnList as column>
 			<#if column.primaryKey>
 				.add${column.type.getName()}Clause(${table.definationName}.${column.name}, RelationOp.EQUAL, ${table.variableName}.get${column.definationName}())
 			</#if>
 		</#list>	
 			);
-		return dbKing.executeUpdateSql(updateSql);
+		return dbKing.execute(updateSql);
 	}
 	</#if>
 
-	public int update${table.definationName}(UpdateKeyValueClause updateKeyValueClause, ConditionClause conditionClause) {
+	public int update(UpdateKeyValueClause updateKeyValueClause, WhereClause whereClause) {
 		UpdateSql updateSql = new UpdateSql().setTableName(${table.definationName}.${table.name})
 			.setUpdateKeyValueClause(updateKeyValueClause)
-			.setConditionClause(conditionClause);
-		return dbKing.executeUpdateSql(updateSql);
+			.setWhereClause(whereClause);
+		return dbKing.execute(updateSql);
 	}
 	
-	public int delete${table.definationName}(ConditionClause conditionClause) {
+	public int delete(WhereClause whereClause) {
 		DeleteSql deleteSql = new DeleteSql().setTableName(${table.definationName}.${table.name})
-			.setConditionClause(conditionClause);
-		return dbKing.executeDeleteSql(deleteSql);
+			.setWhereClause(whereClause);
+		return dbKing.execute(deleteSql);
+	}
+	
+	<#if pkCount = 1>
+	public int delete(${firstPkColumn.type.getName()} ${firstPkColumn.variableName}) {
+		DeleteSql deleteSql = new DeleteSql().setTableName(${table.definationName}.${table.name})
+			.setWhereClause(new WhereClause(LogicalOp.AND).add${firstPkColumn.type.getName()}Clause(${table.definationName}.${firstPkColumn.name}, RelationOp.EQUAL, ${firstPkColumn.variableName}));
+		return dbKing.execute(deleteSql);
+	}
+	
+	public int delete(Collection<${firstPkColumn.type.getName()}> ${firstPkColumn.variableName}Collection) {
+		DeleteSql deleteSql = new DeleteSql().setTableName(${table.definationName}.${table.name})
+			.setWhereClause(new WhereClause(LogicalOp.AND).add${firstPkColumn.type.getName()}Clause(${table.definationName}.${firstPkColumn.name}, SetOp.IN, ${firstPkColumn.variableName}Collection));
+		return dbKing.execute(deleteSql);
+	}
+	
+	public ${table.definationName} get(${firstPkColumn.type.getName()} ${firstPkColumn.variableName}) {
+		WhereClause whereClause = new WhereClause(LogicalOp.AND).add${firstPkColumn.type.getName()}Clause(${table.definationName}.${firstPkColumn.name}, RelationOp.EQUAL, ${firstPkColumn.variableName});
+		List<${table.definationName}> list = query(whereClause, null, null);
+		if (list.size() > 0) {
+			return list.get(0);
+		} else {
+			return null;
+		}
 	}
 	</#if>
+	</#if>
 
-	public PaginationArrayList<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause, int pageSize, int pageNumber) {
+	public PageList<${table.definationName}> query(WhereClause whereClause, ExtraClause extraClause, OrderByClause orderByClause, int pageSize, int pageNumber) {
 		SelectSql selectSql = new SelectSql().setTableName(${table.definationName}.${table.name})
 			.setColumns("*")
-			.setConditionClause(conditionClause)
+			.setWhereClause(whereClause)
 			.setExtraClause(extraClause)
 			.setOrderByClause(orderByClause);
-		RowList rowList = dbKing.executeSelectSql(selectSql, pageSize, pageNumber);
-		PaginationArrayList<${table.definationName}> pal = new PaginationArrayList<${table.definationName}>(rowList.getPageSize(), rowList.getPageNumber(), rowList.getTotalRowCount());
+		RowList rowList = dbKing.query(selectSql, pageSize, pageNumber);
+		PageList<${table.definationName}> pageList = new PageList<${table.definationName}>(rowList.getPageSize(), rowList.getPageNumber(), rowList.getTotalRowCount());
 		for (Row row : rowList) {
 			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
 			</#list>
-			pal.add(${table.variableName});
+			pageList.add(${table.variableName});
 		}
-		return pal;
+		return pageList;
 	}
 
-	public List<${table.definationName}> query${table.definationName}(ConditionClause conditionClause, ExtraClause extraClause, OrderByClause orderByClause) {
+	public List<${table.definationName}> query(WhereClause whereClause, ExtraClause extraClause, OrderByClause orderByClause) {
 		SelectSql selectSql = new SelectSql().setTableName(${table.definationName}.${table.name})
 			.setColumns("*")
-			.setConditionClause(conditionClause)
+			.setWhereClause(whereClause)
 			.setExtraClause(extraClause)
 			.setOrderByClause(orderByClause);
-		RowList rowList = dbKing.executeSelectSql(selectSql);
-		ArrayList<${table.definationName}> al = new ArrayList<${table.definationName}>();
+		RowList rowList = dbKing.query(selectSql);
+		List<${table.definationName}> list = new ArrayList<${table.definationName}>();
 		for (Row row : rowList) {
 			${table.definationName} ${table.variableName} = new ${table.definationName}();
 			<#list table.columnList as column>
 			${table.variableName}.set${column.definationName}(row.get${column.type.getName()}(${table.definationName}.${column.name}));
 			</#list>
-			al.add(${table.variableName});
+			list.add(${table.variableName});
 		}
-		return al;
+		return list;
 	}
 
 }

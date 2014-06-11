@@ -17,7 +17,7 @@ public class DeleteSql {
 
 	private String tableName;
 
-	private ConditionClause conditionClause;
+	private WhereClause whereClause;
 
 	public String getTableName() {
 		return tableName;
@@ -28,12 +28,12 @@ public class DeleteSql {
 		return this;
 	}
 
-	public ConditionClause getConditionClause() {
-		return conditionClause;
+	public WhereClause getWhereClause() {
+		return whereClause;
 	}
 
-	public DeleteSql setConditionClause(ConditionClause conditionClause) {
-		this.conditionClause = conditionClause;
+	public DeleteSql setWhereClause(WhereClause whereClause) {
+		this.whereClause = whereClause;
 		return this;
 	}
 

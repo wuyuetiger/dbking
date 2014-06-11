@@ -16,7 +16,7 @@ package org.sosostudio.dbking.autocode;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class PaginationArrayList<V> extends ArrayList<V> {
+public class PageList<V> extends ArrayList<V> {
 
 	private int pageSize;
 
@@ -26,7 +26,7 @@ public class PaginationArrayList<V> extends ArrayList<V> {
 
 	private int totalPageCount;
 
-	public PaginationArrayList(int pageSize, int pageNumber, int totalCount) {
+	public PageList(int pageSize, int pageNumber, int totalCount) {
 		if (pageSize > 0) {
 			this.pageSize = pageSize;
 		}

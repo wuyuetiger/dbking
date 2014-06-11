@@ -21,7 +21,7 @@ public class HelloWorldSample {
 
 	public static void main(String[] args) {
 		DbKing dbKing = new DbKing();
-		dbKing.getSequenceNextValue("test");
+		dbKing.getNextValue("test");
 		List<Table> tableList = dbKing.getTableList();
 		for (Table table : tableList) {
 			System.out.println(table);
@@ -30,14 +30,14 @@ public class HelloWorldSample {
 				new Column("NM_VALUE", ColumnType.NUMBER).setPrimaryKey(true))
 				.addColumn(new Column("ST_VALUE", ColumnType.STRING)));
 		for (int i = 0; i < 20; i++) {
-			dbKing.executeInsertSql(new InsertSql().setTableName(TABLE_NAME)
+			dbKing.execute(new InsertSql().setTableName(TABLE_NAME)
 					.setInsertKeyValueClause(
 							new InsertKeyValueClause().addNumberClause(
 									"NM_VALUE", new BigDecimal(i + 1))
 									.addStringClause("ST_VALUE",
 											String.valueOf(i + 1))));
 		}
-		RowList rowList = dbKing.executeSelectSql(
+		RowList rowList = dbKing.query(
 				new SelectSql()
 						.setTableName(TABLE_NAME)
 						.setColumns("*")
