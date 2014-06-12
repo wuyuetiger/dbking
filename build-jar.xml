@@ -22,7 +22,7 @@
 	<!-- pack -->
 	<target name="pack" depends="compile" description="make .jar file">
 		<mkdir dir="${dist.dir}" />
-		<jar destfile="${dist.dir}/dbking-v0.6.jar" basedir="${classes.dir}">
+		<jar destfile="${dist.dir}/dbking-v0.7.jar" basedir="${classes.dir}">
 			<include name="org/sosostudio/dbking/**/*.*" />
 		</jar>
 	</target>
